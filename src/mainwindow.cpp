@@ -20,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectFromNetwork);
     connect(ui->pb_send, &QPushButton::clicked, this, &MainWindow::send);
     connect(this, &MainWindow::received, this, &MainWindow::msgHandlerDisplay);
+
+    in.setDevice(this->socket);
+    in.setVersion(QDataStream::Qt_4_7);
 }
 
 MainWindow::~MainWindow()
@@ -51,6 +54,7 @@ void MainWindow::openPreferences() {
 void MainWindow::connectToNetwork() {
     if (this->socket == nullptr) {
         this->socket = new QTcpSocket(this);
+        in.setDevice(this->socket);
         connect(this->socket, &QIODevice::readyRead, this, &MainWindow::receive);
         connect(this->socket, QOverload<QTcpSocket::SocketError>::of(&QTcpSocket::error), this, &MainWindow::displayError);
     }
@@ -90,25 +94,47 @@ void MainWindow::send() {
 }
 
 void MainWindow::receive() {
-    this->uncompleteMessage.append(this->socket->readLine());
-    if (this->uncompleteMessage.back() != '\n') return;
+//    this->uncompleteMessage.append(this->socket->readLine());
+//    if (this->uncompleteMessage.isEmpty() || this->uncompleteMessage[this->uncompleteMessage.size() - 1] != '\n') return;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(this->uncompleteMessage);
-    if (jsonDoc.isNull())
-        qWarning() << "Message couldn't be parsed:" << this->uncompleteMessage;
-    this->uncompleteMessage.clear();
-    if (jsonDoc.isNull())
-        return;
+//    QJsonDocument jsonDoc = QJsonDocument::fromJson(this->uncompleteMessage);
+//    if (jsonDoc.isNull())
+//        qWarning() << "Message couldn't be parsed:" << this->uncompleteMessage;
+//    this->uncompleteMessage.clear();
+//    if (jsonDoc.isNull())
+//        return;
 
-    qDebug() << "Received message:" << jsonDoc;
-    QJsonValue type = jsonDoc["type"];
-    if (type.type() != QJsonValue::String) {
-        qWarning() << "Expected type in JSON object as string, got" << jsonDoc;
+//    qDebug() << "Received message:" << jsonDoc;
+//    QJsonValue type = jsonDoc.object()["type"];
+//    if (type.type() != QJsonValue::String) {
+//        qWarning() << "Expected type in JSON object as string, got" << jsonDoc;
+//        return;
+//    }
+
+//    qDebug() << "Message has type:" << type.toString();
+//    emit received(type.toString(), jsonDoc.object());
+
+    //QDataStream in(this->socket);
+    //in.setVersion(QDataStream::Qt_4_7);
+
+    char *pinName, *mediaType, *data;
+    quint64 streamTime;
+    uint length;
+
+    in.startTransaction();
+
+    in >> pinName >> mediaType >> streamTime;
+    in.readBytes(data, length);
+    qDebug() << "Message for pin" << pinName << "at time" << streamTime << "of length" << length << "with media type" << mediaType;
+    delete [] pinName;
+    delete [] mediaType;
+    delete [] data;
+
+    if (!in.commitTransaction()) {
+        qDebug() << "Transaction commit failed";
         return;
     }
-
-    qDebug() << "Message has type:" << type.toString();
-    emit received(type.toString(), jsonDoc.object());
+    qDebug() << "Transaction committed";
 }
 
 void MainWindow::msgHandlerDisplay(QString type, QJsonObject jsonObj) {

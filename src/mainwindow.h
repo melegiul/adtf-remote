@@ -36,5 +36,6 @@ private:
     Ui::MainWindow *ui;
     QTcpSocket *socket = nullptr;
     QByteArray uncompleteMessage;
+    QDataStream in;
 };
 #endif // MAINWINDOW_H

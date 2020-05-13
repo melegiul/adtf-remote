@@ -10,6 +10,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dialog_preferences.h"
+#include "tmyadtfmessage.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -126,6 +127,7 @@ void MainWindow::receive() {
     in >> pinName >> mediaType >> streamTime;
     in.readBytes(data, length);
     qDebug() << "Message for pin" << pinName << "at time" << streamTime << "of length" << length << "with media type" << mediaType;
+    tMyADTFMessage::fromNetwork(data, length, streamTime);
     delete [] pinName;
     delete [] mediaType;
     delete [] data;

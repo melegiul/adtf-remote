@@ -11,7 +11,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
 
     QSettings settings;
     this->le_ipaddress->setText(settings.value("preferences/ipaddress").toString());
-    this->sb_port->setValue(settings.value("preferences/port", 9546).toInt());
+    this->sb_port->setValue(settings.value("preferences/port", 9536).toInt());
 }
 
 void PreferencesDialog::savePreferences() {

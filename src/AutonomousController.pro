@@ -18,11 +18,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     dialog_preferences.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    networkclient.cpp \
+    tmyadtfmessage.cpp
 
 HEADERS += \
     dialog_preferences.h \
-    mainwindow.h
+    mainwindow.h \
+    networkclient.h \
+    tmyadtfmessage.h
 
 FORMS += \
     mainwindow.ui \

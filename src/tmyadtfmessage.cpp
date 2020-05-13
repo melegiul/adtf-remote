@@ -34,20 +34,13 @@ static const char *mediaDescription = R"(
 void tMyADTFMessage::fromNetwork(void *data, size_t length, uint64_t time) {
     tMyADTFMessage parsed;
 
-    cObjectPtr<cMediaType> mediaType = new cMediaType(0,0,0, "tMyADTFMessage", mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
+    cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
+    int b = pCoder->Create("tMyADTFMessage", mediaDescription, IMediaDescription::MDF_DDL010002);
+    int a = pCoder->Begin(data, length);
 
-    cObjectPtr<IMediaSample> pSample = new cMediaSample();
-    int c = pSample->Update(time, data, length, 0);
-
-    cObjectPtr<IMediaCoder> pCoder;
-//    cObjectPtr<cMediaCoder> pCoder;
-//    pCoder->Create("tMyADTFMessage", mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
-//    pCoder->Begin() + End()
-    int a = mediaType->Lock(pSample, &pCoder);
-
-    int d = pCoder->Get("sHeaderStruct.ui32HeaderVal", &parsed.sHeaderStruct.ui32HeaderVal);
+    pCoder->Get("sHeaderStruct.ui32HeaderVal", &parsed.sHeaderStruct.ui32HeaderVal);
     pCoder->Get("sHeaderStruct.f64HeaderVal", &parsed.sHeaderStruct.f64HeaderVal);
-    int e = pCoder->Get("sSimpleStruct.ui8Val", &parsed.sSimpleStruct.ui8Val);
+    pCoder->Get("sSimpleStruct.ui8Val", &parsed.sSimpleStruct.ui8Val);
     pCoder->Get("sSimpleStruct.ui16Val", &parsed.sSimpleStruct.ui16Val);
     pCoder->Get("sSimpleStruct.ui32Val", &parsed.sSimpleStruct.ui32Val);
     pCoder->Get("sSimpleStruct.i32Val", &parsed.sSimpleStruct.i32Val);
@@ -55,5 +48,5 @@ void tMyADTFMessage::fromNetwork(void *data, size_t length, uint64_t time) {
     pCoder->Get("sSimpleStruct.f64Val", &parsed.sSimpleStruct.f64Val);
     pCoder->Get("sSimpleStruct.f32Val", &parsed.sSimpleStruct.f32Val);
 
-    mediaType->Unlock(pCoder);
+    pCoder->End();
 }

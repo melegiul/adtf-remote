@@ -52,91 +52,17 @@ void MainWindow::openPreferences() {
     prefDialog.exec();
 }
 
-void MainWindow::connectToNetwork() {
-    if (this->socket == nullptr) {
-        this->socket = new QTcpSocket(this);
-        in.setDevice(this->socket);
-        connect(this->socket, &QIODevice::readyRead, this, &MainWindow::receive);
-        connect(this->socket, QOverload<QTcpSocket::SocketError>::of(&QTcpSocket::error), this, &MainWindow::displayError);
-    }
-
-    if (this->socket->state() != QTcpSocket::UnconnectedState) {
-        qWarning() << "Activating connectToNetwork() slot shouldn't be possible as network is currently connected";
-        return;
-    }
-
-    QSettings settings;
-    this->socket->connectToHost(settings.value("preferences/ipaddress").toString(),
-                                settings.value("preferences/port").toInt());
-
+void MainWindow::networkConnected() {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
     ui->statusbar->showMessage("Connected to " + settings.value("preferences/ipaddress").toString() + ":"
                                 + settings.value("preferences/port").toString());
 }
 
-void MainWindow::disconnectFromNetwork() {
-    this->socket->disconnectFromHost();
-
+void MainWindow::networkDisconnected() {
     ui->actionDisconnect->setEnabled(false);
     ui->actionConnect->setEnabled(true);
     ui->statusbar->showMessage("Disconnected");
-}
-
-void MainWindow::send() {
-    QJsonObject jsonMain;
-    jsonMain["type"] = "text";
-    jsonMain["msg"] = ui->te_main->toPlainText();
-    QJsonDocument jsonDoc(jsonMain);
-
-    this->socket->write(jsonDoc.toJson(QJsonDocument::Compact));
-    this->socket->write("\n");
-    this->socket->flush();
-}
-
-void MainWindow::receive() {
-//    this->uncompleteMessage.append(this->socket->readLine());
-//    if (this->uncompleteMessage.isEmpty() || this->uncompleteMessage[this->uncompleteMessage.size() - 1] != '\n') return;
-
-//    QJsonDocument jsonDoc = QJsonDocument::fromJson(this->uncompleteMessage);
-//    if (jsonDoc.isNull())
-//        qWarning() << "Message couldn't be parsed:" << this->uncompleteMessage;
-//    this->uncompleteMessage.clear();
-//    if (jsonDoc.isNull())
-//        return;
-
-//    qDebug() << "Received message:" << jsonDoc;
-//    QJsonValue type = jsonDoc.object()["type"];
-//    if (type.type() != QJsonValue::String) {
-//        qWarning() << "Expected type in JSON object as string, got" << jsonDoc;
-//        return;
-//    }
-
-//    qDebug() << "Message has type:" << type.toString();
-//    emit received(type.toString(), jsonDoc.object());
-
-    //QDataStream in(this->socket);
-    //in.setVersion(QDataStream::Qt_4_7);
-
-    char *pinName, *mediaType, *data;
-    quint64 streamTime;
-    uint length;
-
-    in.startTransaction();
-
-    in >> pinName >> mediaType >> streamTime;
-    in.readBytes(data, length);
-    qDebug() << "Message for pin" << pinName << "at time" << streamTime << "of length" << length << "with media type" << mediaType;
-    tMyADTFMessage::fromNetwork(data, length, streamTime);
-    delete [] pinName;
-    delete [] mediaType;
-    delete [] data;
-
-    if (!in.commitTransaction()) {
-        qDebug() << "Transaction commit failed";
-        return;
-    }
-    qDebug() << "Transaction committed";
 }
 
 void MainWindow::msgHandlerDisplay(QString type, QJsonObject jsonObj) {
@@ -155,3 +81,7 @@ void MainWindow::displayError() {
     ui->actionConnect->setEnabled(true);
     ui->statusbar->showMessage(QString("Disconnected due to error: %1").arg(this->socket->errorString()));
 }
+
+//QSettings settings;
+//this->tcpSocket->connectToHost(settings.value("preferences/ipaddress").toString(),
+//                            settings.value("preferences/port").toInt());

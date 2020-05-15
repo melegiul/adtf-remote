@@ -28,6 +28,8 @@ public slots:
     void receive();
     void msgHandlerDisplay(QString type, QJsonObject jsonObj);
     void displayError();
+    void networkDisconnected();
+    void networkConnected();
 
 signals:
     void received(QString type, QJsonObject jsonObj);

@@ -11,7 +11,7 @@ typedef struct
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct tSimpleStruct
 {
     uint8_t ui8Val;
     uint16_t ui16Val;
@@ -20,7 +20,7 @@ typedef struct
     int64_t i64Val;
     double f64Val;
     float f32Val;
-} tSimpleStruct;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)

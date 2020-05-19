@@ -10,20 +10,26 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dialog_preferences.h"
+#include "networkclient.h"
 #include "tmyadtfmessage.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
     ui->setupUi(this);
-    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openMapXML);
-    connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
-    connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectToNetwork);
-    connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectFromNetwork);
-    connect(ui->pb_send, &QPushButton::clicked, this, &MainWindow::send);
-    connect(this, &MainWindow::received, this, &MainWindow::msgHandlerDisplay);
 
-    in.setDevice(this->socket);
-    in.setVersion(QDataStream::Qt_4_7);
+    connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openMapXML);
+    connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
+    connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
+
+    connect(this->networkClient, &NetworkClient::connected, this, &MainWindow::networkConnected);
+    connect(this->networkClient, &NetworkClient::disconnected, this, &MainWindow::networkDisconnected);
+    connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
+    connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
+
+    connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
+    // connect(ui->pb_send, &QPushButton::clicked, this, &MainWindow::send);
+    // connect(this, &MainWindow::received, this, &MainWindow::msgHandlerDisplay);
 }
 
 MainWindow::~MainWindow()
@@ -52,36 +58,49 @@ void MainWindow::openPreferences() {
     prefDialog.exec();
 }
 
+void MainWindow::connectNetwork()
+{
+    QSettings settings;
+    QString host = settings.value("preferences/ipaddress").toString();
+    uint16_t port = settings.value("preferences/port").toUInt();
+
+    this->networkClient->connectNetwork(host, port);
+}
+
+void MainWindow::disconnectNetwork()
+{
+    this->networkClient->disconnectNetwork();
+}
+
 void MainWindow::networkConnected() {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
-    ui->statusbar->showMessage("Connected to " + settings.value("preferences/ipaddress").toString() + ":"
-                                + settings.value("preferences/port").toString());
+    // TODO implement again
+//    ui->statusbar->showMessage("Connected to " + settings.value("preferences/ipaddress").toString() + ":"
+//                                + settings.value("preferences/port").toString());
 }
 
 void MainWindow::networkDisconnected() {
     ui->actionDisconnect->setEnabled(false);
     ui->actionConnect->setEnabled(true);
-    ui->statusbar->showMessage("Disconnected");
 }
 
-void MainWindow::msgHandlerDisplay(QString type, QJsonObject jsonObj) {
-    if (type != "display") return;
-
-    if (jsonObj["msg"].type() != QJsonValue::String) {
-        qWarning() << "Item msg not included in message type display or unexpected type";
-        return;
-    }
-
-    ui->te_main->setPlainText(jsonObj["msg"].toString());
+void MainWindow::networkReceived(ADTFMediaSample sample)
+{
+    tMyADTFMessage abc = tMyADTFMessage::fromNetwork(sample);
+    ui->statusbar->showMessage(QString("Reveived %1 value %2").arg(sample.pinName.data()).arg(abc.sHeaderStruct.ui32HeaderVal));
 }
 
-void MainWindow::displayError() {
-    ui->actionDisconnect->setEnabled(false);
-    ui->actionConnect->setEnabled(true);
-    ui->statusbar->showMessage(QString("Disconnected due to error: %1").arg(this->socket->errorString()));
+void MainWindow::networkErrored(QString errorMsg) {
+    ui->statusbar->showMessage(errorMsg);
 }
 
-//QSettings settings;
-//this->tcpSocket->connectToHost(settings.value("preferences/ipaddress").toString(),
-//                            settings.value("preferences/port").toInt());
+// only for testing / demo
+void MainWindow::sendMyADTFMessage(int counter) {
+    tMyADTFMessage message {};
+    message.sHeaderStruct.ui32HeaderVal = counter;
+    message.sSimpleStruct.ui32Val = counter + 1;
+    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "counter", counter);
+    this->networkClient->send(sample);
+
+}

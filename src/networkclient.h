@@ -6,13 +6,7 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
-struct ADTFMediaSample {
-    std::string pinName;
-    std::string mediaType;
-    uint64_t streamTime;
-    std::shared_ptr<char[]> data;
-    uint length;
-};
+struct ADTFMediaSample;
 
 class NetworkClient : public QObject
 {
@@ -24,12 +18,16 @@ public slots:
     void connectNetwork(QString host, uint16_t port);
     void disconnectNetwork();
     void send(const ADTFMediaSample &mediaSample);
+
+private slots:
     void receive();
+    void error();
 
 signals:
     void connected();
     void disconnected();
     void received(ADTFMediaSample sample);
+    void errored(QString errorMsg);
 
 private:
     QTcpSocket tcpSocket;

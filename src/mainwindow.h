@@ -1,11 +1,13 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef __MAINWINDOW_H
+#define __MAINWINDOW_H
 
 #include <QMainWindow>
 #include <QString>
 #include <QJsonObject>
 
-class QTcpSocket;
+#include "adtfmediasample.h"
+
+class NetworkClient;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,22 +24,19 @@ public:
 public slots:
     void openMapXML();
     void openPreferences();
-    void connectToNetwork();
-    void disconnectFromNetwork();
-    void send();
-    void receive();
-    void msgHandlerDisplay(QString type, QJsonObject jsonObj);
-    void displayError();
-    void networkDisconnected();
+    void connectNetwork();
+    void disconnectNetwork();
+
     void networkConnected();
+    void networkDisconnected();
+    void networkReceived(ADTFMediaSample sample);
+    void networkErrored(QString errorMsg);
 
-signals:
-    void received(QString type, QJsonObject jsonObj);
-
+    // testing / demo
+    void sendMyADTFMessage(int counter);
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *socket = nullptr;
-    QByteArray uncompleteMessage;
-    QDataStream in;
+    NetworkClient *networkClient;
 };
-#endif // MAINWINDOW_H
+
+#endif // __MAINWINDOW_H

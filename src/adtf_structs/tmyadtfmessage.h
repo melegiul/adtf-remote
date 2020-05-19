@@ -1,16 +1,16 @@
 #include <cstdint>
+#include <string>
+
+struct ADTFMediaSample;
 
 typedef int16_t tPixelFormat;
 
-#pragma pack(push,1)
-typedef struct
+struct tHeaderStruct
 {
     uint32_t ui32HeaderVal;
     double f64HeaderVal;
-} tHeaderStruct;
-#pragma pack(pop)
+};
 
-#pragma pack(push,1)
 struct tSimpleStruct
 {
     uint8_t ui8Val;
@@ -21,23 +21,19 @@ struct tSimpleStruct
     double f64Val;
     float f32Val;
 };
-#pragma pack(pop)
 
-#pragma pack(push,1)
 struct tMyADTFMessage
 {
     tHeaderStruct sHeaderStruct;
     tSimpleStruct sSimpleStruct;
 
 public:
-    static void fromNetwork(void *data, size_t length, uint64_t time);
+    static tMyADTFMessage fromNetwork(const ADTFMediaSample &sample);
+    static ADTFMediaSample toNetwork(tMyADTFMessage message, std::string pinName, uint64_t streamTime);
 };
-#pragma pack(pop)
 
-#pragma pack(push,1)
-typedef struct
+struct tNestedStruct
 {
     tHeaderStruct sHeaderStruct;
     tSimpleStruct sSimpleStruct;
-} tNestedStruct;
-#pragma pack(pop)
+};

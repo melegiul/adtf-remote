@@ -4,7 +4,6 @@
 #include <memory>
 #include <QObject>
 #include <QTcpSocket>
-#include <QDataStream>
 
 struct ADTFMediaSample;
 
@@ -31,7 +30,6 @@ signals:
 
 private:
     QTcpSocket tcpSocket;
-    QDataStream dataStream;
 };
 
 #endif // __NETWORKCLIENT_H

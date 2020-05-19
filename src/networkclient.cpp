@@ -1,12 +1,11 @@
 #include <QTcpSocket>
+#include <QDataStream>
 
 #include "networkclient.h"
 #include "adtfmediasample.h"
 
-NetworkClient::NetworkClient(QObject *parent) : QObject(parent), dataStream(&this->tcpSocket)
+NetworkClient::NetworkClient(QObject *parent) : QObject(parent)
 {
-    this->dataStream.setVersion(QDataStream::Qt_4_7);
-
     connect(&this->tcpSocket, &QTcpSocket::connected, this, &NetworkClient::connected);
     connect(&this->tcpSocket, &QTcpSocket::disconnected, this, &NetworkClient::disconnected);
     connect(&this->tcpSocket, &QIODevice::readyRead, this, &NetworkClient::receive);
@@ -33,27 +32,16 @@ void NetworkClient::send(const ADTFMediaSample &sample)
         return;
     }
 
-    // ReadPastEnd status must be cleared in order for writes to work
-    if (this->dataStream.status() == QDataStream::ReadPastEnd)
-        this->dataStream.resetStatus();
+    QDataStream dataStream(&this->tcpSocket);
+    dataStream.setVersion(QDataStream::Qt_4_7);
 
-    if (sample.streamTime != 57)
-    this->dataStream << sample.pinName.data() << sample.mediaType.data() << static_cast<quint64>(sample.streamTime);
-
-    // debug
-    if (sample.streamTime == 56) {
-        this->tcpSocket.flush();
-        qDebug() << "here56";
-        return;
-    }
-
-    this->dataStream.writeBytes(sample.data.get(), sample.length);
+    dataStream << sample.pinName.data() << sample.mediaType.data() << static_cast<quint64>(sample.streamTime);
+    dataStream.writeBytes(sample.data.get(), sample.length);
 
     this->tcpSocket.flush();
 }
 
 void NetworkClient::receive() {
-    // TODO test network fragmentation
     std::unique_ptr<char[]> pinNamePtr;
     std::unique_ptr<char[]> mediaTypePtr;
     std::unique_ptr<char[]> dataPtr;
@@ -62,16 +50,19 @@ void NetworkClient::receive() {
     quint64 streamTime;
     uint length;
 
-    while (true) {
-        this->dataStream.startTransaction();
-        this->dataStream >> pinName >> mediaType >> streamTime;
-        this->dataStream.readBytes(data, length);
+    QDataStream dataStream(&this->tcpSocket);
+    dataStream.setVersion(QDataStream::Qt_4_7);
+
+    while (!dataStream.atEnd()) {
+        dataStream.startTransaction();
+        dataStream >> pinName >> mediaType >> streamTime;
+        dataStream.readBytes(data, length);
 
         pinNamePtr.reset(pinName);
         mediaTypePtr.reset(mediaType);
         dataPtr.reset(data);
 
-        if (!this->dataStream.commitTransaction())
+        if (!dataStream.commitTransaction())
             return;
 
         ADTFMediaSample sample;

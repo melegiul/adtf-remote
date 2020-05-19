@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(autonomous_controller)
 
+set(CXX_STANDARD 20)
+set(CXX_STANDARD_REQUIRED ON)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -16,11 +19,15 @@ adtf_add_executable(AutonomousController
     dialog_preferences.cpp
     dialog_preferences.h
     dialog_preferences.ui
-    tmyadtfmessage.cpp
-    tmyadtfmessage.h
+    adtfmediasample.h
     networkclient.cpp
     networkclient.h
     main.cpp
+
+    adtf_structs/tmyadtfmessage.cpp
+    adtf_structs/tmyadtfmessage.h
+    adtf_structs/carodometry.cpp
+    adtf_structs/carodometry.h
 )
 
 target_link_libraries(AutonomousController Qt5::Core Qt5::Widgets Qt5::Network)

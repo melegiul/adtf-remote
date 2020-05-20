@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
-    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openMapXML);
+    connect(ui->actionOpenMap, &QAction::triggered, this, &MainWindow::openMapXML);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
 

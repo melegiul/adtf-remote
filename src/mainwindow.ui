@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>675</height>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,458 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
+    <item row="2" column="1" rowspan="3">
      <widget class="QPlainTextEdit" name="te_main"/>
     </item>
     <item row="0" column="0">
+     <widget class="QGraphicsView" name="gv_map">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>2</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" rowspan="2">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="view_tab">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>View</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QTreeWidget" name="static_tree">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <column>
+           <property name="text">
+            <string>Static View</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>Visual</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Street Lines</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Street Signs</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Special Markings</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+            <property name="flags">
+             <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+            </property>
+            <item>
+             <property name="text">
+              <string>Stop Lines</string>
+             </property>
+             <property name="checkState">
+              <enum>Checked</enum>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Crosswalks</string>
+             </property>
+             <property name="checkState">
+              <enum>Checked</enum>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Speed Bumps</string>
+             </property>
+             <property name="checkState">
+              <enum>Checked</enum>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Parking Spots</string>
+             </property>
+             <property name="checkState">
+              <enum>Checked</enum>
+             </property>
+             <property name="flags">
+              <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+             </property>
+             <item>
+              <property name="text">
+               <string>Regular</string>
+              </property>
+              <property name="checkState">
+               <enum>Checked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Disabled</string>
+              </property>
+              <property name="checkState">
+               <enum>Checked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Women</string>
+              </property>
+              <property name="checkState">
+               <enum>Checked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Family</string>
+              </property>
+              <property name="checkState">
+               <enum>Checked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Electric Vehicles</string>
+              </property>
+              <property name="checkState">
+               <enum>Checked</enum>
+              </property>
+             </item>
+            </item>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Meta</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Crossing Areas</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Invisible Street Lines</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Street Areas</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Direction of Traffic</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="dynamic_tree">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <column>
+           <property name="text">
+            <string>Dynamic View</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>Car</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <item>
+            <property name="text">
+             <string>Nearfieldgridmap</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Detected Lines</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Trapezoid</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Active Lane</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="scope_button">
+          <property name="text">
+           <string>Scope Car: Inactive</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="editor_tab">
+       <attribute name="title">
+        <string>Street Sign Editor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QCheckBox" name="editor_checkbox">
+          <property name="text">
+           <string>Edit Mode</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lane_id_label">
+            <property name="text">
+             <string>Lane ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="Sign_type_label">
+            <property name="text">
+             <string>Sign Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lane_id_editor_txt">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QFontComboBox" name="street_sign_items_cmbbox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="editor_pos_x_label">
+            <property name="text">
+             <string>Position X</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="editor_x_pos">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="editor_pos_x_label_2">
+            <property name="text">
+             <string>Position Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="editor_y_pos">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="editor_remove_streetsign">
+          <property name="text">
+           <string>Remove Sign</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="navigation_tab">
+       <attribute name="title">
+        <string>Navigation</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="8" column="0">
+         <widget class="QPushButton" name="importNavMarkerButton">
+          <property name="toolTip">
+           <string>Import navigation marker form a xml file.</string>
+          </property>
+          <property name="text">
+           <string>Import Marker</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2">
+         <widget class="QPushButton" name="exportNavMarkerButton">
+          <property name="toolTip">
+           <string>Export all navigation markers to a xml file.</string>
+          </property>
+          <property name="text">
+           <string>Export Marker</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="removeNavigationMarkerButton">
+          <property name="toolTip">
+           <string>Removes choosen marker.</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+          <property name="icon">
+           <iconset theme="remove">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QLabel" name="lb_navigation_markers">
+          <property name="text">
+           <string>Navigation markers:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="calculateRouteButton">
+          <property name="toolTip">
+           <string>Calculates the route in order of the navigation markers above.</string>
+          </property>
+          <property name="text">
+           <string>Calculate Route</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="removeAllNavigationMarkerButton">
+          <property name="toolTip">
+           <string>Removes all marker.</string>
+          </property>
+          <property name="text">
+           <string>Remove All</string>
+          </property>
+          <property name="icon">
+           <iconset theme="remove-all">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="3">
+         <widget class="QListWidget" name="drivingTasksListWidget">
+          <property name="toolTip">
+           <string>Displays the driving instructions in order of the navigation marker above.</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="3">
+         <widget class="QLabel" name="lb_driving_tasks">
+          <property name="text">
+           <string>Driving tasks:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QListWidget" name="lw_todo"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="2" column="0">
      <widget class="QLabel" name="lb_top">
       <property name="text">
        <string>TextLabel</string>
@@ -32,15 +480,247 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
     <item row="3" column="0">
      <widget class="QSpinBox" name="sb_counter"/>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="hl_odometry">
+      <item>
+       <widget class="QLabel" name="lbs_mouse_x">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>55</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Mouse X:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="mouse_x">
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbs_mouse_y">
+        <property name="minimumSize">
+         <size>
+          <width>15</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>15</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Y:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="mouse_y">
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_left">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="hs_odometry">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line_right">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbs_car_x">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>35</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Car X:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="car_x">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbs_car_y">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>15</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>15</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Y:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="car_y">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbs_orientation">
+        <property name="text">
+         <string>Orientation:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="car_th">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-1</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -60,12 +740,6 @@
     <addaction name="actionPreferences"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen"/>
-   </widget>
    <widget class="QMenu" name="menuConnection">
     <property name="title">
      <string>Connection</string>
@@ -73,9 +747,16 @@
     <addaction name="actionConnect"/>
     <addaction name="actionDisconnect"/>
    </widget>
+   <widget class="QMenu" name="menuMap">
+    <property name="title">
+     <string>Map</string>
+    </property>
+    <addaction name="actionOpenMap"/>
+    <addaction name="actionExportMap"/>
+   </widget>
    <addaction name="menuGeneral"/>
-   <addaction name="menuFile"/>
    <addaction name="menuConnection"/>
+   <addaction name="menuMap"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
@@ -99,7 +780,7 @@
     <string>Preferences</string>
    </property>
    <property name="shortcut">
-    <string/>
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -115,25 +796,78 @@
    </property>
   </action>
   <action name="actionConnect">
+   <property name="icon">
+    <iconset theme="network-wired">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Connect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+Shift+C</string>
    </property>
   </action>
   <action name="actionDisconnect">
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset theme="network-offline">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Disconnect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="actionOpenMap">
+   <property name="icon">
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Open Map from XML</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionExportMap">
+   <property name="icon">
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Export Map</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>gv_map</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>static_tree</tabstop>
+  <tabstop>dynamic_tree</tabstop>
+  <tabstop>scope_button</tabstop>
+  <tabstop>editor_checkbox</tabstop>
+  <tabstop>lane_id_editor_txt</tabstop>
+  <tabstop>street_sign_items_cmbbox</tabstop>
+  <tabstop>editor_remove_streetsign</tabstop>
+  <tabstop>lw_todo</tabstop>
+  <tabstop>calculateRouteButton</tabstop>
+  <tabstop>removeNavigationMarkerButton</tabstop>
+  <tabstop>removeAllNavigationMarkerButton</tabstop>
+  <tabstop>drivingTasksListWidget</tabstop>
+  <tabstop>importNavMarkerButton</tabstop>
+  <tabstop>exportNavMarkerButton</tabstop>
+  <tabstop>sb_counter</tabstop>
+  <tabstop>pb_send</tabstop>
+  <tabstop>te_main</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

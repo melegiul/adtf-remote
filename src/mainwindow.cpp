@@ -1,17 +1,13 @@
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QTcpSocket>
 #include <QtDebug>
 #include <QSettings>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dialog_preferences.h"
 #include "networkclient.h"
-#include "tmyadtfmessage.h"
+#include "adtf_structs/tmyadtfmessage.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
@@ -29,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
     // connect(ui->pb_send, &QPushButton::clicked, this, &MainWindow::send);
-    // connect(this, &MainWindow::received, this, &MainWindow::msgHandlerDisplay);
 }
 
 MainWindow::~MainWindow()
@@ -75,9 +70,7 @@ void MainWindow::disconnectNetwork()
 void MainWindow::networkConnected() {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
-    // TODO implement again
-//    ui->statusbar->showMessage("Connected to " + settings.value("preferences/ipaddress").toString() + ":"
-//                                + settings.value("preferences/port").toString());
+    ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
 }
 
 void MainWindow::networkDisconnected() {
@@ -87,8 +80,11 @@ void MainWindow::networkDisconnected() {
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
-    tMyADTFMessage abc = tMyADTFMessage::fromNetwork(sample);
-    ui->statusbar->showMessage(QString("Reveived %1 value %2").arg(sample.pinName.data()).arg(abc.sHeaderStruct.ui32HeaderVal));
+    if (sample.pinName != "counter" || sample.mediaType != "tMyADTFMessage")
+        return;
+
+    tMyADTFMessage message = tMyADTFMessage::fromNetwork(sample);
+    ui->lb_top->setText(QString("Reveived %1 value %2 on time %3").arg(sample.pinName.data()).arg(message.sHeaderStruct.ui32HeaderVal).arg(sample.streamTime));
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
@@ -100,7 +96,7 @@ void MainWindow::sendMyADTFMessage(int counter) {
     tMyADTFMessage message {};
     message.sHeaderStruct.ui32HeaderVal = counter;
     message.sSimpleStruct.ui32Val = counter + 1;
-    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "counter", counter);
+    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "counter", counter * 1000);
     this->networkClient->send(sample);
 
 }

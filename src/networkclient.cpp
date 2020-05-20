@@ -1,5 +1,6 @@
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QHostAddress>
 
 #include "networkclient.h"
 #include "adtfmediasample.h"
@@ -10,6 +11,13 @@ NetworkClient::NetworkClient(QObject *parent) : QObject(parent)
     connect(&this->tcpSocket, &QTcpSocket::disconnected, this, &NetworkClient::disconnected);
     connect(&this->tcpSocket, &QIODevice::readyRead, this, &NetworkClient::receive);
     connect(&this->tcpSocket, QOverload<QTcpSocket::SocketError>::of(&QTcpSocket::error), this, &NetworkClient::error);
+}
+
+QString NetworkClient::getPeer() {
+    if (this->tcpSocket.state() != QTcpSocket::ConnectedState)
+        return "null";
+
+    return QString("%1:%2").arg(this->tcpSocket.peerAddress().toString()).arg(this->tcpSocket.peerPort());
 }
 
 void NetworkClient::connectNetwork(QString host, uint16_t port) {

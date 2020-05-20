@@ -12,6 +12,7 @@ class NetworkClient : public QObject
     Q_OBJECT
 public:
     explicit NetworkClient(QObject *parent = nullptr);
+    QString getPeer();
 
 public slots:
     void connectNetwork(QString host, uint16_t port);

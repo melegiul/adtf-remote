@@ -7,31 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>733</height>
+    <height>826</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Autonomous Driving</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/uniautonom</normaloff>:/images/uniautonom</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="1" rowspan="3">
-     <widget class="QPlainTextEdit" name="te_main"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QGraphicsView" name="gv_map">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>2</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" rowspan="2">
+    <item row="1" column="1" rowspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -410,7 +398,7 @@
           </property>
           <property name="icon">
            <iconset theme="remove">
-            <normaloff>.</normaloff>.</iconset>
+            <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
           </property>
          </widget>
         </item>
@@ -441,7 +429,7 @@
           </property>
           <property name="icon">
            <iconset theme="remove-all">
-            <normaloff>.</normaloff>.</iconset>
+            <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
           </property>
          </widget>
         </item>
@@ -466,24 +454,26 @@
       </widget>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="lb_top">
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="pb_send">
-      <property name="text">
-       <string>Send</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QSpinBox" name="sb_counter"/>
-    </item>
     <item row="1" column="0">
+     <widget class="QGraphicsView" name="map_view">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="compass_rose"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QGraphicsView" name="measure_bar"/>
+    </item>
+    <item row="2" column="0">
      <layout class="QHBoxLayout" name="hl_odometry">
       <item>
        <widget class="QLabel" name="lbs_mouse_x">
@@ -722,6 +712,16 @@
       </item>
      </layout>
     </item>
+    <item row="4" column="0">
+     <widget class="QSpinBox" name="sb_counter"/>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="lb_top">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -762,7 +762,7 @@
   <action name="actionQuit">
    <property name="icon">
     <iconset theme="application-exit">
-     <normaloff>../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../home/alex/.designer/backup</iconset>
+     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -774,7 +774,7 @@
   <action name="actionPreferences">
    <property name="icon">
     <iconset theme="preferences">
-     <normaloff>../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../home/alex/.designer/backup</iconset>
+     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Preferences</string>
@@ -786,7 +786,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset theme="document-open">
-     <normaloff>../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../home/alex/.designer/backup</iconset>
+     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Open Map XML</string>
@@ -798,7 +798,7 @@
   <action name="actionConnect">
    <property name="icon">
     <iconset theme="network-wired">
-     <normaloff>.</normaloff>.</iconset>
+     <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Connect</string>
@@ -813,7 +813,7 @@
    </property>
    <property name="icon">
     <iconset theme="network-offline">
-     <normaloff>.</normaloff>.</iconset>
+     <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Disconnect</string>
@@ -825,7 +825,7 @@
   <action name="actionOpenMap">
    <property name="icon">
     <iconset theme="document-open">
-     <normaloff>.</normaloff>.</iconset>
+     <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Open Map from XML</string>
@@ -837,7 +837,7 @@
   <action name="actionExportMap">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff>.</normaloff>.</iconset>
+     <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Export Map</string>
@@ -848,7 +848,7 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>gv_map</tabstop>
+  <tabstop>map_view</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>static_tree</tabstop>
   <tabstop>dynamic_tree</tabstop>
@@ -865,10 +865,10 @@
   <tabstop>importNavMarkerButton</tabstop>
   <tabstop>exportNavMarkerButton</tabstop>
   <tabstop>sb_counter</tabstop>
-  <tabstop>pb_send</tabstop>
-  <tabstop>te_main</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>

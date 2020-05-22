@@ -23,6 +23,7 @@ adtf_add_executable(AutonomousController
     networkclient.cpp
     networkclient.h
     main.cpp
+    resources.qrc
 
     adtf_structs/tmyadtfmessage.cpp
     adtf_structs/tmyadtfmessage.h

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/images">
+    <file alias="uniautonom">images/UniAutonom.png</file>
+  </qresource>
+</RCC>

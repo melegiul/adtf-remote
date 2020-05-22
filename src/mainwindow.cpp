@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
     connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
-    // connect(ui->pb_send, &QPushButton::clicked, this, &MainWindow::send);
 }
 
 MainWindow::~MainWindow()
@@ -44,7 +43,7 @@ void MainWindow::openMapXML() {
     }
     QTextStream in(&file);
     QString text = in.readAll();
-    ui->te_main->setPlainText(text);
+    qDebug() << "XML map content:" << text;
     file.close();
 }
 

@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
 
+    connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
     connect(ui->actionOpenMap, &QAction::triggered, this, &MainWindow::openMapXML);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
@@ -95,7 +96,7 @@ void MainWindow::sendMyADTFMessage(int counter) {
     tMyADTFMessage message {};
     message.sHeaderStruct.ui32HeaderVal = counter;
     message.sSimpleStruct.ui32Val = counter + 1;
-    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "counter", counter * 1000);
+    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "sb", counter * 1000);
     this->networkClient->send(sample);
 
 }

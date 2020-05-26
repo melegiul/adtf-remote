@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>277</width>
-    <height>122</height>
+    <width>313</width>
+    <height>236</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,9 @@
     <widget class="QLineEdit" name="le_ipaddress">
      <property name="placeholderText">
       <string>10.0.0.51</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -48,7 +51,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="bb">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -61,8 +64,66 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lb_car_length">
+     <property name="text">
+      <string>Car length (mm)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="sb_car_length">
+     <property name="maximum">
+      <number>45000</number>
+     </property>
+     <property name="value">
+      <number>200</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lb_car_width">
+     <property name="text">
+      <string>Car width (mm)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="lb_background">
+     <property name="text">
+      <string>Background color (0 - 255)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QSpinBox" name="sb_background">
+     <property name="maximum">
+      <number>255</number>
+     </property>
+     <property name="value">
+      <number>180</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="sb_car_width">
+     <property name="maximum">
+      <number>5000</number>
+     </property>
+     <property name="value">
+      <number>120</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>le_ipaddress</tabstop>
+  <tabstop>sb_port</tabstop>
+  <tabstop>sb_car_length</tabstop>
+  <tabstop>sb_car_width</tabstop>
+  <tabstop>sb_background</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

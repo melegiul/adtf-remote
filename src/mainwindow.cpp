@@ -41,6 +41,66 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
     connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
+
+
+
+   // import graphics
+    ui->tabWidget->setCurrentIndex(0);
+    ui->dynamic_tree->expandAll();
+    ui->static_tree->expandAll();
+    // TODO
+    ui->map_view->setBackgroundBrush(QBrush(QColor(180, 180, 180)));
+    ui->map_view->setFocusPolicy(Qt::NoFocus);
+    ui->map_view->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->map_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->map_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
+    scene = new QGraphicsScene();
+    ui->map_view->setScene(scene);
+
+    ui->street_sign_items_cmbbox->clear();
+    for (int i = 0; i < eStreetSigns::NONE + 1; i++) {
+        ui->street_sign_items_cmbbox->addItem(QString(enumStrings<eStreetSigns>::data[i]));
+    }
+    ui->street_sign_items_cmbbox->setCurrentIndex(eStreetSigns::NONE);
+    ui->editor_remove_streetsign->setEnabled(false);
+
+    clearAndSetupStaticElements();
+
+    zoom_rotate_manager = new GraphicsViewZoom(ui->map_view, ui->compass_rose, ui->measure_bar);
+    connect(zoom_rotate_manager, SIGNAL(zoomed()), this, SLOT(focusOnCar()));
+    connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(setSignRotations(double)));
+    connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(focusOnCar()));
+    connect(zoom_rotate_manager, SIGNAL(mousePositionUpdated(QPointF)), this, SLOT(updateMousePosition(QPointF)));
+
+    connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
+    connect(this, SIGNAL(nearfieldGridMapUpdated()),this,SLOT(setupNearfieldGridMap()));
+    connect(this, SIGNAL(trapezoidUpdated()), this, SLOT(updateTrapezoid()));
+    connect(this, SIGNAL(detectedLineUpdated()), this, SLOT(updateDetectedLine()));
+
+    connect(ui->scope_button, SIGNAL(clicked()), this, SLOT(toggleScoped()));
+    connect(ui->actionExportMap, SIGNAL(triggered()), this, SLOT(saveDialog()));
+    connect(ui->exportNavMarkerButton, SIGNAL(clicked()), this, SLOT(exportNavMarker()));
+    connect(ui->importNavMarkerButton, SIGNAL(clicked()), this, SLOT(importNavMarker()));
+    connect(ui->editor_remove_streetsign, SIGNAL(clicked()), this, SLOT(removeSelectedSign()));
+    connect(ui->static_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
+            SLOT(updateStaticFilters(QTreeWidgetItem * , int)));
+    connect(ui->dynamic_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
+            SLOT(updateDynamicFilters(QTreeWidgetItem * , int)));
+    connect(ui->editor_checkbox, SIGNAL(stateChanged(int)), this, SLOT(setEditingMode(int)));
+    connect(ui->street_sign_items_cmbbox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSelectedSign(int)));
+    connect(ui->removeNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteNavigationMarker()));
+    connect(ui->removeAllNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteAllNavigationMarker()));
+    connect(ui->calculateRouteButton, SIGNAL(clicked()), this, SLOT(calculateRoute()));
+
+    ItemSignalController &cont = ItemSignalController::getInstance();
+    connect(&cont, SIGNAL(signClicked(StreetSign * , Lane * )), this, SLOT(updateSignEditor(StreetSign * , Lane * )));
+    connect(&cont, SIGNAL(addSignClicked(StreetSign * , Lane * )), this, SLOT(addSign(StreetSign * , Lane * )));
+    connect(&cont, SIGNAL(updateMap()), this, SLOT(updateMap()));
+    connect(&cont, SIGNAL(addNavigationMarkerClicked(std::shared_ptr<NavigationMarker> & )), this, SLOT(addNavigationMarker(std::shared_ptr<NavigationMarker> & )));
+    connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
+    connect(&cont, SIGNAL(markerUpdateRequired()), this, SLOT(updateMarkerTypesInMarkerList()));
+    connect(&cont, SIGNAL(deleteMarker()), this, SLOT(deleteNavigationMarker()));
 }
 
 MainWindow::~MainWindow()

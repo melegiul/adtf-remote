@@ -55,6 +55,8 @@ void MainWindow::openMapXML() {
 
     ContentManager &contentManager = ContentManager::getInstance();
     contentManager.importFromXml(fileName.toUtf8());
+
+    this->updateMap();
 }
 
 void MainWindow::openPreferences() {
@@ -510,9 +512,9 @@ void MainWindow::addSpecialMarking(SpecialMarking *marking) {
 
 void MainWindow::addSign(StreetSign *sign, Lane *adjacent_lane) {
     auto *item = new StreetSignItem(sign, adjacent_lane, car_width, signs_filter);
-    item->translate(item->pixmap().width() / 2., item->pixmap().height() / 2.);
-    item->rotate(cumulative_angle); // ignore rotation of scene
-    item->translate(-item->pixmap().width() / 2., -item->pixmap().height() / 2.);
+    item->setTransform(QTransform::fromTranslate(item->pixmap().width() / 2., item->pixmap().height() / 2.), true);
+    item->setRotation(item->rotation() + cumulative_angle); // ignore rotation of scene
+    item->setTransform(QTransform::fromTranslate(-item->pixmap().width() / 2., -item->pixmap().height() / 2.), true);
 }
 
 void MainWindow::addCrossingArea(Crossing *crossing) {
@@ -647,9 +649,9 @@ void MainWindow::removeSelectedSign() {
 void MainWindow::setSignRotations(double angle) {
     for (auto sign: signs_filter->childItems()) {
         auto sign_c = qgraphicsitem_cast<StreetSignItem *>(sign);
-        sign->translate(sign_c->pixmap().width() / 2., sign_c->pixmap().height() / 2.);
-        sign->rotate(-angle);
-        sign->translate(-sign_c->pixmap().width() / 2., -sign_c->pixmap().height() / 2.);
+        sign->setTransform(QTransform::fromTranslate(sign_c->pixmap().width() / 2., sign_c->pixmap().height() / 2.), true);
+        sign->setRotation(sign->rotation() - angle);
+        sign->setTransform(QTransform::fromTranslate(-sign_c->pixmap().width() / 2., -sign_c->pixmap().height() / 2.), true);
     }
     cumulative_angle -= angle;
 }
@@ -901,7 +903,7 @@ void MainWindow::setupNearfieldGridMap() {
         }
     }
     nearfield_map_filter = new NearfieldMapItem(nearfieldgridmap,car_filter);
-    nearfield_map_filter->rotate(180);//car starts with front down
+    nearfield_map_filter->setRotation(nearfield_map_filter->rotation() + 180);//car starts with front down
     nearfield_map_filter->setOpacity(0.7);
     nearfield_map_filter->setPos(car_width/2 + GRIDMAP_WIDTH/2,car_height/2 + GRIDMAP_HEIGHT/2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
     nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());

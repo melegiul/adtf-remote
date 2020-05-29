@@ -591,7 +591,7 @@
          </widget>
         </item>
         <item row="1" column="0" colspan="3">
-         <widget class="QListWidget" name="navigationMarkerListWidget">
+         <widget class="QNavigationMarkerListWidget" name="navigationMarkerListWidget">
           <property name="toolTip">
            <string>Change the order of the navigation marker by drag and drop. Click left to choose a marker or click right to delete choosen marker.</string>
           </property>
@@ -767,6 +767,11 @@
    <class>BottomLeftGraphicsView</class>
    <extends>QGraphicsView</extends>
    <header>bottomleftgraphicsview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QNavigationMarkerListWidget</class>
+   <extends>QListWidget</extends>
+   <header>CustomGraphicsItems/QNavigationMarkerListWidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

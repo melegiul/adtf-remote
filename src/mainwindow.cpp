@@ -10,6 +10,10 @@
 #include "dialog_preferences.h"
 #include "networkclient.h"
 #include "adtf_structs/tmyadtfmessage.h"
+#include "adtf_structs/carodometry.h"
+#include "adtf_structs/trapezoid.h"
+#include "adtf_structs/detectedline.h"
+
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -25,11 +29,14 @@
 #include "src/TrajectoryPlaner/Visualization/GraphicsViewZoom.h"
 
 
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
     ui->setupUi(this);
 
     connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
+    //connect(ui->map_view, &ResizeGraphicsView::resized, this, &MainWindow::updateMap);
+
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
     connect(ui->actionOpenMap, &QAction::triggered, this, &MainWindow::openMapXML);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
@@ -43,13 +50,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
 
 
+    QSettings settings;
+    this->car_height = settings.value("car/length", 400).toInt();
+    this->car_width = settings.value("car/width", 240).toInt();
+    int ui_background = settings.value("ui/background", 180).toInt();
 
    // import graphics
     ui->tabWidget->setCurrentIndex(0);
     ui->dynamic_tree->expandAll();
     ui->static_tree->expandAll();
-    // TODO
-    ui->map_view->setBackgroundBrush(QBrush(QColor(180, 180, 180)));
+    ui->map_view->setBackgroundBrush(QBrush(QColor(ui_background, ui_background, ui_background)));
     ui->map_view->setFocusPolicy(Qt::NoFocus);
     ui->map_view->setDragMode(QGraphicsView::ScrollHandDrag);
     ui->map_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -68,10 +78,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     clearAndSetupStaticElements();
 
     zoom_rotate_manager = new GraphicsViewZoom(ui->map_view, ui->compass_rose, ui->measure_bar);
+    zoom_rotate_manager->setEnabled(true);
     connect(zoom_rotate_manager, SIGNAL(zoomed()), this, SLOT(focusOnCar()));
     connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(setSignRotations(double)));
     connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(focusOnCar()));
     connect(zoom_rotate_manager, SIGNAL(mousePositionUpdated(QPointF)), this, SLOT(updateMousePosition(QPointF)));
+
 
     connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
     connect(this, SIGNAL(nearfieldGridMapUpdated()),this,SLOT(setupNearfieldGridMap()));
@@ -113,7 +125,24 @@ void MainWindow::openMapXML() {
     qDebug() << "XML map file" << fileName << "selected for opening";
     if (fileName.isNull()) return;
 
+    ADTFMediaSample sample;
+    std::ifstream is (fileName.toUtf8(), std::ifstream::binary | std::ifstream::ate);
+    if (!is) {
+        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileName);
+        return;
+    }
+    sample.length = is.tellg();
+    is.seekg(0);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "MapXML";
+    sample.mediaType = "";
+    sample.streamTime = 0;
+    is.read(sample.data.get(), sample.length);
+    this->networkClient->send(sample);
+
     ContentManager &contentManager = ContentManager::getInstance();
+    contentManager.clear();
     contentManager.importFromXml(fileName.toUtf8());
 
     this->updateMap();
@@ -127,8 +156,8 @@ void MainWindow::openPreferences() {
 void MainWindow::connectNetwork()
 {
     QSettings settings;
-    QString host = settings.value("preferences/ipaddress").toString();
-    uint16_t port = settings.value("preferences/port").toUInt();
+    QString host = settings.value("network/ipaddress").toString();
+    uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
 }
@@ -151,11 +180,27 @@ void MainWindow::networkDisconnected() {
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
-    if (sample.pinName != "counter" || sample.mediaType != "tMyADTFMessage")
-        return;
-
-    tMyADTFMessage message = tMyADTFMessage::fromNetwork(sample);
-    ui->lb_top->setText(QString("Reveived %1 value %2 on time %3").arg(sample.pinName.data()).arg(message.sHeaderStruct.ui32HeaderVal).arg(sample.streamTime));
+    if (sample.pinName == "counter" && sample.mediaType == "tMyADTFMessage") {
+        tMyADTFMessage message = tMyADTFMessage::fromNetwork(sample);
+        ui->lb_top->setText(QString("Reveived %1 value %2 on time %3").arg(sample.pinName.data()).arg(message.sHeaderStruct.ui32HeaderVal).arg(sample.streamTime));
+    } else if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
+        tCarOdometry2 odometry = tCarOdometry2::fromNetwork(sample);
+        tCarOdometry *odo = reinterpret_cast<tCarOdometry*>(&odometry);
+        this->setCarOdometry(*odo);
+    } else if (sample.pinName == "Trapezoid" && sample.mediaType == "tTrapezoid") {
+        tTrapezoid trapezoid = fromNetworkTrapezoid(sample);
+        this->setTrapezoidCoords(trapezoid);
+//    } else if (sample.pinName == "DetectedLine" && sample.mediaType == "tDetectedLine") {
+//        qDebug() << sizeof(DetectedLine);
+//        std::vector<DetectedLine> lines = fromNetworkDetectedLine(sample);
+//        // TODO known memory leak for testing
+//        tDetectedLine *linesBla = new tDetectedLine(lines.size());
+//        std::memcpy(linesBla->detectedLine, lines.data(), sizeof(DetectedLine) * lines.size());
+//        this->detectedLine = linesBla;
+//        this->setDetectedLine(*this->detectedLine);
+//        int abc = std::memcmp(this->detectedLine->detectedLine, sample.data.get() + 4, sample.length - 4);
+//        qDebug() << "abc:" << abc;
+    }
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
@@ -299,6 +344,8 @@ void MainWindow::clearAndSetupStaticElements() {
     special_markings_filter->setZValue(1);
     signs_filter->setZValue(2);
 
+    navMarker_filter->setZValue(3);
+
     scene->addItem(static_filter);
     scene->addItem(navMarker_filter);
 }
@@ -371,7 +418,7 @@ void MainWindow::setupTrapezoid() {
                                                             << QPointF((int) coords->pos_D.x, (int) coords->pos_D.y)));
 
     trapezoid_filter->setPen(QPen(Qt::green, 30, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    trapezoid_filter->setZValue(2);
+    trapezoid_filter->setZValue(1000);
     scene->addItem(trapezoid_filter);
 }
 //Setup the detected Lines and add it to the scene
@@ -452,7 +499,7 @@ void MainWindow::updateDetectedLine() {
                 QGraphicsLineItem *lineItem = new QGraphicsLineItem(line, detected_line_filter);
 
                 lineItem->setPen(QPen(Qt::red, 40, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-                lineItem->setZValue(1);
+                lineItem->setZValue(500);
                 scene->addItem(lineItem);
             }
         }
@@ -714,28 +761,6 @@ void MainWindow::setSignRotations(double angle) {
         sign->setTransform(QTransform::fromTranslate(-sign_c->pixmap().width() / 2., -sign_c->pixmap().height() / 2.), true);
     }
     cumulative_angle -= angle;
-}
-
-void MainWindow::stop() {
-    //the user should not be able to click anything while the filter is stopped
-    checkAllTrees(Qt::Checked);
-    ui->static_tree->invisibleRootItem()->setCheckState(0,Qt::Checked);
-    ui->tabWidget->setEnabled(false);
-    ui->actionExportMap->setEnabled(false);
-    zoom_rotate_manager->setEnabled(false);
-    updateSignEditor(nullptr,nullptr);
-    ui->editor_checkbox->blockSignals(true);
-    ui->editor_checkbox->setCheckState(Qt::Unchecked);
-    ui->editor_checkbox->blockSignals(false);
-
-    clearAll();
-}
-
-void MainWindow::resume() {
-    ui->tabWidget->setEnabled(true);
-    ui->actionExportMap->setEnabled(true);
-    zoom_rotate_manager->setEnabled(true);
-
 }
 
 void MainWindow::checkSubTree(QTreeWidgetItem *item, Qt::CheckState st) {

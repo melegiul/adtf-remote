@@ -131,8 +131,9 @@ private:
     tTrapezoid *coords = nullptr;
     tDetectedLine *detectedLine = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
-    int car_height;
-    int car_width;
+    // TODO
+    int car_height = 523;
+    int car_width = 250;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;

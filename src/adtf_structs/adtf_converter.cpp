@@ -1,18 +1,16 @@
 #include <adtf_plugin_sdk.h>
 
 #include "../adtfmediasample.h"
-#include "carodometry.h"
+#include "adtf_converter.h"
 
 using namespace adtf;
 
-static const std::string mediaType = "tCarOdometry";
+static const std::string mediaType = "tDetectedLine";
 static const char *mediaDescription = R"(
-                                  <struct alignment="1" name="tCarOdometry" version="1">
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="pos0" type="tFloat32"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="pos1" type="tFloat32"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="orientation" type="tFloat32"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="12" name="timestamp" type="tUInt32"/>
-                                  </struct>
+                                      <struct alignment="1" name="tDetectedLine" version="1">
+                                          <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="arraySize" type="int"/>
+                                          <element alignment="1" arraysize="arraySize" byteorder="LE" bytepos="5" name="detectedLine" type="DetectedLine"/>
+                                      </struct>
                                    )";
 static const uint length = 16;
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();

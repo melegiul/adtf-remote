@@ -11,7 +11,6 @@
 #include "ui_mainwindow.h"
 #include "dialog_preferences.h"
 #include "networkclient.h"
-#include "adtf_structs/tmyadtfmessage.h"
 #include "adtf_structs/carodometry.h"
 #include "adtf_structs/trapezoid.h"
 #include "adtf_structs/detectedline.h"
@@ -48,9 +47,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::disconnected, this, &MainWindow::networkDisconnected);
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
-
-    connect(ui->sb_counter, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::sendMyADTFMessage);
-
 
     QSettings settings;
     this->car_height = settings.value("car/length", 400).toInt();
@@ -183,10 +179,7 @@ void MainWindow::networkDisconnected() {
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
-    if (sample.pinName == "counter" && sample.mediaType == "tMyADTFMessage") {
-        tMyADTFMessage message = tMyADTFMessage::fromNetwork(sample);
-        ui->lb_top->setText(QString("Reveived %1 value %2 on time %3").arg(sample.pinName.data()).arg(message.sHeaderStruct.ui32HeaderVal).arg(sample.streamTime));
-    } else if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
+    if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
         tCarOdometry2 odometry = tCarOdometry2::fromNetwork(sample);
         tCarOdometry *odo = reinterpret_cast<tCarOdometry*>(&odometry);
         this->setCarOdometry(*odo);
@@ -202,16 +195,6 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
 
 void MainWindow::networkErrored(QString errorMsg) {
     ui->statusbar->showMessage(errorMsg);
-}
-
-// only for testing / demo
-void MainWindow::sendMyADTFMessage(int counter) {
-    tMyADTFMessage message {};
-    message.sHeaderStruct.ui32HeaderVal = counter;
-    message.sSimpleStruct.ui32Val = counter + 1;
-    ADTFMediaSample sample = tMyADTFMessage::toNetwork(message, "sb", counter * 1000);
-    this->networkClient->send(sample);
-
 }
 
 

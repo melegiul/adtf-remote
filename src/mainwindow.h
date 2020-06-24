@@ -54,8 +54,6 @@ public slots:
     void networkReceived(ADTFMediaSample sample);
     void networkErrored(QString errorMsg);
 
-    // testing / demo
-    void sendMyADTFMessage(int counter);
 private:
     Ui::MainWindow *ui;
     NetworkClient *networkClient;

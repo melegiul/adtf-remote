@@ -258,7 +258,8 @@ void MainWindow::updateDynamicFilters(QTreeWidgetItem *item, int column) {
 
     } else if (item->text(0) == "Trapezoid") {
         show_trapezoid = item->checkState(column);
-        trapezoid_filter->setVisible(item->checkState(column));
+        if (trapezoid_filter)
+            trapezoid_filter->setVisible(item->checkState(column));
     } else if (item->text(0) == "Detected Lines") {
         show_detected_line = item->checkState(column);
         updateDetectedLine();
@@ -404,6 +405,9 @@ void MainWindow::setupCar() {
 
 //Setup the trapezoid by creating a QGraphicsPolygonItem and set properties
 void MainWindow::setupTrapezoid() {
+    if (this->coords == nullptr)
+        return;
+
     if (trapezoid_filter != nullptr) {
         scene->removeItem(trapezoid_filter);
         delete trapezoid_filter;
@@ -420,6 +424,9 @@ void MainWindow::setupTrapezoid() {
 }
 //Setup the detected Lines and add it to the scene
 void MainWindow::setupDetectedLine() {
+    if (detectedLine == nullptr)
+        return;
+
     if (detected_line_filter != nullptr) {
         scene->removeItem(detected_line_filter);
         delete detected_line_filter;

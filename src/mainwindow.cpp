@@ -1,3 +1,5 @@
+#include <vector>
+#include <memory>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtDebug>
@@ -190,16 +192,10 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "Trapezoid" && sample.mediaType == "tTrapezoid") {
         tTrapezoid trapezoid = fromNetworkTrapezoid(sample);
         this->setTrapezoidCoords(trapezoid);
-//    } else if (sample.pinName == "DetectedLine" && sample.mediaType == "tDetectedLine") {
-//        qDebug() << sizeof(DetectedLine);
-//        std::vector<DetectedLine> lines = fromNetworkDetectedLine(sample);
-//        // TODO known memory leak for testing
-//        tDetectedLine *linesBla = new tDetectedLine(lines.size());
-//        std::memcpy(linesBla->detectedLine, lines.data(), sizeof(DetectedLine) * lines.size());
-//        this->detectedLine = linesBla;
-//        this->setDetectedLine(*this->detectedLine);
-//        int abc = std::memcmp(this->detectedLine->detectedLine, sample.data.get() + 4, sample.length - 4);
-//        qDebug() << "abc:" << abc;
+    } else if (sample.pinName == "DetectedLine_POD" && sample.mediaType == "tDetectedLine_POD") {
+        std::vector<DetectedLine_POD> lines = fromNetworkDetectedLine(sample);
+        std::unique_ptr<tDetectedLine> tDetLines = convertToOldFormat(lines);
+        this->setDetectedLine(std::move(tDetLines));
     }
 }
 
@@ -669,8 +665,8 @@ void MainWindow::setTrapezoidCoords(tTrapezoid &coords) {
     emit(trapezoidUpdated());
 }
 
-void MainWindow::setDetectedLine(tDetectedLine &detectedLine) {
-    this->detectedLine = &detectedLine;
+void MainWindow::setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine) {
+    this->detectedLine = detectedLine;
     emit(detectedLineUpdated());
 }
 

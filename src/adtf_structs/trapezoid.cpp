@@ -8,13 +8,21 @@ using namespace adtf;
 
 static const std::string mediaType = "tTrapezoid";
 static const char *mediaDescription = R"(
-                                  <struct alignment="1" name="tTrapezoid" version="1">
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="posA" type="Point2f"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="posB" type="Point2f"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="16" name="posC" type="Point2f"/>
-                                      <element alignment="1" arraysize="1" byteorder="LE" bytepos="24" name="posD" type="Point2f"/>
-                                  </struct>
-                                   )";
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<adtf:ddl xmlns:adtf="adtf">
+    <datatypes>
+        <datatype description="Point2f from open cv" name="Point2f" size="64" />
+    </datatypes>
+    <structs>
+        <struct alignment="1" name="tTrapezoid" version="1">
+            <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="posA" type="Point2f"/>
+            <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="posB" type="Point2f"/>
+            <element alignment="1" arraysize="1" byteorder="LE" bytepos="16" name="posC" type="Point2f"/>
+            <element alignment="1" arraysize="1" byteorder="LE" bytepos="24" name="posD" type="Point2f"/>
+        </struct>
+    </structs>
+</adtf:ddl>
+)";
 static const uint length = 32;
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;

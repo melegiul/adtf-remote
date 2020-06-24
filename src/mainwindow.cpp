@@ -148,6 +148,7 @@ void MainWindow::openMapXML() {
     contentManager.importFromXml(fileName.toUtf8());
 
     this->updateMap();
+    NavigationHelper::makeMapGraph();
 }
 
 void MainWindow::openPreferences() {

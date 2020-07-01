@@ -7,7 +7,8 @@
 
 
 #include <QGraphicsPixmapItem>
-#include <Map/Line.hpp>
+
+class Line;
 
 class LaneDirectionItem : public QGraphicsPixmapItem {
 public:

@@ -2,9 +2,11 @@
 // Created by uniautonom on 01.10.19.
 //
 
-#include "CrossingAreaItem.h"
 #include <QBrush>
 #include <QPen>
+
+#include "Map/Node.hpp"
+#include "CrossingAreaItem.h"
 
 CrossingAreaItem::CrossingAreaItem(Crossing *crossing, MapArea *area, QGraphicsItem *parent) : QGraphicsPolygonItem(
         parent), crossing(crossing), area(area) {

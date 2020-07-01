@@ -3,6 +3,9 @@
 //
 
 #include <cmath>
+
+#include "Map/Line.hpp"
+#include "Map/Node.hpp"
 #include "LaneDirectionItem.h"
 
 LaneDirectionItem::LaneDirectionItem(Line *left, Line *right, int size, QGraphicsItem *parent) : QGraphicsPixmapItem(

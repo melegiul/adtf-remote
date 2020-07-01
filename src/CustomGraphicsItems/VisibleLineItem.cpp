@@ -6,6 +6,8 @@
 #include <QtCore/qmath.h>
 #include <QtGui/QPen>
 #include <iostream>
+
+#include "Map/Node.hpp"
 #include "VisibleLineItem.h"
 
 VisibleLineItem::VisibleLineItem(LineMarking *marking, Line *line, int offset, int line_width, QGraphicsItem *parent)

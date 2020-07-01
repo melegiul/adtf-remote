@@ -4,6 +4,7 @@
 
 #include "GraphicsViewZoom.h"
 #include "ItemSignalController.h"
+#include <QApplication>
 #include <QMouseEvent>
 #include <qmath.h>
 

@@ -3,6 +3,9 @@
 //
 
 #include <QtGui/QPen>
+
+#include "Map/Line.hpp"
+#include "Map/Node.hpp"
 #include "InvisibleLineItem.h"
 
 InvisibleLineItem::InvisibleLineItem(Line *line, int width, QGraphicsItem *parent) : QGraphicsPathItem(parent),

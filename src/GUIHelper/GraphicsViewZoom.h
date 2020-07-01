@@ -7,7 +7,6 @@
 #define AADC_USER_GRAPHICS_VIEW_ZOOM_H
 
 #include <QObject>
-#include "fromQT/ui_PAF.h"
 #include <QGraphicsView>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsLineItem>

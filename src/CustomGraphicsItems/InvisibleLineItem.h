@@ -5,9 +5,10 @@
 #ifndef AADC_USER_INVISIBLELINEITEM_H
 #define AADC_USER_INVISIBLELINEITEM_H
 
-
+#include <QGraphicsItem>
 #include <QGraphicsPathItem>
-#include <Map/Line.hpp>
+
+class Line;
 
 class InvisibleLineItem : public QGraphicsPathItem {
 public:

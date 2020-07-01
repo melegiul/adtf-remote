@@ -181,9 +181,8 @@ void MainWindow::networkDisconnected() {
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
     if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
-        tCarOdometry2 odometry = tCarOdometry2::fromNetwork(sample);
-        tCarOdometry *odo = reinterpret_cast<tCarOdometry*>(&odometry);
-        this->setCarOdometry(*odo);
+        tCarOdometry odometry = fromNetworkCarOdometry(sample);
+        this->setCarOdometry(odometry);
     } else if (sample.pinName == "Trapezoid" && sample.mediaType == "tTrapezoid") {
         tTrapezoid trapezoid = fromNetworkTrapezoid(sample);
         this->setTrapezoidCoords(trapezoid);

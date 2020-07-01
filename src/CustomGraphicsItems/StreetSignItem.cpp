@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "StreetSignItem.h"
-#include "../ItemSignalController.h"
+#include "GUIHelper/ItemSignalController.h"
 #include <QPainter>
 #include "QGraphicsScene"
 #include <QGraphicsView>

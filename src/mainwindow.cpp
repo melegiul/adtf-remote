@@ -28,7 +28,7 @@
 #include "CustomGraphicsItems/StreetSignItem.h"
 #include "CustomGraphicsItems/VisibleLineItem.h"
 #include "CustomGraphicsItems/InvisibleLineItem.h"
-#include "src/TrajectoryPlaner/Visualization/GraphicsViewZoom.h"
+#include "GUIHelper/GraphicsViewZoom.h"
 
 
 

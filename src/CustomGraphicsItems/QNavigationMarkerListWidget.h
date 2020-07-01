@@ -11,7 +11,7 @@
 #include <QApplication>
 #include <Map/ContentManager.hpp>
 #include "QNavigationMarkerListWidgetItem.h"
-#include "../ItemSignalController.h"
+#include "GUIHelper/ItemSignalController.h"
 
 
 class QNavigationMarkerListWidget : public QListWidget {

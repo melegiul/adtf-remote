@@ -3,7 +3,7 @@
 //
 
 #include "NearfieldCellItem.h"
-#include "../../../NearfieldGrid/MapConstants.h"
+#include "src/NearfieldGrid/MapConstants.h"
 #include <QBrush>
 #include <QPen>
 

@@ -11,7 +11,7 @@
 #include <QPixmap>
 #include <QPen>
 #include <QGraphicsSceneContextMenuEvent>
-#include "../ItemSignalController.h"
+#include "GUIHelper/ItemSignalController.h"
 #include "Map/SpecialMarking.hpp"
 #include "Shared_Ptr_p.h"
 

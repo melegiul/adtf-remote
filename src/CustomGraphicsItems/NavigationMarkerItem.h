@@ -17,7 +17,7 @@
 #include <QBrush>
 #include "LaneItem.h"
 #include "SpecialMarkingItem.h"
-#include "../ItemSignalController.h"
+#include "GUIHelper/ItemSignalController.h"
 
 class NavigationMarkerItem : public QGraphicsEllipseItem {
 public:

@@ -6,8 +6,8 @@
 #define AADC_USER_NEARFIELDMAPITEM_H
 
 #include <QGraphicsItemGroup>
-#include "../../../NearfieldGrid/MapTreeNode.h"
-#include "../../../NearfieldGrid/MapConstants.h"
+#include "src/NearfieldGrid/MapTreeNode.h"
+#include "src/NearfieldGrid/MapConstants.h"
 
 class NearfieldMapItem: public  QGraphicsItemGroup{
 public:

@@ -7,7 +7,7 @@
 
 #include <QGraphicsItemGroup>
 #include "TreeNodeItem.h"
-#include "../../../NearfieldGrid/MapConstants.h"
+#include "src/NearfieldGrid/MapConstants.h"
 
 class NearfieldGridItem : public QGraphicsItemGroup {
 public:

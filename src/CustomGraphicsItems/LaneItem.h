@@ -12,7 +12,7 @@
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 #include "Shared_Ptr_p.h"
-#include "../ItemSignalController.h"
+#include "GUIHelper/ItemSignalController.h"
 
 
 

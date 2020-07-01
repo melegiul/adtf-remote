@@ -14,6 +14,7 @@
 #include "adtf_structs/carodometry.h"
 #include "adtf_structs/trapezoid.h"
 #include "adtf_structs/detectedline.h"
+#include "adtf_structs/nearfieldgridmap.h"
 
 
 #include "Map/ContentManager.hpp"
@@ -190,6 +191,9 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
         std::vector<DetectedLine_POD> lines = fromNetworkDetectedLine(sample);
         std::unique_ptr<tDetectedLine> tDetLines = convertToOldFormat(lines);
         this->setDetectedLine(std::move(tDetLines));
+    } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
+        std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = fromNetworkNearfieldGrid(sample);
+        this->setNearfieldgridmap(*nearfieldGrid);
     }
 }
 

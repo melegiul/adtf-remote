@@ -181,17 +181,17 @@ void MainWindow::networkDisconnected() {
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
     if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
-        tCarOdometry odometry = fromNetworkCarOdometry(sample);
+        tCarOdometry odometry = adtf_converter::from_network::carOdometry(sample);
         this->setCarOdometry(odometry);
     } else if (sample.pinName == "Trapezoid" && sample.mediaType == "tTrapezoid") {
-        tTrapezoid trapezoid = fromNetworkTrapezoid(sample);
+        tTrapezoid trapezoid = adtf_converter::from_network::trapezoid(sample);
         this->setTrapezoidCoords(trapezoid);
     } else if (sample.pinName == "DetectedLine_POD" && sample.mediaType == "tDetectedLine_POD") {
-        std::vector<DetectedLine_POD> lines = fromNetworkDetectedLine(sample);
-        std::unique_ptr<tDetectedLine> tDetLines = convertToOldFormat(lines);
+        std::vector<DetectedLine_POD> lines = adtf_converter::from_network::detectedLine(sample);
+        std::unique_ptr<tDetectedLine> tDetLines = adtf_converter::from_network::detectedLinePOD(lines);
         this->setDetectedLine(std::move(tDetLines));
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
-        std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = fromNetworkNearfieldGrid(sample);
+        std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
     }
 }

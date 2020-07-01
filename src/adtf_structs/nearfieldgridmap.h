@@ -3,4 +3,9 @@
 struct ADTFMediaSample;
 struct tNearfieldGridMapArray;
 
-std::unique_ptr<tNearfieldGridMapArray> fromNetworkNearfieldGrid(const ADTFMediaSample &sample);
+
+namespace adtf_converter {
+    namespace from_network {
+        std::unique_ptr<tNearfieldGridMapArray> nearfieldGridmap(const ADTFMediaSample &sample);
+    }
+}

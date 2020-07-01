@@ -28,7 +28,7 @@ static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
 
-tTrapezoid fromNetworkTrapezoid(const ADTFMediaSample &sample) {
+tTrapezoid adtf_converter::from_network::trapezoid(const ADTFMediaSample &sample) {
     if (!pCoderInitialized) {
         pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
         pCoderInitialized = true;

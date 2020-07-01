@@ -16,7 +16,7 @@ static const char *mediaDescription = R"(
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
-std::unique_ptr<tNearfieldGridMapArray> fromNetworkNearfieldGrid(const ADTFMediaSample &sample) {
+std::unique_ptr<tNearfieldGridMapArray> adtf_converter::from_network::nearfieldGridmap(const ADTFMediaSample &sample) {
         if (!pCoderInitialized) {
             pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
             pCoderInitialized = true;

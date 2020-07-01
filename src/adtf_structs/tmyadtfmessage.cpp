@@ -32,7 +32,7 @@ static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
 
-tMyADTFMessage tMyADTFMessage::fromNetwork(const ADTFMediaSample &sample) {
+tMyADTFMessage adtf_converter::from_network::myADTFMessage(const ADTFMediaSample &sample) {
     if (!pCoderInitialized) {
         pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
         pCoderInitialized = true;
@@ -56,7 +56,7 @@ tMyADTFMessage tMyADTFMessage::fromNetwork(const ADTFMediaSample &sample) {
     return message;
 }
 
-ADTFMediaSample tMyADTFMessage::toNetwork(tMyADTFMessage message, std::string pinName, uint64_t streamTime) {
+ADTFMediaSample adtf_converter::to_network::myADTFMessage(tMyADTFMessage message, std::string pinName, uint64_t streamTime) {
     if (!pCoderInitialized) {
         pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
         pCoderInitialized = true;

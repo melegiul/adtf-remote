@@ -2,4 +2,8 @@
 
 struct ADTFMediaSample;
 
-tCarOdometry fromNetworkCarOdometry(const ADTFMediaSample &sample);
+namespace adtf_converter {
+    namespace from_network {
+        tCarOdometry carOdometry(const ADTFMediaSample &sample);
+    }
+}

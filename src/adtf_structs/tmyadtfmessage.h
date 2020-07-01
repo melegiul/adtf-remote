@@ -1,9 +1,7 @@
 #include <cstdint>
 #include <string>
 
-struct ADTFMediaSample;
-
-typedef int16_t tPixelFormat;
+#include "../adtfmediasample.h"
 
 struct tHeaderStruct
 {
@@ -26,14 +24,13 @@ struct tMyADTFMessage
 {
     tHeaderStruct sHeaderStruct;
     tSimpleStruct sSimpleStruct;
-
-public:
-    static tMyADTFMessage fromNetwork(const ADTFMediaSample &sample);
-    static ADTFMediaSample toNetwork(tMyADTFMessage message, std::string pinName, uint64_t streamTime);
 };
 
-struct tNestedStruct
-{
-    tHeaderStruct sHeaderStruct;
-    tSimpleStruct sSimpleStruct;
-};
+namespace adtf_converter {
+    namespace from_network {
+        tMyADTFMessage myADTFMessage(const ADTFMediaSample &sample);
+    }
+    namespace to_network {
+        ADTFMediaSample myADTFMessage(tMyADTFMessage message, std::string pinName, uint64_t streamTime);
+    }
+}

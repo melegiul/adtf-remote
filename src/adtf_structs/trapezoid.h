@@ -2,5 +2,8 @@
 
 struct ADTFMediaSample;
 
-
-tTrapezoid fromNetworkTrapezoid(const ADTFMediaSample &sample);
+namespace adtf_converter {
+    namespace from_network {
+        tTrapezoid trapezoid(const ADTFMediaSample &sample);
+    }
+}

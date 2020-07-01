@@ -2,6 +2,7 @@
 
 #include "../adtfmediasample.h"
 #include "user_structs.h"
+#include "detectedline.h"
 
 using namespace adtf;
 
@@ -25,7 +26,7 @@ static const char *mediaDescription = R"(
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
-std::vector<DetectedLine_POD> fromNetworkDetectedLine(const ADTFMediaSample &sample) {
+std::vector<DetectedLine_POD> adtf_converter::from_network::detectedLine(const ADTFMediaSample &sample) {
         if (!pCoderInitialized) {
             pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
             pCoderInitialized = true;
@@ -46,7 +47,7 @@ std::vector<DetectedLine_POD> fromNetworkDetectedLine(const ADTFMediaSample &sam
         return lines;
 }
 
-std::unique_ptr<tDetectedLine> convertToOldFormat(const std::vector<DetectedLine_POD> &lines) {
+std::unique_ptr<tDetectedLine> adtf_converter::from_network::detectedLinePOD(const std::vector<DetectedLine_POD> &lines) {
     std::unique_ptr<tDetectedLine> tDetLine = std::make_unique<tDetectedLine>(lines.size());
     size_t i = 0;
     for (const DetectedLine_POD &line : lines) {

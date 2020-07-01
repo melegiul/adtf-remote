@@ -27,7 +27,7 @@ static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
 
-tCarOdometry fromNetworkCarOdometry(const ADTFMediaSample &sample) {
+tCarOdometry adtf_converter::from_network::carOdometry(const ADTFMediaSample &sample) {
     if (!pCoderInitialized) {
         pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
         pCoderInitialized = true;

@@ -1,0 +1,1621 @@
+<!-- Außenlinie linker Ring -->
+<Line id="2000001">
+    <Path>
+        <Node x='4920' y='1030'></Node>
+        <Node x='4300' y='1030'></Node>
+        <Node x='4200' y='1026'></Node>
+        <Node x='4100' y='1018'></Node>
+        <Node x='4000' y='1000'></Node>
+        <Node x='3950' y='986'></Node>
+        <Node x='3900' y='960'></Node>
+        <Node x='3800' y='902'></Node>
+        <Node x='3700' y='830'></Node>
+        <Node x='3600' y='760'></Node>
+        <Node x='3500' y='670'></Node>
+        <Node x='3400' y='580'></Node>
+        <Node x='3300' y='505'></Node>
+        <Node x='3200' y='425'></Node>
+        <Node x='3100' y='355'></Node>
+        <Node x='3000' y='303'></Node>
+        <Node x='2900' y='245'></Node>
+        <Node x='2800' y='200'></Node>
+        <Node x='2700' y='160'></Node>
+        <Node x='2600' y='132'></Node>
+        <Node x='2500' y='102'></Node>
+        <Node x='2400' y='80'></Node>
+        <Node x='2300' y='60'></Node>
+        <Node x='2200' y='45'></Node>
+        <Node x='2100' y='35'></Node>
+        <Node x='2000' y='33'></Node>
+        <Node x='1900' y='34'></Node>
+        <Node x='1800' y='38'></Node>
+        <Node x='1700' y='50'></Node>
+        <Node x='1600' y='65'></Node>
+        <Node x='1500' y='82'></Node>
+        <Node x='1400' y='110'></Node>
+        <Node x='1300' y='145'></Node>
+        <Node x='1200' y='175'></Node>
+        <Node x='1100' y='225'></Node>
+        <Node x='1000' y='300'></Node>
+        <Node x='900' y='365'></Node>
+        <Node x='800' y='430'></Node>
+        <Node x='700' y='508'></Node>
+        <Node x='600' y='605'></Node>
+        <Node x='500' y='735'></Node>
+        <Node x='400' y='865'></Node>
+        <Node x='300' y='1000'></Node>
+        <Node x='250' y='1100'></Node>
+        <Node x='200' y='1200'></Node>
+        <Node x='160' y='1300'></Node>
+        <Node x='135' y='1400'></Node>
+        <Node x='96' y='1500'></Node>
+        <Node x='75' y='1600'></Node>
+        <Node x='60' y='1700'></Node>
+        <Node x='45' y='1800'></Node>
+        <Node x='35' y='1900'></Node>
+        <Node x='34' y='2000'></Node>
+        <Node x='36' y='2100'></Node>
+        <Node x='42' y='2200'></Node>
+        <Node x='51' y='2300'></Node>
+        <Node x='69' y='2400'></Node>
+        <Node x='100' y='2500'></Node>
+        <Node x='122' y='2600'></Node>
+        <Node x='150' y='2700'></Node>
+        <Node x='185' y='2800'></Node>
+        <Node x='240' y='2900'></Node>
+        <Node x='310' y='3000'></Node>
+        <Node x='400' y='3135'></Node>
+        <Node x='500' y='3265'></Node>
+        <Node x='600' y='3385'></Node>
+        <Node x='700' y='3465'></Node>
+        <Node x='800' y='3540'></Node>
+        <Node x='900' y='3610'></Node>
+        <Node x='1000' y='3670'></Node>
+        <Node x='1100' y='3755'></Node>
+        <Node x='1200' y='3795'></Node>
+        <Node x='1300' y='3845'></Node>
+        <Node x='1400' y='3870'></Node>
+        <Node x='1500' y='3900'></Node>
+        <Node x='1600' y='3915'></Node>
+        <Node x='1700' y='3925'></Node>
+        <Node x='1800' y='3933'></Node>
+        <Node x='1900' y='3938'></Node>
+        <Node x='2000' y='3945'></Node>
+        <Node x='5030' y='3945'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Mittellinie linker Ring -->
+<Line id="2000002">
+    <Path>
+        <Node x='4920' y='1485'></Node>
+        <Node x='4300' y='1485'></Node>
+        <Node x='4200' y='1482'></Node>
+        <Node x='4100' y='1482'></Node>
+        <Node x='4000' y='1473'></Node>
+        <Node x='3900' y='1448'></Node>
+        <Node x='3800' y='1425'></Node>
+        <Node x='3700' y='1400'></Node>
+        <Node x='3600' y='1362'></Node>
+        <Node x='3500' y='1305'></Node>
+        <Node x='3400' y='1245'></Node>
+        <Node x='3300' y='1165'></Node>
+        <Node x='3200' y='1045'></Node>
+        <Node x='3100' y='965'></Node>
+        <Node x='3000' y='875'></Node>
+        <Node x='2900' y='780'></Node>
+        <Node x='2800' y='710'></Node>
+        <Node x='2700' y='660'></Node>
+        <Node x='2600' y='615'></Node>
+        <Node x='2500' y='570'></Node>
+        <Node x='2400' y='545'></Node>
+        <Node x='2300' y='525'></Node>
+        <Node x='2200' y='505'></Node>
+        <Node x='2100' y='493'></Node>
+        <Node x='2000' y='490'></Node>
+        <Node x='1900' y='492'></Node>
+        <Node x='1800' y='497'></Node>
+        <Node x='1700' y='514'></Node>
+        <Node x='1600' y='533'></Node>
+        <Node x='1500' y='565'></Node>
+        <Node x='1400' y='600'></Node>
+        <Node x='1300' y='630'></Node>
+        <Node x='1200' y='685'></Node>
+        <Node x='1100' y='765'></Node>
+        <Node x='1000' y='860'></Node>
+        <Node x='900' y='965'></Node>
+        <Node x='865' y='1000'></Node>
+        <Node x='790' y='1100'></Node>
+        <Node x='720' y='1200'></Node>
+        <Node x='663' y='1300'></Node>
+        <Node x='622' y='1400'></Node>
+        <Node x='577' y='1500'></Node>
+        <Node x='545' y='1600'></Node>
+        <Node x='520' y='1700'></Node>
+        <Node x='507' y='1800'></Node>
+        <Node x='495' y='1900'></Node>
+        <Node x='492' y='2000'></Node>
+        <Node x='495' y='2100'></Node>
+        <Node x='505' y='2200'></Node>
+        <Node x='518' y='2300'></Node>
+        <Node x='540' y='2400'></Node>
+        <Node x='575' y='2500'></Node>
+        <Node x='608' y='2600'></Node>
+        <Node x='655' y='2700'></Node>
+        <Node x='705' y='2800'></Node>
+        <Node x='783' y='2900'></Node>
+        <Node x='875' y='3000'></Node>
+        <Node x='900' y='3030'></Node>
+        <Node x='1000' y='3110'></Node>
+        <Node x='1100' y='3210'></Node>
+        <Node x='1200' y='3273'></Node>
+        <Node x='1300' y='3350'></Node>
+        <Node x='1400' y='3385'></Node>
+        <Node x='1500' y='3422'></Node>
+        <Node x='1600' y='3445'></Node>
+        <Node x='1700' y='3465'></Node>
+        <Node x='1800' y='3480'></Node>
+        <Node x='1900' y='3482'></Node>
+        <Node x='2000' y='3485'></Node>
+        <Node x='5030' y='3485'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+    
+</Line>
+<!-- InnenLinie linker Ring -->
+<Line id="2000003">
+    <Path>
+        <Node x='5030' y='3030'></Node>
+        <Node x='2000' y='3030'></Node>
+        <Node x='1900' y='3024'></Node>
+        <Node x='1800' y='3012'></Node>
+        <Node x='1700' y='2992'></Node>
+        <Node x='1600' y='2960'></Node>
+        <Node x='1500' y='2920'></Node>
+        <Node x='1400' y='2855'></Node>
+        <Node x='1300' y='2765'></Node>
+        <Node x='1200' y='2660'></Node>
+        <Node x='1145' y='2600'></Node>
+        <Node x='1080' y='2500'></Node>
+        <Node x='1030' y='2400'></Node>
+        <Node x='990' y='2300'></Node>
+        <Node x='966' y='2200'></Node>
+        <Node x='953' y='2100'></Node>
+        <Node x='950' y='2000'></Node>
+        <Node x='950' y='1900'></Node>
+        <Node x='966' y='1800'></Node>
+        <Node x='990' y='1700'></Node>
+        <Node x='1025' y='1600'></Node>
+        <Node x='1073' y='1500'></Node>
+        <Node x='1135' y='1400'></Node>
+        <Node x='1200' y='1300'></Node>
+        <Node x='1300' y='1205'></Node>
+        <Node x='1400' y='1125'></Node>
+        <Node x='1500' y='1065'></Node>
+        <Node x='1600' y='1018'></Node>
+        <Node x='1700' y='988'></Node>
+        <Node x='1800' y='960'></Node>
+        <Node x='1900' y='950'></Node>
+        <Node x='2000' y='947'></Node>
+        <Node x='2100' y='953'></Node>
+        <Node x='2200' y='969'></Node>
+        <Node x='2300' y='995'></Node>
+        <Node x='2400' y='1035'></Node>
+        <Node x='2500' y='1085'></Node>
+        <Node x='2600' y='1145'></Node>
+        <Node x='2700' y='1225'></Node>
+        <Node x='2800' y='1315'></Node>
+        <Node x='2900' y='1395'></Node>
+        <Node x='3000' y='1480'></Node>
+        <Node x='3100' y='1570'></Node>
+        <Node x='3200' y='1650'></Node>
+        <Node x='3300' y='1720'></Node>
+        <Node x='3400' y='1765'></Node>
+        <Node x='3500' y='1805'></Node>
+        <Node x='3600' y='1845'></Node>
+        <Node x='3700' y='1875'></Node>
+        <Node x='3800' y='1900'></Node>
+        <Node x='3900' y='1920'></Node>
+        <Node x='4000' y='1935'></Node>
+        <Node x='4100' y='1943'></Node>
+        <Node x='4200' y='1950'></Node>
+        <Node x='4300' y='1950'></Node>
+        <Node x='4920' y='1950'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Lanes linker Ring -->
+
+<Lane id='1000001' left="2000002" right="2000001"></Lane>
+<Lane id='1000002' left="2000002" right="2000003">
+<Sign name="VZ_205">
+         <Node x='5030' y='3030'></Node>
+    </Sign>  
+</Lane>
+<!-- Parking links -->
+<Area id = "3000001">
+    <Outline>
+        <Node x='2310' y='3030'></Node>
+        <Node x='3095' y='3030'></Node>
+        <Node x='3095' y='2535'></Node>
+        <Node x='2310' y='2535'></Node>
+    </Outline>
+</Area>
+<Area id = "3000002">
+    <Outline>
+        <Node x='3095' y='3030'></Node>
+        <Node x='3880' y='3030'></Node>
+        <Node x='3880' y='2535'></Node>
+        <Node x='3095' y='2535'></Node>
+    </Outline>
+</Area>
+<Area id = "3000003">
+    <Outline>
+        <Node x='3880' y='3030'></Node>
+        <Node x='4670' y='3030'></Node>
+        <Node x='4670' y='2535'></Node>
+        <Node x='3880' y='2535'></Node>
+    </Outline>
+</Area>
+
+<SpecialMarking id = "400001" area="3000001" type="ParkingRegular"  r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000002</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<SpecialMarking id = "400002" area="3000002" type="ParkingDisabled" r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000002</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<SpecialMarking id = "400003" area="3000003" type="ParkingWomen"  r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000002</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+
+<!-- Außenlinie unterübergang -->
+<Line id="2000004">
+    <Path>
+        <Node x='5030' y='3945'></Node>
+        <Node x='5950' y='3945'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- MittelLine unterübergang -->
+<Line id="2000005">
+    <Path>
+        <Node x='5030' y='3485'></Node>
+        <Node x='5950' y='3485'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+    
+</Line>
+
+<Line id="2000006">
+    <Path>
+        <Node x='5950' y='3030'></Node>
+        <Node x='5030' y='3030'></Node>
+    </Path>
+</Line>
+<!-- Lane unterübergang -->
+<Lane id='1000003' left="2000005" right="2000004"></Lane>
+<Lane id='1000004' left="2000005" right="2000006"></Lane>
+
+
+<!-- AUßen unten rechts -->
+<Line id="2000007">
+    <Path>
+        <Node x='5950' y='3945'></Node>
+        <Node x='9030' y='3945'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- mitte unten rechts -->
+<Line id="2000008">
+    <Path>
+        <Node x='5950' y='3485'></Node>
+        <Node x='9030' y='3485'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+   
+</Line>
+<!-- Innen unten rechts -->
+<Line id="2000009">
+    <Path>
+        <Node x='9030' y='3030'></Node>
+        <Node x='5950' y='3030'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<!-- Lane unten rechts -->
+<Lane id='1000005' left="2000008" right="2000007"></Lane>
+<Lane id='1000006' left="2000008" right="2000009"></Lane>
+
+
+
+
+
+<!-- Parking rechts -->
+<Area id = "3000004">
+    <Outline>
+        <Node x='6490' y='3030'></Node>
+        <Node x='6960' y='3030'></Node>
+        <Node x='6960' y='2125'></Node>
+        <Node x='6490' y='2125'></Node>
+    </Outline>
+</Area>
+<Area id = "3000005">
+    <Outline>
+        <Node x='7015' y='3030'></Node>
+        <Node x='7485' y='3030'></Node>
+        <Node x='7485' y='2125'></Node>
+        <Node x='7015' y='2125'></Node>
+    </Outline>
+</Area>
+<Area id = "3000006">
+    <Outline>
+        <Node x='7485' y='3030'></Node>
+        <Node x='7955' y='3030'></Node>
+        <Node x='7955' y='2125'></Node>
+        <Node x='7485' y='2125'></Node>
+    </Outline>
+</Area>
+
+<Area id = "3000007">
+    <Outline>
+        <Node x='8020' y='3030'></Node>
+        <Node x='8490' y='3030'></Node>
+        <Node x='8490' y='2125'></Node>
+        <Node x='8020' y='2125'></Node>
+    </Outline>
+</Area>
+
+<SpecialMarking id = "400004" area="3000004" type="ParkingFamily" r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000006</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<SpecialMarking id = "400005" area="3000005" type="ParkingRegular"  r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000006</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<SpecialMarking id = "400006" area="3000006" type="ParkingElectric"  r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000006</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<SpecialMarking id = "400007" area="3000007" type="ParkingRegular"  r="0" g="102" b="179">
+    <AdjacentLanes>
+        <ID>1000006</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+
+<Line id="2000010">
+    <Path>
+        <Node x='5030' y='2060'></Node>
+        <Node x='5030' y='2919'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<Line id="2000011">
+    <Path>
+        <Node x='5485' y='2060'></Node>
+        <Node x='5485' y='2919'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+<Line id="2000012">
+    <Path>
+        <Node x='5950' y='2919'></Node>
+        <Node x='5950' y='2060'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<Lane id='1000007' left="2000011" right="2000010"></Lane>
+<Lane id='1000008' left="2000011" right="2000012"></Lane>
+
+
+<Line id="2000013">
+    <Path>
+        <Node x='5030' y='0'></Node>
+        <Node x='5030' y='920'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<Line id="2000014">
+    <Path>
+        <Node x='5485' y='920'></Node>
+        <Node x='5485' y='0'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+<Line id="2000015">
+    <Path>
+        <Node x='5950' y='920'></Node>
+        <Node x='5950' y='0'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<Lane id='1000009' left="2000014" right="2000013"></Lane>
+<Lane id='10000010' left="2000014" right="2000015"></Lane>
+
+
+
+
+<!-- quer rechts links -->
+<Line id="2000016">
+    <Path>
+        <Node x='9030' y='1060'></Node>
+        <Node x='9030' y='2915'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- quer rechts mitte -->
+<Line id="2000017">
+    <Path>
+        <Node x='9485' y='2915'></Node>
+        <Node x='9485' y='1060'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+<!-- quer rechts rechts -->
+<Line id="2000018">
+    <Path>
+        <Node x='9950' y='2915'></Node>
+        <Node x='9950' y='1060'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<!-- quer rechts  -->
+<Lane id='10000011' left="2000017" right="2000016"></Lane>
+<Lane id='10000012' left="2000017" right="2000018"></Lane>
+
+
+<!-- Außen kreuzung unten  rechts  -->
+<Line id="2000019">
+    <Path>
+        <Node x='9030' y='3945'></Node>
+        <Node x='9950' y='3950'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Mitten kreuzung unten  rechts  -->
+<Line id="2000020">
+    <Path>
+        <Node x='9030' y='3485'></Node>
+        <Node x='9950' y='3485'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+<!-- Innen kreuzung unten  rechts rechts -->
+<Line id="2000021">
+    <Path>
+        <Node x='9950' y='3030'></Node>
+        <Node x='9030' y='3030'></Node>
+    </Path>
+    
+</Line>
+
+
+<!-- kreuzung unten rechts rechts  -->
+<Lane id='10000013' left="2000020" right="2000019"></Lane>
+<Lane id='10000014' left="2000020" right="2000021"></Lane>
+
+
+        <!-- Kreuzung oben rechts, links->rechts, linke Spur  -->
+<Line id="2000022">
+    <Path>
+        <Node x='9950' y='30'></Node>
+        <Node x='9030' y='30'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Kreuzung oben rechts, links->rechts, mittelere Spur  -->
+<Line id="2000023">
+    <Path>
+        <Node x='9950' y='490'></Node>
+        <Node x='9030' y='490'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+        <!-- Kreuzung oben rechts, links->rechts, rechte Spur  -->
+<Line id="2000024">
+    <Path>
+        <Node x='9030' y='950'></Node>
+        <Node x='9950' y='950'></Node>
+    </Path>
+    
+</Line>
+
+
+<!-- kreuzung oben rechts   -->
+<Lane id='10000015' left="2000023" right="2000022"></Lane>
+<Lane id='10000016' left="2000023" right="2000024"></Lane>
+
+
+
+<!-- außen kurve  rechts  -->
+<Line id="2000025">
+    <Path>
+        <Node x='9950' y='3950'></Node>
+        <Node x='10000' y='3945'></Node>
+        <Node x='10100' y='3944'></Node>
+        <Node x='10200' y='3934'></Node>
+        <Node x='10300' y='3922'></Node>
+        <Node x='10400' y='3905'></Node>
+        <Node x='10500' y='3883'></Node>
+        <Node x='10600' y='3844'></Node>
+        <Node x='10700' y='3818'></Node>
+        <Node x='10800' y='3775'></Node>
+        <Node x='10900' y='3725'></Node>
+        <Node x='11000' y='3666'></Node>
+        <Node x='11100' y='3590'></Node>
+        <Node x='11220' y='3500'></Node>
+        <Node x='11330' y='3400'></Node>
+        <Node x='11422' y='3300'></Node>
+        <Node x='11505' y='3200'></Node>
+        <Node x='11588' y='3100'></Node>
+        <Node x='11672' y='3000'></Node>
+        <Node x='11734' y='2900'></Node>
+        <Node x='11775' y='2800'></Node>
+        <Node x='11825' y='2700'></Node>
+        <Node x='11860' y='2600'></Node>
+        <Node x='11885' y='2500'></Node>
+        <Node x='11907' y='2400'></Node>
+        <Node x='11925' y='2300'></Node>
+        <Node x='11940' y='2200'></Node>
+        <Node x='11945' y='2100'></Node>
+        <Node x='11950' y='2000'></Node>
+        <Node x='11947' y='1900'></Node>
+        <Node x='11938' y='1800'></Node>
+        <Node x='11924' y='1700'></Node>
+        <Node x='11910' y='1600'></Node>
+        <Node x='11890' y='1500'></Node>
+        <Node x='11850' y='1400'></Node>
+        <Node x='11808' y='1300'></Node>
+        <Node x='11762' y='1200'></Node>
+        <Node x='11726' y='1100'></Node>
+        <Node x='11685' y='1000'></Node>
+        <Node x='11605' y='900'></Node>
+        <Node x='11530' y='800'></Node>
+        <Node x='11500' y='735'></Node>
+        <Node x='11400' y='628'></Node>
+        <Node x='11300' y='525'></Node>
+        <Node x='11200' y='445'></Node>
+        <Node x='11100' y='375'></Node>
+        <Node x='11000' y='310'></Node>
+        <Node x='10900' y='240'></Node>
+        <Node x='10800' y='200'></Node>
+        <Node x='10700' y='162'></Node>
+        <Node x='10600' y='130'></Node>
+        <Node x='10500' y='102'></Node>
+        <Node x='10400' y='70'></Node>
+        <Node x='10300' y='55'></Node>
+        <Node x='10200' y='42'></Node>
+        <Node x='10100' y='34'></Node>
+        <Node x='10000' y='30'></Node>
+        <Node x='9950' y='30'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Mitten kurve  rechts  -->
+<Line id="2000026">
+    <Path>
+        <Node x='9950' y='490'></Node>
+        <Node x='10000' y='495'></Node>
+        <Node x='10100' y='500'></Node>
+        <Node x='10200' y='508'></Node>
+        <Node x='10300' y='525'></Node>
+        <Node x='10400' y='547'></Node>
+        <Node x='10500' y='585'></Node>
+        <Node x='10600' y='625'></Node>
+        <Node x='10700' y='675'></Node>
+        <Node x='10800' y='730'></Node>
+        <Node x='10900' y='792'></Node>
+        <Node x='11000' y='885'></Node>
+        <Node x='11100' y='983'></Node>
+        <Node x='11118' y='1000'></Node>
+        <Node x='11185' y='1100'></Node>
+        <Node x='11235' y='1200'></Node>
+        <Node x='11305' y='1300'></Node>
+        <Node x='11360' y='1400'></Node>
+        <Node x='11405' y='1500'></Node>
+        <Node x='11435' y='1600'></Node>
+        <Node x='11460' y='1700'></Node>
+        <Node x='11475' y='1800'></Node>
+        <Node x='11485' y='1900'></Node>
+        <Node x='11490' y='2000'></Node>
+        <Node x='11486' y='2100'></Node>
+        <Node x='11475' y='2200'></Node>
+        <Node x='11465' y='2300'></Node>
+        <Node x='11435' y='2400'></Node>
+        <Node x='11403' y='2500'></Node>
+        <Node x='11370' y='2600'></Node>
+        <Node x='11320' y='2700'></Node>
+        <Node x='11252' y='2800'></Node>
+        <Node x='11175' y='2900'></Node>
+        <Node x='11092' y='3000'></Node>
+        <Node x='10980' y='3100'></Node>
+        <Node x='10900' y='3182'></Node>
+        <Node x='10800' y='3245'></Node>
+        <Node x='10700' y='3310'></Node>
+        <Node x='10600' y='3352'></Node>
+        <Node x='10500' y='3402'></Node>
+        <Node x='10400' y='3430'></Node>
+        <Node x='10300' y='3453'></Node>
+        <Node x='10200' y='3470'></Node>
+        <Node x='10100' y='3480'></Node>
+        <Node x='10000' y='3485'></Node>
+        <Node x='9950' y='3485'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Innen kurve rechts -->
+<Line id="2000027">
+    <Path>
+        <Node x='9950' y='950'></Node>
+        <Node x='10000' y='953'></Node>
+        <Node x='10100' y='958'></Node>
+        <Node x='10200' y='971'></Node>
+        <Node x='10300' y='995'></Node>
+        <Node x='10400' y='1035'></Node>
+        <Node x='10500' y='1085'></Node>
+        <Node x='10600' y='1147'></Node>
+        <Node x='10700' y='1230'></Node>
+        <Node x='10770' y='1300'></Node>
+        <Node x='10850' y='1400'></Node>
+        <Node x='10910' y='1500'></Node>
+        <Node x='10955' y='1600'></Node>
+        <Node x='10988' y='1700'></Node>
+        <Node x='11011' y='1800'></Node>
+        <Node x='11028' y='1900'></Node>
+        <Node x='11034' y='2000'></Node>
+        <Node x='11028' y='2100'></Node>
+        <Node x='11014' y='2200'></Node>
+        <Node x='10990' y='2300'></Node>
+        <Node x='10950' y='2400'></Node>
+        <Node x='10900' y='2500'></Node>
+        <Node x='10825' y='2600'></Node>
+        <Node x='10750' y='2700'></Node>
+        <Node x='10700' y='2750'></Node>
+        <Node x='10600' y='2830'></Node>
+        <Node x='10500' y='2900'></Node>
+        <Node x='10400' y='2948'></Node>
+        <Node x='10300' y='2982'></Node>
+        <Node x='10200' y='3009'></Node>
+        <Node x='10100' y='3025'></Node>
+        <Node x='10000' y='3027'></Node>
+        <Node x='9950' y='3030'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<!-- kurve rechts  -->
+<Lane id='10000017' left="2000026" right="2000025"></Lane>
+<Lane id='10000018' left="2000026" right="2000027"></Lane>
+
+
+
+
+
+
+
+
+
+
+
+<!-- außen kurve oben  -->
+<Line id="2000028">
+    <Path>
+        <Node x='9030' y='30'></Node>
+        <Node x='9000' y='30'></Node>
+        <Node x='8900' y='30'></Node>
+        <Node x='8800' y='35'></Node>
+        <Node x='8700' y='45'></Node>
+        <Node x='8600' y='62'></Node>
+        <Node x='8500' y='77'></Node>
+        <Node x='8400' y='110'></Node>
+        <Node x='8300' y='146'></Node>
+        <Node x='8200' y='187'></Node>
+        <Node x='8100' y='242'></Node>
+        <Node x='8000' y='295'></Node>
+        <Node x='7900' y='360'></Node>
+        <Node x='7800' y='425'></Node>
+        <Node x='7700' y='518'></Node>
+        <Node x='7600' y='620'></Node>
+        <Node x='7500' y='700'></Node>
+        <Node x='7400' y='805'></Node>
+        <Node x='7300' y='888'></Node>
+        <Node x='7200' y='940'></Node>
+        <Node x='7100' y='975'></Node>
+        <Node x='7000' y='1007'></Node>
+        <Node x='6900' y='1025'></Node>
+        <Node x='6800' y='1031'></Node>
+        <Node x='6700' y='1033'></Node>
+        <Node x='6060' y='1030'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+<!-- Mitten kurve oben -->
+<Line id="2000029">
+    <Path>
+        <Node x='6060' y='1485'></Node>
+        <Node x='6700' y='1491'></Node>
+        <Node x='6800' y='1491'></Node>
+        <Node x='6900' y='1485'></Node>
+        <Node x='7000' y='1475'></Node>
+        <Node x='7100' y='1455'></Node>
+        <Node x='7200' y='1425'></Node>
+        <Node x='7300' y='1392'></Node>
+        <Node x='7400' y='1351'></Node>
+        <Node x='7500' y='1295'></Node>
+        <Node x='7600' y='1245'></Node>
+        <Node x='7700' y='1170'></Node>
+        <Node x='7800' y='1050'></Node>
+        <Node x='7900' y='955'></Node>
+        <Node x='8000' y='848'></Node>
+        <Node x='8100' y='777'></Node>
+        <Node x='8200' y='708'></Node>
+        <Node x='8300' y='648'></Node>
+        <Node x='8400' y='602'></Node>
+        <Node x='8500' y='556'></Node>
+        <Node x='8600' y='533'></Node>
+        <Node x='8700' y='511'></Node>
+        <Node x='8800' y='499'></Node>
+        <Node x='8900' y='490'></Node>
+        <Node x='9000' y='490'></Node>
+        <Node x='9030' y='490'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="200" priority="0"></Marking>
+</Line>
+<!-- Innen kurve oben -->
+<Line id="2000030">
+    <Path>
+        <Node x='6060' y='1950'></Node>
+        <Node x='6700' y='1948'></Node>
+        <Node x='6800' y='1946'></Node>
+        <Node x='6900' y='1945'></Node>
+        <Node x='7000' y='1936'></Node>
+        <Node x='7100' y='1924'></Node>
+        <Node x='7200' y='1900'></Node>
+        <Node x='7300' y='1873'></Node>
+        <Node x='7400' y='1845'></Node>
+        <Node x='7500' y='1805'></Node>
+        <Node x='7600' y='1770'></Node>
+        <Node x='7700' y='1715'></Node>
+        <Node x='7800' y='1656'></Node>
+        <Node x='7900' y='1585'></Node>
+        <Node x='8000' y='1502'></Node>
+        <Node x='8100' y='1412'></Node>
+        <Node x='8200' y='1308'></Node>
+        <Node x='8300' y='1205'></Node>
+        <Node x='8400' y='1125'></Node>
+        <Node x='8500' y='1062'></Node>
+        <Node x='8600' y='1017'></Node>
+        <Node x='8700' y='985'></Node>
+        <Node x='8800' y='962'></Node>
+        <Node x='8900' y='950'></Node>
+        <Node x='9000' y='950'></Node>
+        <Node x='9030' y='950'></Node>
+    </Path>
+    <Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+
+<!-- kurve oben  -->
+<Lane id='10000019' left="2000029" right="2000028"></Lane>
+<Lane id='10000020' left="2000029" right="2000030"></Lane>
+
+
+
+<!-- Kreuzung oben links, unten->oben, linke Spur -->
+<Line id="2000031">
+    <Path>
+        <Node x='5030' y='1030'></Node>
+        <Node x='5030' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->oben, mittlere Spur -->
+<Line id="2000032">
+    <Path>
+        <Node x='5485' y='1950'></Node>
+        <Node x='5485' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->oben, rechte Spur -->
+<Line id="2000033">
+    <Path>
+        <Node x='5950' y='1950'></Node>
+        <Node x='5950' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->oben -->
+<Lane id='10000021' left="2000032" right="2000031"></Lane>
+<Lane id='10000022' left="2000032" right="2000033"></Lane>
+
+
+<!-- Kreuzung oben links, unten->rechts, linke Spur -->
+<Line id="2000034">
+    <Path>
+        <Node x='5950' y='1030'></Node>
+		<Node x='5030' y='1030'></Node>
+        <Node x='5030' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->rechts, mittlere Spur -->
+<Line id="2000035">
+    <Path>
+        <Node x='5485' y='1950'></Node>
+		<Node x='5485' y='1485'></Node>
+        <Node x='5950' y='1485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->rechts, rechte Spur -->
+<Line id="2000036">
+    <Path>
+		<Node x='5950' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->rechts -->
+<Lane id='10000023' left="2000035" right="2000034"></Lane>
+<Lane id='10000024' left="2000035" right="2000036"></Lane>
+
+
+<!-- Kreuzung oben links, unten->links, linke Spur -->
+<Line id="2000037">
+    <Path>
+		<Node x='5030' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->links, mittlere Spur -->
+<Line id="2000038">
+    <Path>
+        <Node x='5030' y='1485'></Node>
+		<Node x='5485' y='1485'></Node>
+        <Node x='5485' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->links, rechte Spur -->
+<Line id="2000039">
+    <Path>
+		<Node x='5950' y='1950'></Node>
+		<Node x='5950' y='1030'></Node>
+		<Node x='5030' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, unten->links -->
+<Lane id='10000025' left="2000038" right="2000037"></Lane>
+<Lane id='10000026' left="2000038" right="2000039"></Lane>
+
+
+
+<!-- Kreuzung oben links, oben->rechts, linke Spur -->
+<Line id="2000040">
+    <Path>
+		<Node x='5950' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->rechts, mittlere Spur -->
+<Line id="2000041">
+    <Path>
+        <Node x='5950' y='1485'></Node>
+		<Node x='5485' y='1485'></Node>
+        <Node x='5485' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->rechts, rechte Spur -->
+<Line id="2000042">
+    <Path>
+        <Node x='5030' y='1030'></Node>
+		<Node x='5030' y='1950'></Node>
+		<Node x='5950' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->rechts -->
+<Lane id='10000027' left="2000041" right="2000040"></Lane>
+<Lane id='10000028' left="2000041" right="2000042"></Lane>
+
+
+<!-- Kreuzung oben links, oben->links, linke Spur -->
+<Line id="2000043">
+    <Path>
+        <Node x='5030' y='1950'></Node>
+        <Node x='5950' y='1950'></Node>
+        <Node x='5950' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->links, mittlere Spur -->
+<Line id="2000044">
+    <Path>
+        <Node x='5485' y='1030'></Node>
+		<Node x='5485' y='1485'></Node>
+        <Node x='5030' y='1485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->links, rechte Spur -->
+<Line id="2000045">
+    <Path>
+		<Node x='5030' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, oben->links -->
+<Lane id='10000029' left="2000044" right="2000043"></Lane>
+<Lane id='10000030' left="2000044" right="2000045"></Lane>
+
+
+
+<!-- Kreuzung unten links, oben->links, linke Spur -->
+<Line id="2000046">
+    <Path>
+        <Node x='5030' y='3945'></Node>
+        <Node x='5950' y='3950'></Node>
+        <Node x='5950' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->links, mittlere Spur -->
+<Line id="2000047">
+    <Path>
+        <Node x='5485' y='3030'></Node>
+		<Node x='5485' y='3485'></Node>
+        <Node x='5030' y='3485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->links, rechte Spur -->
+<Line id="2000048">
+    <Path>
+		<Node x='5030' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->links -->
+<Lane id='10000031' left="2000047" right="2000046"></Lane>
+<Lane id='10000032' left="2000047" right="2000048"></Lane>
+
+
+<!-- Kreuzung unten links, oben->rechts, linke Spur -->
+<Line id="2000049">
+    <Path>
+		<Node x='5950' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->rechts, mittlere Spur -->
+<Line id="2000050">
+    <Path>
+        <Node x='5950' y='3485'></Node>
+		<Node x='5485' y='3485'></Node>
+        <Node x='5485' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->rechts, rechte Spur -->
+<Line id="2000051">
+    <Path>
+        <Node x='5030' y='3030'></Node>
+		<Node x='5030' y='3950'></Node>
+        <Node x='5950' y='3945'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten links, oben->rechts -->
+<Lane id='10000033' left="2000050" right="2000049"></Lane>
+<Lane id='10000034' left="2000050" right="2000051"></Lane>
+
+
+
+<!-- Kreuzung unten rechts, oben->links, linke Spur -->
+<Line id="2000052">
+    <Path>
+        <Node x='9030' y='3945'></Node>
+        <Node x='9950' y='3950'></Node>
+        <Node x='9950' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->links, mittlere Spur -->
+<Line id="2000053">
+    <Path>
+        <Node x='9485' y='3030'></Node>
+		<Node x='9485' y='3485'></Node>
+        <Node x='9030' y='3485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->links, rechte Spur -->
+<Line id="2000054">
+    <Path>
+		<Node x='9030' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->links -->
+<Lane id='10000035' left="2000053" right="2000052"></Lane>
+<Lane id='10000036' left="2000053" right="2000054"></Lane>
+
+
+<!-- Kreuzung unten rechts, oben->rechts, linke Spur -->
+<Line id="2000055">
+    <Path>
+		<Node x='9950' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->rechts, mittlere Spur -->
+<Line id="2000056">
+    <Path>
+        <Node x='9950' y='3485'></Node>
+		<Node x='9485' y='3485'></Node>
+        <Node x='9485' y='3030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->rechts, rechte Spur -->
+<Line id="2000057">
+    <Path>
+        <Node x='9030' y='3030'></Node>
+		<Node x='9030' y='3950'></Node>
+		<Node x='9950' y='3950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung unten rechts, oben->rechts -->
+<Lane id='10000037' left="2000056" right="2000055"></Lane>
+<Lane id='10000038' left="2000056" right="2000057"></Lane>
+
+
+
+
+
+<!-- Kreuzung oben rechts, unten->links, rechte Spur -->
+<Line id="2000058">
+    <Path>
+        <Node x='9950' y='950'></Node>
+		<Node x='9950' y='30'></Node>
+		<Node x='9030' y='30'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->links, mittlere Spur -->
+<Line id="2000059">
+    <Path>
+        <Node x='9030' y='490'></Node>
+		<Node x='9485' y='490'></Node>
+        <Node x='9485' y='950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->links, linke Spur -->
+<Line id="2000060">
+    <Path>
+		<Node x='9030' y='950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->links -->
+<Lane id='10000039' left="2000059" right="2000058"></Lane>
+<Lane id='10000040' left="2000059" right="2000060"></Lane>
+
+
+<!-- Kreuzung oben rechts, unten->rechts, rechte Spur -->
+<Line id="2000061">
+    <Path>
+		<Node x='9950' y='950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->rechts, mittlere Spur -->
+<Line id="2000062">
+    <Path>
+        <Node x='9485' y='950'></Node>
+		<Node x='9485' y='490'></Node>
+        <Node x='9950' y='490'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->rechts, linke Spur -->
+<Line id="2000063">
+    <Path>
+		<Node x='9950' y='30'></Node>
+        <Node x='9030' y='30'></Node>
+        <Node x='9030' y='950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben rechts, unten->rechts -->
+<Lane id='10000041' left="2000062" right="2000061"></Lane>
+<Lane id='10000042' left="2000062" right="2000063"></Lane>
+
+
+
+<!-- Kreuzung oben links, links->rechts, linke Spur -->
+<Line id="2000064">
+    <Path>
+        <Node x='5950' y='1030'></Node>
+        <Node x='5030' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, links->rechts, mittlere Spur -->
+<Line id="2000065">
+    <Path>
+        <Node x='5030' y='1485'></Node>
+        <Node x='5950' y='1485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, links->rechts, rechte Spur -->
+<Line id="2000066">
+    <Path>
+        <Node x='5030' y='1950'></Node>
+        <Node x='5950' y='1950'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung oben links, links->rechts -->
+<Lane id='10000043' left="2000065" right="2000064"></Lane>
+<Lane id='10000044' left="2000065" right="2000066"></Lane>
+
+
+
+<!-- Querstraße rechts, Ministück oben, linke Linie -->
+<Line id="2000067">
+    <Path>
+        <Node x='9030' y='950'></Node>
+        <Node x='9030' y='1060'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße rechts, Ministück oben, mittlere Linie -->
+<Line id="2000068">
+    <Path>
+        <Node x='9485' y='1060'></Node>
+        <Node x='9485' y='950'></Node>
+    </Path>
+</Line>
+
+<!-- Querstraße rechts, Ministück oben, rechte Linie -->
+<Line id="2000069">
+    <Path>
+        <Node x='9950' y='1060'></Node>
+        <Node x='9950' y='950'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße rechts, Ministück oben -->
+<Lane id='10000045' left="2000068" right="2000067"></Lane>
+<Lane id='10000046' left="2000068" right="2000069"></Lane>
+
+
+<!-- Querstraße rechts, Ministück unten, linke Linie -->
+<Line id="2000070">
+    <Path>
+        <Node x='9030' y='2915'></Node>
+        <Node x='9030' y='3030'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße rechts, Ministück unten, mittlere Linie -->
+<Line id="2000071">
+    <Path>
+        <Node x='9485' y='3030'></Node>
+        <Node x='9485' y='2915'></Node>
+    </Path>
+</Line>
+
+<!-- Querstraße rechts, Ministück unten, rechte Linie -->
+<Line id="2000072">
+    <Path>
+        <Node x='9950' y='3030'></Node>
+        <Node x='9950' y='2915'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße rechts, Ministück unten -->
+<Lane id='10000047' left="2000071" right="2000070"></Lane>
+<Lane id='10000048' left="2000071" right="2000072"></Lane>
+
+
+<!-- Querstraße links, Ministück unten, linke Linie -->
+<Line id="2000073">
+    <Path>
+        <Node x='5030' y='2919'></Node>
+        <Node x='5030' y='3030'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße links, Ministück unten, mittlere Linie -->
+<Line id="2000074">
+    <Path>
+        <Node x='5485' y='3030'></Node>
+        <Node x='5485' y='2919'></Node>
+    </Path>
+</Line>
+
+<!-- Querstraße links, Ministück unten, rechte Linie -->
+<Line id="2000075">
+    <Path>
+        <Node x='5950' y='3030'></Node>
+        <Node x='5950' y='2919'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße links, Ministück unten -->
+<Lane id='10000049' left="2000074" right="2000073"></Lane>
+<Lane id='10000050' left="2000074" right="2000075"></Lane>
+
+
+<!-- Querstraße links, Ministück oben, linke Linie -->
+<Line id="2000076">
+    <Path>
+        <Node x='5030' y='1950'></Node>
+        <Node x='5030' y='2060'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße links, Ministück oben, mittlere Linie -->
+<Line id="2000077">
+    <Path>
+        <Node x='5485' y='1950'></Node>
+        <Node x='5485' y='2060'></Node>
+    </Path>
+</Line>
+
+<!-- Querstraße links, Ministück oben, rechte Linie -->
+<Line id="2000078">
+    <Path>
+        <Node x='5950' y='2060'></Node>
+        <Node x='5950' y='1950'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Querstraße links, Ministück oben -->
+<Lane id='10000051' left="2000077" right="2000076"></Lane>
+<Lane id='10000052' left="2000077" right="2000078"></Lane>
+
+
+<!-- Sackgassenstraße, Ministück unten, linke Linie -->
+<Line id="2000079">
+    <Path>
+        <Node x='5030' y='920'></Node>
+        <Node x='5030' y='1030'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Sackgassenstraße, Ministück unten, mittlere Linie -->
+<Line id="2000080">
+    <Path>
+        <Node x='5485' y='920'></Node>
+        <Node x='5485' y='1030'></Node>
+    </Path>
+</Line>
+
+<!-- Sackgassenstraße, Ministück unten, rechte Linie -->
+<Line id="2000081">
+    <Path>
+        <Node x='5950' y='1030'></Node>
+        <Node x='5950' y='920'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Sackgassenstraße, Ministück unten -->
+<Lane id='10000053' left="2000080" right="2000079"></Lane>
+<Lane id='10000054' left="2000080" right="2000081"></Lane>
+
+
+<!-- Kreuzung links oben, Ministück rechts, linke Linie -->
+<Line id="2000082">
+    <Path>
+        <Node x='5950' y='1950'></Node>
+        <Node x='6060' y='1950'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Kreuzung links oben, Ministück rechts, mittlere Linie -->
+<Line id="2000083">
+    <Path>
+        <Node x='5950' y='1485'></Node>
+        <Node x='6060' y='1485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung links oben, Ministück rechts, rechte Linie -->
+<Line id="2000084">
+    <Path>
+        <Node x='6060' y='1030'></Node>
+        <Node x='5950' y='1030'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Kreuzung links oben, Ministück rechts -->
+<Lane id='10000055' left="2000083" right="2000082"></Lane>
+<Lane id='10000056' left="2000083" right="2000084"></Lane>
+
+
+<!-- Kreuzung links oben, Ministück links, linke Linie -->
+<Line id="2000085">
+    <Path>
+        <Node x='4920' y='1950'></Node>
+        <Node x='5030' y='1950'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Kreuzung links oben, Ministück links, mittlere Linie -->
+<Line id="2000086">
+    <Path>
+        <Node x='5030' y='1485'></Node>
+        <Node x='4920' y='1485'></Node>
+    </Path>
+</Line>
+
+<!-- Kreuzung links oben, Ministück links, rechte Linie -->
+<Line id="2000087">
+    <Path>
+        <Node x='5030' y='1030'></Node>
+        <Node x='4920' y='1030'></Node>
+    </Path>
+	<Marking r="255" g="255" b="255" strokeLength="300" gapLength="0" priority="0"></Marking>
+</Line>
+
+<!-- Kreuzung links oben, Ministück links -->
+<Lane id='10000057' left="2000086" right="2000085"></Lane>
+<Lane id='10000058' left="2000086" right="2000087"></Lane>
+
+
+
+
+
+<!--STOPLines-->
+
+<Area id = "3000008">
+    <Outline>
+        <Node x='9030' y='2915'></Node>
+        <Node x='9030' y='2865'></Node>
+        <Node x='9490' y='2865'></Node>
+        <Node x='9490' y='2915'></Node>
+    </Outline>
+</Area>
+
+<SpecialMarking id = "400008" area="3000008" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>10000011</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<Area id = "3000009">
+    <Outline>
+        <Node x='9950' y='1060'></Node>
+        <Node x='9950' y='1110'></Node>
+        <Node x='9490' y='1110'></Node>
+        <Node x='9490' y='1060'></Node>
+    </Outline>
+</Area>
+
+<SpecialMarking id = "400009" area="3000009" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>10000012</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+
+<Area id = "3000010">
+    <Outline>
+        <Node x='5030' y='2919'></Node>
+        <Node x='5030' y='2869'></Node>
+        <Node x='5485' y='2869'></Node>
+        <Node x='5485' y='2919'></Node>
+    </Outline>
+</Area>
+
+<SpecialMarking id = "400010" area="3000010" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>1000007</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+
+<Area id = "3000011">
+    <Outline>
+        <Node x='5950' y='2060'></Node>
+        <Node x='5950' y='2110'></Node>
+        <Node x='5485' y='2110'></Node>
+        <Node x='5485' y='2060'></Node>
+    </Outline>
+</Area>
+<SpecialMarking id = "400011" area="3000011" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>1000008</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<Area id = "3000012">
+    <Outline>
+       <Node x='5030' y='920'></Node>
+        <Node x='5030' y='870'></Node>
+        <Node x='5485' y='870'></Node>
+        <Node x='5485' y='920'></Node>
+    </Outline>
+</Area>
+<SpecialMarking id = "400012" area="3000012" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>1000009</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<Area id = "3000013">
+    <Outline>
+        <Node x='4920' y='1950'></Node>
+        <Node x='4870' y='1950'></Node>
+        <Node x='4870' y='1485'></Node>
+        <Node x='4920' y='1485'></Node>
+    </Outline>
+</Area>
+<SpecialMarking id = "400013" area="3000013" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>1000002</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+<Area id = "3000014">
+    <Outline>
+        <Node x='6060' y='1030'></Node>
+        <Node x='6110' y='1030'></Node>
+        <Node x='6110' y='1485'></Node>
+        <Node x='6060' y='1485'></Node>
+    </Outline>
+</Area>
+<SpecialMarking id = "400014" area="3000014" type="StopLine" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>10000019</ID>
+    </AdjacentLanes>
+</SpecialMarking>
+
+
+<!-- Kreuzungsbereiche -->
+
+<!-- Kreuzung oben links -->
+<Area id = "3000015">
+    <Outline>
+        <Node x='5950' y='1030'></Node>
+        <Node x='5950' y='1950'></Node>
+        <Node x='5030' y='1950'></Node>
+        <Node x='5030' y='1030'></Node>
+    </Outline>
+</Area>
+<Crossing id ='5000001'>
+	<Area>3000015</Area>
+	<Lane>10000021</Lane>
+	<Lane>10000022</Lane>
+	<Lane>10000023</Lane>
+	<Lane>10000024</Lane>
+	<Lane>10000025</Lane>
+	<Lane>10000026</Lane>
+	<Lane>10000027</Lane>
+	<Lane>10000028</Lane>
+	<Lane>10000029</Lane>
+	<Lane>10000030</Lane>
+	<Lane>10000043</Lane>
+	<Lane>10000044</Lane>
+</Crossing>
+
+<!-- Kreuzung unten links -->
+<Area id = "3000016">
+    <Outline>
+        <Node x='5950' y='3030'></Node>
+        <Node x='5950' y='3950'></Node>
+        <Node x='5030' y='3950'></Node>
+        <Node x='5030' y='3030'></Node>
+    </Outline>
+</Area>
+<Crossing id ='5000002'>
+	<Area>3000016</Area>
+	<Lane>1000003</Lane>
+	<Lane>1000004</Lane>
+	<Lane>10000031</Lane>
+	<Lane>10000032</Lane>
+	<Lane>10000033</Lane>
+	<Lane>10000034</Lane>
+</Crossing>
+
+<!-- Kreuzung unten rechts -->
+<Area id = "3000017">
+    <Outline>
+        <Node x='9950' y='3030'></Node>
+        <Node x='9950' y='3950'></Node>
+        <Node x='9030' y='3950'></Node>
+        <Node x='9030' y='3030'></Node>
+    </Outline>
+</Area>
+<Crossing id ='5000003'>
+	<Area>3000017</Area>
+	<Lane>10000013</Lane>
+	<Lane>10000014</Lane>
+	<Lane>10000035</Lane>
+	<Lane>10000036</Lane>
+	<Lane>10000037</Lane>
+	<Lane>10000038</Lane>
+</Crossing>
+
+<!-- Kreuzung oben rechts -->
+<Area id = "3000018">
+    <Outline>
+        <Node x='9950' y='30'></Node>
+        <Node x='9950' y='950'></Node>
+        <Node x='9030' y='950'></Node>
+        <Node x='9030' y='30'></Node>
+    </Outline>
+</Area>
+<Crossing id ='5000004'>
+	<Area>3000018</Area>
+	<Lane>10000015</Lane>
+	<Lane>10000016</Lane>
+	<Lane>10000039</Lane>
+	<Lane>10000040</Lane>
+	<Lane>10000041</Lane>
+	<Lane>10000042</Lane>
+</Crossing>
+
+
+<Area id = "3000115">
+    <Outline>
+        <Node x='9030' y='1500'></Node>
+        <Node x='9950' y='1500'></Node>
+        <Node x='9950' y='1900'></Node>
+        <Node x='9030' y='1900'></Node>
+    </Outline>
+</Area>
+<SpecialMarking id = "400115" area="3000115" type="Crosswalk" r="255" g="255" b="255">
+    <AdjacentLanes>
+        <ID>10000011</ID>
+        <ID>10000012</ID>
+    </AdjacentLanes>
+</SpecialMarking>

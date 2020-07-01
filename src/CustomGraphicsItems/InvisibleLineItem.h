@@ -6,7 +6,7 @@
 #define AADC_USER_INVISIBLELINEITEM_H
 
 
-#include <QtGui/QGraphicsPathItem>
+#include <QGraphicsPathItem>
 #include <Map/Line.hpp>
 
 class InvisibleLineItem : public QGraphicsPathItem {

@@ -6,7 +6,7 @@
 #define C___PROJEKT_QNAVIGATIONMARKERLISTWIDGETITEM_H
 
 
-#include <QtGui/QListWidgetItem>
+#include <QListWidgetItem>
 #include "NavigationMarkerItem.h"
 
 class QNavigationMarkerListWidgetItem : public QListWidgetItem {

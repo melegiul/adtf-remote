@@ -6,7 +6,7 @@
 #define AADC_USER_ITEMSIGNALCONTROLLER_H
 
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <Map/StreetSign.hpp>
 #include <Map/Lane.hpp>
 #include <Map/NavigationMarker.hpp>

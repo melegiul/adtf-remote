@@ -8,13 +8,13 @@
 
 #include <Map/NavigationMarker.hpp>
 #include <Map/Lane.hpp>
-#include <QtGui/QGraphicsItem>
+#include <QGraphicsItem>
 #include <memory>
-#include <QtGui/QPen>
+#include <QPen>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <iostream>
-#include <QtGui/QBrush>
+#include <QBrush>
 #include "LaneItem.h"
 #include "SpecialMarkingItem.h"
 #include "../ItemSignalController.h"

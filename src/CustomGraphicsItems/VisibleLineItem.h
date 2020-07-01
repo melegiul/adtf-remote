@@ -6,7 +6,7 @@
 #define AADC_USER_VISIBLELINEITEM_H
 
 
-#include <QtGui/QGraphicsPathItem>
+#include <QGraphicsPathItem>
 #include <Map/LineMarking.hpp>
 #include <Map/Line.hpp>
 

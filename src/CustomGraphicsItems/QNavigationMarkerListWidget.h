@@ -6,9 +6,9 @@
 #define C___PROJEKT_QNAVIGATIONMARKERLISTWIDGET_H
 
 
-#include <QtGui/QListWidget>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QApplication>
+#include <QListWidget>
+#include <QMouseEvent>
+#include <QApplication>
 #include <Map/ContentManager.hpp>
 #include "QNavigationMarkerListWidgetItem.h"
 #include "../ItemSignalController.h"

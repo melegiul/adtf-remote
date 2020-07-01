@@ -6,7 +6,7 @@
 #define AADC_USER_TREENODEITEM_H
 
 
-#include <QtGui/QGraphicsItem>
+#include <QGraphicsItem>
 
 class TreeNodeItem: public QGraphicsItem {
     // an empty item with no functionality to construct a tree

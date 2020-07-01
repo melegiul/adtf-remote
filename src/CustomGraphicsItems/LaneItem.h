@@ -6,10 +6,10 @@
 #define AADC_USER_LANEITEM_H
 
 #include <Map/Lane.hpp>
-#include <QtGui/QGraphicsPolygonItem>
+#include <QGraphicsPolygonItem>
 #include <Map/ContentManager.hpp>
-#include <QtGui/QPen>
-#include <QtGui/QMenu>
+#include <QPen>
+#include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 #include "Shared_Ptr_p.h"
 #include "../ItemSignalController.h"

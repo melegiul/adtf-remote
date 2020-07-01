@@ -6,7 +6,7 @@
 #define AADC_USER_LANEDIRECTIONITEM_H
 
 
-#include <QtGui/QGraphicsPixmapItem>
+#include <QGraphicsPixmapItem>
 #include <Map/Line.hpp>
 
 class LaneDirectionItem : public QGraphicsPixmapItem {

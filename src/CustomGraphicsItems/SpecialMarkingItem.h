@@ -6,10 +6,10 @@
 #define AADC_USER_SPECIALMARKINGITEM_H
 
 
-#include <QtGui/QGraphicsPolygonItem>
-#include <QtGui/QMenu>
+#include <QGraphicsPolygonItem>
+#include <QMenu>
 #include <QPixmap>
-#include <QtGui/QPen>
+#include <QPen>
 #include <QGraphicsSceneContextMenuEvent>
 #include "../ItemSignalController.h"
 #include "Map/SpecialMarking.hpp"

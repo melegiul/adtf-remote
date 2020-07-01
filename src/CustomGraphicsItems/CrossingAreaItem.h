@@ -6,7 +6,7 @@
 #define AADC_USER_CROSSINGAREAITEM_H
 
 
-#include <QtGui/QGraphicsPolygonItem>
+#include <QGraphicsPolygonItem>
 #include <Map/Crossing.h>
 #include <Map/MapArea.hpp>
 

@@ -6,7 +6,7 @@
 #define AADC_USER_NEARFIELDCELLITEM_H
 
 
-#include <QtGui/QGraphicsPolygonItem>
+#include <QGraphicsPolygonItem>
 
 class NearfieldCellItem:public QGraphicsPolygonItem {
 public:

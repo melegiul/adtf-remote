@@ -2,7 +2,7 @@
 // Created by uniautonom on 28.02.20.
 //
 
-#include <QtGui/QLayout>
+#include <QLayout>
 #include "NearfieldMapItem.h"
 #include "NearfieldCellItem.h"
 

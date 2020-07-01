@@ -5,7 +5,7 @@
 #ifndef AADC_USER_NEARFIELDGRIDITEM_H
 #define AADC_USER_NEARFIELDGRIDITEM_H
 
-#include <QtGui/QGraphicsItemGroup>
+#include <QGraphicsItemGroup>
 #include "TreeNodeItem.h"
 #include "../../../NearfieldGrid/MapConstants.h"
 

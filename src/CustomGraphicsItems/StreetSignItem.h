@@ -6,7 +6,7 @@
 #define AADC_USER_STREETSIGNITEM_H
 
 #include <QGraphicsObject>
-#include <QtGui/QGraphicsEllipseItem>
+#include <QGraphicsEllipseItem>
 #include <Map/StreetSign.hpp>
 #include <Map/Lane.hpp>
 

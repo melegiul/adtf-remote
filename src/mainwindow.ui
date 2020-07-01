@@ -762,12 +762,12 @@
   <customwidget>
    <class>ResizeGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>resizegraphicsview.h</header>
+   <header>QtWidgets/resizegraphicsview.h</header>
   </customwidget>
   <customwidget>
    <class>BottomLeftGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>bottomleftgraphicsview.h</header>
+   <header>QtWidgets/bottomleftgraphicsview.h</header>
   </customwidget>
   <customwidget>
    <class>QNavigationMarkerListWidget</class>

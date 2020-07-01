@@ -17,18 +17,19 @@ include_directories(include)
 include_directories(/usr/include/opencv4)
 
 adtf_add_executable(AutonomousController
-    mainwindow.ui
+    main.cpp
     mainwindow.cpp
+    mainwindow.ui
     dialog_preferences.cpp
     dialog_preferences.ui
+
     adtfmediasample.h
     networkclient.cpp
-    main.cpp
 
     ../res/res.qrc
 
-    bottomleftgraphicsview.cpp
-    resizegraphicsview.cpp
+    QtWidgets/bottomleftgraphicsview.cpp
+    QtWidgets/resizegraphicsview.cpp
 
     adtf_converters/carodometry.cpp
     adtf_converters/trapezoid.cpp

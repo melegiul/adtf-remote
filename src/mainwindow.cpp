@@ -835,11 +835,12 @@ void MainWindow::deleteNavigationMarker(){
 }
 
 void MainWindow::deleteAllNavigationMarker() {
-    for(int i = 0; i < ui->navigationMarkerListWidget->count(); i++){
-        navMarkerListWidgetItem = dynamic_cast<QNavigationMarkerListWidgetItem *>(ui->navigationMarkerListWidget->item(i));
+    while (ui->navigationMarkerListWidget->count() > 0){
+        navMarkerListWidgetItem = dynamic_cast<QNavigationMarkerListWidgetItem *>(ui->navigationMarkerListWidget->item(0));
         if(navMarkerListWidgetItem != nullptr){
             navMarkerItem = navMarkerListWidgetItem->getNavMarkerItem();
             scene->removeItem(navMarkerItem);
+            delete navMarkerListWidgetItem;
             delete navMarkerItem;
             navMarkerListWidgetItem = nullptr;
             navMarkerItem = nullptr;

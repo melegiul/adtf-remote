@@ -34,6 +34,11 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
+    QSettings settings;
+    this->car_height = settings.value("car/length", 400).toInt();
+    this->car_width = settings.value("car/width", 240).toInt();
+    int ui_background = settings.value("ui/background", 180).toInt();
+
     ui->setupUi(this);
 
     connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
@@ -49,12 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
-    QSettings settings;
-    this->car_height = settings.value("car/length", 400).toInt();
-    this->car_width = settings.value("car/width", 240).toInt();
-    int ui_background = settings.value("ui/background", 180).toInt();
-
-   // import graphics
+    // import from old widget code
     ui->tabWidget->setCurrentIndex(0);
     ui->dynamic_tree->expandAll();
     ui->static_tree->expandAll();
@@ -201,7 +201,7 @@ void MainWindow::networkErrored(QString errorMsg) {
 }
 
 
-// import graphics
+// import from old widget code
 void MainWindow::updateStaticFilters(QTreeWidgetItem *item, int column) {
 
     if (item->text(0) == "Visual") visual_filter->setVisible(item->checkState(column));

@@ -7,7 +7,6 @@ set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(ADTF_DIR /mnt/data/VMs/uniautonom-lxc/opt/adtf/2.14.2)
 
 find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
 find_package(ADTF REQUIRED)

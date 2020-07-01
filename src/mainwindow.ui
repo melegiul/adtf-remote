@@ -672,8 +672,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
+    <iconset theme="application-exit"/>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -684,8 +683,7 @@
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset theme="preferences">
-     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
+    <iconset theme="preferences"/>
    </property>
    <property name="text">
     <string>Preferences</string>
@@ -696,8 +694,7 @@
   </action>
   <action name="actionOpen">
    <property name="icon">
-    <iconset theme="document-open">
-     <normaloff>../../../../../../../../home/alex/.designer/backup</normaloff>../../../../../../../../home/alex/.designer/backup</iconset>
+    <iconset theme="document-open"/>
    </property>
    <property name="text">
     <string>Open Map XML</string>

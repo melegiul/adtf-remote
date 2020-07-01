@@ -6,6 +6,7 @@
 
 QNavigationMarkerListWidget::QNavigationMarkerListWidget(QWidget *parent):
     QListWidget(parent) {
+    connect(this, &QNavigationMarkerListWidget::currentItemChanged, this, &QNavigationMarkerListWidget::on_currentItemChanged);
 }
 
 void QNavigationMarkerListWidget::mousePressEvent(QMouseEvent *event){
@@ -18,8 +19,6 @@ void QNavigationMarkerListWidget::mousePressEvent(QMouseEvent *event){
             navMarkerItem = navMarkerListWidgetItem->getNavMarkerItem();
             text = navMarkerListWidgetItem->text();
             startPos = event->pos();
-            unHighlight();
-            navMarkerListWidgetItem->getNavMarkerItem()->highlight();
         }
     } else if(event->button() == Qt::RightButton){
         navMarkerListWidgetItem = dynamic_cast<QNavigationMarkerListWidgetItem *>(itemAt(event->pos()));
@@ -68,12 +67,14 @@ void QNavigationMarkerListWidget::mouseReleaseEvent(QMouseEvent *event){
     QListWidget::mousePressEvent(event);
 }
 
-void QNavigationMarkerListWidget::unHighlight() {
-    for(int i = 0; i < this->count(); ++i)
-    {
-        QNavigationMarkerListWidgetItem* item = dynamic_cast<QNavigationMarkerListWidgetItem *>(this->item(i));
-        if(item){
-            item->getNavMarkerItem()->unHighlight();
-        }
+void QNavigationMarkerListWidget::on_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
+    if (previous) {
+        QNavigationMarkerListWidgetItem *previous_cast = static_cast<QNavigationMarkerListWidgetItem*>(previous);
+        previous_cast->getNavMarkerItem()->unHighlight();
+    }
+
+    if (current) {
+        QNavigationMarkerListWidgetItem *current_cast = static_cast<QNavigationMarkerListWidgetItem*>(current);
+        current_cast->getNavMarkerItem()->highlight();
     }
 }

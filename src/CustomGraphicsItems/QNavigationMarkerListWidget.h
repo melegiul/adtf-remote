@@ -36,7 +36,8 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
-    void unHighlight();
+private slots:
+    void on_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 };
 
 #endif //C___PROJEKT_QNAVIGATIONMARKERLISTWIDGET_H

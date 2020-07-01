@@ -11,10 +11,10 @@
 #include "ui_mainwindow.h"
 #include "dialog_preferences.h"
 #include "networkclient.h"
-#include "adtf_structs/carodometry.h"
-#include "adtf_structs/trapezoid.h"
-#include "adtf_structs/detectedline.h"
-#include "adtf_structs/nearfieldgridmap.h"
+#include "adtf_converters/carodometry.h"
+#include "adtf_converters/trapezoid.h"
+#include "adtf_converters/detectedline.h"
+#include "adtf_converters/nearfieldgridmap.h"
 
 
 #include "Map/ContentManager.hpp"

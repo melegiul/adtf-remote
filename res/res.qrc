@@ -25,5 +25,6 @@
         <file alias="LandmarkAutonomous.png">images/LandmarkAutonomous.png</file>
         <file alias="NONE.png">images/NONE.png</file>
         <file alias="leftArrow.png">images/leftArrow.png</file>
+        <file alias="uniautonom.png">images/UniAutonom.png</file>
     </qresource>
 </RCC>

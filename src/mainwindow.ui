@@ -14,8 +14,8 @@
    <string>UniAutonom Remote</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/images/uniautonom</normaloff>:/images/uniautonom</iconset>
+   <iconset resource="../res/res.qrc">
+    <normaloff>:/uniautonom.png</normaloff>:/uniautonom.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -794,7 +794,7 @@
   <tabstop>exportNavMarkerButton</tabstop>
  </tabstops>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../res/res.qrc"/>
  </resources>
  <connections>
   <connection>

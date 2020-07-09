@@ -10,6 +10,7 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
 find_package(ADTF REQUIRED)
+find_package(OpenCV REQUIRED)
 
 include_directories(.)
 include_directories(include)
@@ -73,4 +74,4 @@ adtf_add_executable(AutonomousController
     src/NearfieldGrid/MapTreeNode.cpp
 )
 
-target_link_libraries(AutonomousController Qt5::Widgets Qt5::Network)
+target_link_libraries(AutonomousController Qt5::Widgets Qt5::Network ${OpenCV_LIBS})

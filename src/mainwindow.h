@@ -5,6 +5,7 @@
 #include <QString>
 
 #include "adtfmediasample.h"
+#include "build/UNIAutonomRemoteGUI_autogen/include/ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
 
 class NetworkClient;
@@ -58,12 +59,28 @@ private:
     Ui::MainWindow *ui;
     NetworkClient *networkClient;
 
+    //control tab related
+    tState state = tState::NONE;
+    std::map<tState, std::string> tStateMap;
+    QString fileName = nullptr;
+    QString carConfig = nullptr;
+    bool mapreceived = false;
+    bool carconfselected = false;
+    bool carconfreceived = false;
+    bool routeinforreceived = false;
+    bool initialization = false;
+    bool ready = false;
+    bool ad_running = false;
+    bool rc_running = false;
+    bool emergency = false;
+
 // graphics import
 public:
     void setCarOdometry(tCarOdometry &odo);
     void setTrapezoidCoords(tTrapezoid &coords);
     void setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine);
     void setNearfieldgridmap(tNearfieldGridMapArray &root);
+    void setCarState(tRemoteStateMsg &statemsg);
     void clearAndSetupStaticElements();
     void clearAll();
     void stop();
@@ -84,12 +101,14 @@ private:
     void checkAllTrees(Qt::CheckState st);
     void clearAllNavMarkerItems();
     void buildNavigationMarkerItemsFromXmlList();
+    void resetControlTabBools();
 
 signals:
     void nearfieldGridMapUpdated();
     void carUpdated();
     void trapezoidUpdated();
     void detectedLineUpdated();
+    void guiUpdated();
 
 public slots:
     void updateMap();
@@ -103,14 +122,11 @@ private slots:
     void updateCar();
     void updateTrapezoid();
     void updateDetectedLine();
+    void updateControlTab();
     void focusOnCar();
     void updateStaticFilters(QTreeWidgetItem *item, int column);
     void updateDynamicFilters(QTreeWidgetItem *item, int column);
     void updateMousePosition(QPointF position);
-    void setEditingMode(int state);
-    void updateSignEditor(StreetSign *s, Lane *l);
-    void updateSelectedSign(int state);
-    void removeSelectedSign();
     void setSignRotations(double angle);
     void setupNearfieldGridMap();
     void deleteNavigationMarker();
@@ -119,6 +135,15 @@ private slots:
     void calculateRoute();
     void exportNavMarker();
     void importNavMarker();
+    void handleMapPushClick();
+    void handleCarConfigLoadClick();
+    void handleCarConfigPushClick();
+    void handleRouteInfoPushClick();
+    void handleStartADClick();
+    void handleStartRCClick();
+    void handleStopClick();
+    void handleAbortClick();
+
 
 private:
     QGraphicsScene *scene = nullptr;
@@ -169,6 +194,8 @@ private:
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
+
+
 };
 
 #endif // __MAINWINDOW_H

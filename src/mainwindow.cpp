@@ -8,14 +8,13 @@
 #include <QGraphicsItem>
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "dialog_preferences.h"
 #include "networkclient.h"
 #include "adtf_converters/carodometry.h"
 #include "adtf_converters/trapezoid.h"
 #include "adtf_converters/detectedline.h"
 #include "adtf_converters/nearfieldgridmap.h"
-
+#include "adtf_converters/remoteStateMsg.h"
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -34,6 +33,14 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
+    std::map<tState, std::string> tStateMap = {
+        {tState::NONE, "None"},
+        {tState::INITIALIZATION, "Initialization"},
+        {tState::READY, "Ready"},
+        {tState::AD_RUNNING, "AD_Running"},
+        {tState::RC_RUNNING, "RC_Running"},
+        {tState::EMERGENCY, "Emergency"}
+    };
     QSettings settings;
     this->car_height = settings.value("car/length", 400).toInt();
     this->car_width = settings.value("car/width", 240).toInt();
@@ -42,10 +49,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
-    //connect(ui->map_view, &ResizeGraphicsView::resized, this, &MainWindow::updateMap);
 
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
-    connect(ui->actionOpenMap, &QAction::triggered, this, &MainWindow::openMapXML);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
 
@@ -54,7 +59,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
-    // import from old widget code
+    // control tab related code
+    // connection update with connection menu trigger
+    connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
+    // odometry update with updateCar trigger
+
+    connect(this, SIGNAL(guiUpdated()), this, SLOT(updateControlTab()));
+    connect(ui->map_load_button, SIGNAL(clicked()), this, SLOT(handleMapPushClick()));
+    connect(ui->car_config_load_button, SIGNAL(clicked()), this, SLOT(handleCarConfigLoadClick()));
+    connect(ui->car_config_push_button, SIGNAL(clicked()), this, SLOT(handleCarConfigPushClick()));
+    connect(ui->navi_route_push_button, SIGNAL(clicked()), this, SLOT(handleRouteInfoPushClick()));
+    connect(ui->start_ad_button, SIGNAL(clicked()), this, SLOT(handleStartADClick()));
+    connect(ui->start_rc_button, SIGNAL(clicked()), this, SLOT(handleStartRCClick()));
+    connect(ui->running_stop_button, SIGNAL(clicked()), this, SLOT(handleStopClick()));
+    connect(ui->abort_button, SIGNAL(clicked()), this, SLOT(handleAbortClick()));
+
+    // view tab related code
     ui->tabWidget->setCurrentIndex(0);
     ui->dynamic_tree->expandAll();
     ui->static_tree->expandAll();
@@ -66,13 +86,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);
-
-    ui->street_sign_items_cmbbox->clear();
-    for (int i = 0; i < eStreetSigns::NONE + 1; i++) {
-        ui->street_sign_items_cmbbox->addItem(QString(enumStrings<eStreetSigns>::data[i]));
-    }
-    ui->street_sign_items_cmbbox->setCurrentIndex(eStreetSigns::NONE);
-    ui->editor_remove_streetsign->setEnabled(false);
 
     clearAndSetupStaticElements();
 
@@ -93,20 +106,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionExportMap, SIGNAL(triggered()), this, SLOT(saveDialog()));
     connect(ui->exportNavMarkerButton, SIGNAL(clicked()), this, SLOT(exportNavMarker()));
     connect(ui->importNavMarkerButton, SIGNAL(clicked()), this, SLOT(importNavMarker()));
-    connect(ui->editor_remove_streetsign, SIGNAL(clicked()), this, SLOT(removeSelectedSign()));
     connect(ui->static_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
             SLOT(updateStaticFilters(QTreeWidgetItem * , int)));
     connect(ui->dynamic_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
             SLOT(updateDynamicFilters(QTreeWidgetItem * , int)));
-    connect(ui->editor_checkbox, SIGNAL(stateChanged(int)), this, SLOT(setEditingMode(int)));
-    connect(ui->street_sign_items_cmbbox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSelectedSign(int)));
     connect(ui->removeNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteNavigationMarker()));
     connect(ui->removeAllNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteAllNavigationMarker()));
     connect(ui->calculateRouteButton, SIGNAL(clicked()), this, SLOT(calculateRoute()));
 
     ItemSignalController &cont = ItemSignalController::getInstance();
-    connect(&cont, SIGNAL(signClicked(StreetSign * , Lane * )), this, SLOT(updateSignEditor(StreetSign * , Lane * )));
-    connect(&cont, SIGNAL(addSignClicked(StreetSign * , Lane * )), this, SLOT(addSign(StreetSign * , Lane * )));
     connect(&cont, SIGNAL(updateMap()), this, SLOT(updateMap()));
     connect(&cont, SIGNAL(addNavigationMarkerClicked(std::shared_ptr<NavigationMarker> & )), this, SLOT(addNavigationMarker(std::shared_ptr<NavigationMarker> & )));
     connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
@@ -160,6 +168,11 @@ void MainWindow::connectNetwork()
     uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
+
+    //FIXME Just for development
+    initialization = true;
+    emit(guiUpdated());
+
 }
 
 void MainWindow::disconnectNetwork()
@@ -171,11 +184,19 @@ void MainWindow::networkConnected() {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
     ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
+    ui->connection_val_label->setText(QString::fromStdString("connected"));
+    ui->connection_val_label->setStyleSheet("QLabel { background-color : green}");
+    initialization = true;
+    emit(guiUpdated());
 }
 
 void MainWindow::networkDisconnected() {
     ui->actionDisconnect->setEnabled(false);
     ui->actionConnect->setEnabled(true);
+    ui->connection_val_label->setText(QString::fromStdString("not connected"));
+    ui->connection_val_label->setStyleSheet("QLabel { background-color : red}");
+    resetControlTabBools();
+    emit(guiUpdated());
 }
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
@@ -193,7 +214,15 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
+    } else if (sample.pinName == "state" && sample.mediaType == "tRemoteStateMsg") {
+        std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
+        this->setCarState(*statemsg);
+    } else if (sample.pinName == "log" && sample.mediaType == "tLogMsg") {
+
     }
+
+    //FIXME concrete pinNames and Datatypes to be set
+    //TODO add new data Pins here
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
@@ -361,7 +390,7 @@ void MainWindow::updateMap() {
         ui->map_view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
         zoom_rotate_manager->adjustMeasure();
     }
-    setEditingMode(ui->editor_checkbox->checkState());
+    //setEditingMode(ui->editor_checkbox->checkState());
     colorLanesOfInterest();
 }
 
@@ -442,9 +471,11 @@ void MainWindow::updateCar() {
     auto angle = odo->orientation * 180 / M_PI;
     if (angle < -0.5) angle += 360;
 
-    ui->car_x->setText(QString::fromStdString(std::to_string((int) odo->pos.x)));
-    ui->car_y->setText(QString::fromStdString(std::to_string((int) odo->pos.y)));
-    ui->car_th->setText(QString::fromStdString(std::to_string((int) std::round(angle))));
+    //update car status messages
+    ui->speed_val_label->setText(QString::fromStdString("to be done"));
+    ui->orientation_val_label->setText(QString::fromStdString(std::to_string((int) odo->orientation)));
+    ui->position_x_val_label->setText(QString::fromStdString(std::to_string((int) odo->pos.x)));
+    ui->position_y_val_label->setText(QString::fromStdString(std::to_string((int) odo->pos.y)));
 
     car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
     car_filter->setRotation(-angle);
@@ -502,7 +533,7 @@ void MainWindow::colorLanesOfInterest() const {
     for (auto item: lanes_filter->childItems()) {
         auto item_cast = qgraphicsitem_cast<LaneItem *>(item);
         if (item_cast != nullptr) {
-            if(ui->editor_checkbox->isChecked() && item_cast->isEqual(selected_lane)){
+            if(/*ui->editor_checkbox->isChecked() &&*/ item_cast->isEqual(selected_lane)){
                 item_cast->colorSelected();
             } else {
                 item_cast->colorRegular();
@@ -515,7 +546,7 @@ void MainWindow::colorLanesOfInterest() const {
         for (auto item : list_of_items) {
             auto lane = qgraphicsitem_cast<LaneItem *>(item);
             if (lane != nullptr) {
-                if(!lane->isEqual(selected_lane) || !ui->editor_checkbox->isChecked()) {
+                if(!lane->isEqual(selected_lane) /*|| !ui->editor_checkbox->isChecked()*/) {
                     lane->colorCarOnTop();
                 }
             }
@@ -673,75 +704,11 @@ void MainWindow::setNearfieldgridmap(tNearfieldGridMapArray &root) {
     emit(nearfieldGridMapUpdated());
 }
 
-
-void MainWindow::setEditingMode(int state) {
-    state && selected_sign != nullptr ? ui->street_sign_items_cmbbox->setEnabled(true) : ui->street_sign_items_cmbbox->setEnabled(false);
-    state && selected_sign != nullptr ? ui->editor_remove_streetsign->setEnabled(true) : ui->editor_remove_streetsign->setEnabled(false);
-
-    for (auto item: signs_filter->childItems()) {
-        auto *sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-        state ? sign_item->enableEditing() : sign_item->disableEditing();
-    }
-    colorLanesOfInterest();
+void MainWindow::setCarState(tRemoteStateMsg &statemsg) {
+    state = statemsg.filterState;
+    emit(guiUpdated());
 }
 
-void MainWindow::updateSignEditor(StreetSign *s, Lane *l) {
-    selected_sign = s;
-    selected_lane = l;
-    if(s != nullptr && l != nullptr){
-        ui->lane_id_editor_txt->setText(QString(std::to_string(l->getId()).c_str()));
-        auto old = ui->street_sign_items_cmbbox->blockSignals(true);
-        ui->street_sign_items_cmbbox->setCurrentIndex(s->sign);
-        ui->street_sign_items_cmbbox->blockSignals(old);
-        ui->editor_x_pos->setText(QString(std::to_string(s->location->x).c_str()));
-        ui->editor_y_pos->setText(QString(std::to_string(s->location->y).c_str()));
-        if(ui->editor_checkbox->isChecked()){
-            ui->street_sign_items_cmbbox->setEnabled(true);
-            ui->editor_remove_streetsign->setEnabled(true);
-        }
-
-    } else {
-        ui->lane_id_editor_txt->setText("");
-        auto old = ui->street_sign_items_cmbbox->blockSignals(true);
-        ui->street_sign_items_cmbbox->setCurrentIndex(eStreetSigns::NONE);
-        ui->street_sign_items_cmbbox->blockSignals(old);
-        ui->editor_x_pos->setText("");
-        ui->editor_y_pos->setText("");
-        ui->street_sign_items_cmbbox->setEnabled(false);
-        ui->editor_remove_streetsign->setEnabled(false);
-    }
-    colorLanesOfInterest();
-}
-
-void MainWindow::updateSelectedSign(int state) {
-    if (selected_sign != nullptr) {
-        selected_sign->sign = eStreetSigns(state);
-        for (auto item: signs_filter->childItems()) {
-            auto sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-            if (sign_item->isEqual(selected_sign)) {
-                delete item;
-                addSign(selected_sign, selected_lane);
-                break;
-            }
-        }
-        setEditingMode(ui->editor_checkbox->checkState());
-        colorLanesOfInterest();
-    }
-}
-
-void MainWindow::removeSelectedSign() {
-    if (selected_lane != nullptr && selected_sign != nullptr) {
-        selected_lane->removeSign(selected_sign);
-        for (auto item: signs_filter->childItems()) {
-            auto sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-            if (sign_item->isEqual(selected_sign)) {
-                delete item;
-                break;
-            }
-        }
-        updateSignEditor(nullptr, nullptr);
-    }
-}
 
 void MainWindow::setSignRotations(double angle) {
     for (auto sign: signs_filter->childItems()) {
@@ -984,5 +951,188 @@ void MainWindow::setupNearfieldGridMap() {
     nearfield_map_filter->setPos(car_width/2 + GRIDMAP_WIDTH/2,car_height/2 + GRIDMAP_HEIGHT/2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
     nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());
     nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent,true);
+}
+
+void MainWindow::handleMapPushClick(){
+    ui->statusbar->showMessage("Handle Map Push Click!");
+
+    //open dialog
+    fileName = QFileDialog::getOpenFileName(this, "Choose map XML");
+    qDebug() << "XML map file" << fileName << "selected for opening";
+    if (fileName.isNull()) return;
+
+    //TODO go on here
+//    //pack and send map
+//    ADTFMediaSample sample;
+//    std::ifstream is (fileName.toUtf8(), std::ifstream::binary | std::ifstream::ate);
+//    if (!is) {
+//        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileName);
+//        return;
+//    }
+//    sample.length = is.tellg();
+//    is.seekg(0);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "MapXML";
+//    sample.mediaType = "";
+//    sample.streamTime = 0;
+//    is.read(sample.data.get(), sample.length);
+//    this->networkClient->send(sample);
+//
+//    ContentManager &contentManager = ContentManager::getInstance();
+//    contentManager.clear();
+//    contentManager.importFromXml(fileName.toUtf8());
+//
+//    this->updateMap();
+//    NavigationHelper::makeMapGraph();
+
+
+
+    mapreceived = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleCarConfigLoadClick(){
+    ui->statusbar->showMessage("Handle Car Config Load Click!");
+
+    //open dialog
+
+    //send map via
+
+    carconfselected = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleCarConfigPushClick(){
+    ui->statusbar->showMessage("Handle Car Config Push Click!");
+
+    //open dialog
+
+    //send map via
+
+    carconfreceived = true;
+    ready = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleRouteInfoPushClick(){
+    ui->statusbar->showMessage("Handle Route Info Push Click!");
+
+    //open dialog
+
+    //send map via
+
+    routeinforreceived = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStartADClick(){
+    ui->statusbar->showMessage("Handle Start AD Click!");
+
+    //open dialog
+
+    //send map via
+
+
+    ad_running = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStartRCClick(){
+    ui->statusbar->showMessage("Handle Start RC Click!");
+
+    //open dialog
+
+    //send map via
+
+
+    rc_running = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStopClick(){
+    ui->statusbar->showMessage("Handle Stop Click!");
+
+    //open dialog
+
+    //send map via
+
+
+    ad_running = false;
+    rc_running = false;
+
+    emit(guiUpdated());
+}
+
+void MainWindow::handleAbortClick(){
+    ui->statusbar->showMessage("Handle Abort Click!");
+
+    //open dialog
+
+    //send map via
+
+    resetControlTabBools();
+    initialization = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::updateControlTab() {
+    //update car state
+    if(state != tState::NONE){
+        ui->state_val_label->setText(QString::fromStdString(tStateMap[state]));
+    }
+
+    //update map filename
+    if(fileName != nullptr){
+        ui->map_xml_val_label->setText(fileName);
+    }
+
+    //update car config filename
+    if(carConfig != nullptr){
+        ui->car_config_val_label->setText(carConfig);
+    }
+
+    //update car x and y
+    if(carConfig != nullptr){
+        //TODO load information for Car config object
+
+        ui->car_x_val_edit->setText(QString::fromStdString("13"));
+        ui->car_x_val_edit->setText(QString::fromStdString("37"));
+    }
+
+
+    //manage control tab buttons
+    ui->map_load_button->setEnabled(initialization);
+    ui->car_config_load_button->setEnabled(mapreceived);
+    ui->abort_button->setEnabled(mapreceived);
+    ui->car_config_push_button->setEnabled(carconfselected);
+    ui->navi_route_push_button->setEnabled(carconfreceived);
+    ui->start_rc_button->setEnabled(ready);
+    ui->start_ad_button->setEnabled(routeinforreceived);
+    ui->running_stop_button->setEnabled(ad_running || rc_running);
+    if(emergency){
+        ui->map_load_button->setEnabled(false);
+        ui->car_config_load_button->setEnabled(false);
+        ui->car_config_push_button->setEnabled(false);
+        ui->navi_route_push_button->setEnabled(false);
+        ui->start_ad_button->setEnabled(false);
+        ui->start_rc_button->setEnabled(false);
+        ui->running_stop_button->setEnabled(false);
+        ui->abort_button->setEnabled(false);
+    }
+
+
+}
+
+void MainWindow::resetControlTabBools() {
+    initialization = false;
+    mapreceived = false;
+    carconfselected = false;
+    carconfreceived = false;
+    ready = false;
+    rc_running = false;
+    routeinforreceived = false;
+    ad_running = false;
+    emergency = false;
 }
 

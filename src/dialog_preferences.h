@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "ui_dialog_preferences.h"
+#include "build/UNIAutonomRemoteGUI_autogen/include/ui_dialog_preferences.h"
 
 class PreferencesDialog : public QDialog, public Ui_dialog_preferences {
     Q_OBJECT

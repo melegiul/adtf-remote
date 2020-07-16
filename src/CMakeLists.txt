@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.0)
-project(autonomous_controller)
+project(uniautonom_remotegui)
 
 set(CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
@@ -7,6 +7,8 @@ set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
+
+set(ADTF_DIR /opt/adtf/2.14.3)
 
 find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
 find_package(ADTF REQUIRED)
@@ -16,7 +18,7 @@ include_directories(.)
 include_directories(include)
 include_directories(/usr/local/include/opencv4)
 
-adtf_add_executable(AutonomousController
+adtf_add_executable(UNIAutonomRemoteGUI
     main.cpp
     mainwindow.cpp
     mainwindow.ui
@@ -35,6 +37,7 @@ adtf_add_executable(AutonomousController
     adtf_converters/trapezoid.cpp
     adtf_converters/detectedline.cpp
     adtf_converters/nearfieldgridmap.cpp
+    adtf_converters/remoteStateMsg.cpp
 
     CustomGraphicsItems/NearfieldMapItem.cpp
     CustomGraphicsItems/SpecialMarkingItem.cpp
@@ -74,4 +77,4 @@ adtf_add_executable(AutonomousController
     src/NearfieldGrid/MapTreeNode.cpp
 )
 
-target_link_libraries(AutonomousController Qt5::Widgets Qt5::Network ${OpenCV_LIBS})
+target_link_libraries(UNIAutonomRemoteGUI Qt5::Widgets Qt5::Network ${OpenCV_LIBS})

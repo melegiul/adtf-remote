@@ -1,7 +1,6 @@
 #include <memory>
 
 struct ADTFMediaSample;
-struct tNearfieldGridMapArray;
 
 
 namespace adtf_converter {

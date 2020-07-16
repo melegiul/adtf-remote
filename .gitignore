@@ -1,8 +1,16 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
+# symlinks
 src/include
 src/src
+
+# build directories
+src/build
+src/cmake-build-debug
+
+# ide related
+src/.idea
 
 *~
 *.autosave

@@ -51,10 +51,10 @@ adtf_add_executable(AutonomousController
     CustomGraphicsItems/NavigationMarkerItem.cpp
     CustomGraphicsItems/TreeNodeItem.cpp
 
-    Navigation/Vector2.cpp
-    Navigation/MapGraph.cpp
-    Navigation/NavigationHelper.cpp
-    Navigation/Helper.cpp
+    include/Navigation/Vector2.cpp
+    include/Navigation/MapGraph.cpp
+    include/Navigation/NavigationHelper.cpp
+    include/Navigation/Helper.cpp
 
     include/Map/Node.cpp
     include/Map/Crossing.cpp

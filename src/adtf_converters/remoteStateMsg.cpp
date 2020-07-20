@@ -8,9 +8,23 @@ using namespace adtf;
 
 static const std::string mediaType = "tRemoteStateMsg";
 static const char *mediaDescription = R"(
-                                      <struct alignment="1" name="tRemoteStateMsg" version="1">
-                                        <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="state" type="tFilterState" />
-                                      </struct>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<adtf:ddl xmlns:adtf="adtf">
+    <enums>
+        <enum name="tState" type="tUInt32">
+            <element name="NONE" value="0" />
+            <element name="INITIALIZATION" value="100" />
+            <element name="READY" value="110" />
+            <element name="AD_RUNNING" value="120" />
+            <element name="RC_RUNNING" value="130" />
+            <element name="EMERGENCY" value="140" />
+        </enum>
+        <structs>
+            <struct alignment="1" name="tRemoteStateMsg" version="1">
+                <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="state" type="tState" />
+            </struct>
+        </structs>
+</adtf:ddl>
                                    )";
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
@@ -21,6 +35,7 @@ std::unique_ptr<tRemoteStateMsg> adtf_converter::from_network::remoteStateMsg(co
         pCoderInitialized = true;
     }
 
+    //TODO adapt to user_structs.h
     assert(sample.mediaType == mediaType);
     pCoder->Begin(sample.data.get(), sample.length);
 

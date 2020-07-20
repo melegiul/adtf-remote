@@ -5,7 +5,7 @@
 #include <QString>
 
 #include "adtfmediasample.h"
-#include "build/UNIAutonomRemoteGUI_autogen/include/ui_mainwindow.h"
+#include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
 
 class NetworkClient;
@@ -45,7 +45,6 @@ public:
     ~MainWindow();
 
 public slots:
-    void openMapXML();
     void openPreferences();
     void connectNetwork();
     void disconnectNetwork();
@@ -62,8 +61,8 @@ private:
     //control tab related
     tState state = tState::NONE;
     std::map<tState, std::string> tStateMap;
-    QString fileName = nullptr;
-    QString carConfig = nullptr;
+    QString fileNameMap = nullptr;
+    QString fileNameCarConfig = nullptr;
     bool mapreceived = false;
     bool carconfselected = false;
     bool carconfreceived = false;
@@ -101,7 +100,9 @@ private:
     void checkAllTrees(Qt::CheckState st);
     void clearAllNavMarkerItems();
     void buildNavigationMarkerItemsFromXmlList();
-    void resetControlTabBools();
+    void processLogMsg(tLogMsg &logMsg);
+    void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
+    void resetControlTabVals();
 
 signals:
     void nearfieldGridMapUpdated();
@@ -135,14 +136,23 @@ private slots:
     void calculateRoute();
     void exportNavMarker();
     void importNavMarker();
+    void handleLogLevelSelection();
+    void handleLogLevelACK();
     void handleMapPushClick();
+    void handleMapPushACK();
     void handleCarConfigLoadClick();
     void handleCarConfigPushClick();
+    void handleCarConfigPushACK();
     void handleRouteInfoPushClick();
+    void handleRouteInfoPushACK();
     void handleStartADClick();
+    void handleStartADACK();
     void handleStartRCClick();
+    void handleStartRCACK();
     void handleStopClick();
+    void handleStopACK();
     void handleAbortClick();
+    void handleAbortACK();
 
 
 private:

@@ -140,14 +140,14 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="speed_label">
              <property name="text">
               <string>Speed</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="3" column="1">
             <widget class="QLabel" name="speed_val_label">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -157,14 +157,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QLabel" name="orientation_label">
              <property name="text">
               <string>Orientation</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="4" column="1">
             <widget class="QLabel" name="orientation_val_label">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -174,14 +174,14 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="5" column="0">
             <widget class="QLabel" name="position_x_label">
              <property name="text">
               <string>Position X</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
+           <item row="5" column="1">
             <widget class="QLabel" name="position_x_val_label">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -191,14 +191,14 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="6" column="0">
             <widget class="QLabel" name="position_y_label">
              <property name="text">
               <string>Position Y</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
+           <item row="6" column="1">
             <widget class="QLabel" name="position_y_val_label">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -206,6 +206,43 @@
              <property name="text">
               <string>-</string>
              </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="loglevel_label">
+             <property name="text">
+              <string>LogLevel</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="loglevel_combo">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="currentText">
+              <string>DEBUG</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>ERROR</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>WARNING</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>INFO</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>DEBUG</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>

@@ -15,6 +15,7 @@
 #include "adtf_converters/detectedline.h"
 #include "adtf_converters/nearfieldgridmap.h"
 #include "adtf_converters/remoteStateMsg.h"
+#include "adtf_converters/logMsg.h"
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -65,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // odometry update with updateCar trigger
 
     connect(this, SIGNAL(guiUpdated()), this, SLOT(updateControlTab()));
+    connect(ui->loglevel_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelSelection()));
     connect(ui->map_load_button, SIGNAL(clicked()), this, SLOT(handleMapPushClick()));
     connect(ui->car_config_load_button, SIGNAL(clicked()), this, SLOT(handleCarConfigLoadClick()));
     connect(ui->car_config_push_button, SIGNAL(clicked()), this, SLOT(handleCarConfigPushClick()));
@@ -127,35 +129,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::openMapXML() {
-    QString fileName = QFileDialog::getOpenFileName(this, "Choose map XML");
-    qDebug() << "XML map file" << fileName << "selected for opening";
-    if (fileName.isNull()) return;
-
-    ADTFMediaSample sample;
-    std::ifstream is (fileName.toUtf8(), std::ifstream::binary | std::ifstream::ate);
-    if (!is) {
-        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileName);
-        return;
-    }
-    sample.length = is.tellg();
-    is.seekg(0);
-
-    sample.data.reset(new char[sample.length]);
-    sample.pinName = "MapXML";
-    sample.mediaType = "";
-    sample.streamTime = 0;
-    is.read(sample.data.get(), sample.length);
-    this->networkClient->send(sample);
-
-    ContentManager &contentManager = ContentManager::getInstance();
-    contentManager.clear();
-    contentManager.importFromXml(fileName.toUtf8());
-
-    this->updateMap();
-    NavigationHelper::makeMapGraph();
-}
-
 void MainWindow::openPreferences() {
     PreferencesDialog prefDialog(this);
     prefDialog.exec();
@@ -168,11 +141,6 @@ void MainWindow::connectNetwork()
     uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
-
-    //FIXME Just for development
-    initialization = true;
-    emit(guiUpdated());
-
 }
 
 void MainWindow::disconnectNetwork()
@@ -186,7 +154,7 @@ void MainWindow::networkConnected() {
     ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
     ui->connection_val_label->setText(QString::fromStdString("connected"));
     ui->connection_val_label->setStyleSheet("QLabel { background-color : green}");
-    initialization = true;
+
     emit(guiUpdated());
 }
 
@@ -195,7 +163,7 @@ void MainWindow::networkDisconnected() {
     ui->actionConnect->setEnabled(true);
     ui->connection_val_label->setText(QString::fromStdString("not connected"));
     ui->connection_val_label->setStyleSheet("QLabel { background-color : red}");
-    resetControlTabBools();
+    resetControlTabVals();
     emit(guiUpdated());
 }
 
@@ -217,16 +185,50 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "state" && sample.mediaType == "tRemoteStateMsg") {
         std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
         this->setCarState(*statemsg);
+        this->processRemoteStateMsg(*statemsg);
     } else if (sample.pinName == "log" && sample.mediaType == "tLogMsg") {
-
+        std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
+        this->processLogMsg(*logmsg);
     }
-
     //FIXME concrete pinNames and Datatypes to be set
     //TODO add new data Pins here
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
     ui->statusbar->showMessage(errorMsg);
+}
+
+void MainWindow::processRemoteStateMsg(tRemoteStateMsg & rmtStateMsg){
+    if(rmtStateMsg.state == tState::INITIALIZATION) {
+        handleAbortACK();
+    } else if (rmtStateMsg.state == tState::READY) {
+        handleStopACK();
+    } else if (rmtStateMsg.state == tState::AD_RUNNING) {
+        handleStartADACK();
+    } else if (rmtStateMsg.state == tState::RC_RUNNING) {
+        handleStartRCACK();
+    } else if (rmtStateMsg.state == tState::EMERGENCY) {
+        //TODO
+    } else {
+        //default case
+    }
+}
+
+void MainWindow::processLogMsg(tLogMsg &logMsg){
+    if(logMsg.filterLogType == tFilterLogType::ACK){
+        if(logMsg.uniaFilter == tUniaFilter::STATEMACHINE){
+            if(logMsg.logContext == tLogContext::NONE){
+                handleLogLevelACK();
+            } else if(logMsg.logContext == tLogContext::MAP){
+                handleMapPushACK();
+            } else if(logMsg.logContext == tLogContext::AC){
+                handleCarConfigPushACK();
+            } else if(logMsg.logContext == tLogContext::RI){
+                handleRouteInfoPushACK();
+            }
+        }
+    }
+    //TODO handle log in general
 }
 
 
@@ -705,7 +707,7 @@ void MainWindow::setNearfieldgridmap(tNearfieldGridMapArray &root) {
 }
 
 void MainWindow::setCarState(tRemoteStateMsg &statemsg) {
-    state = statemsg.filterState;
+    state = statemsg.state;
     emit(guiUpdated());
 }
 
@@ -953,40 +955,86 @@ void MainWindow::setupNearfieldGridMap() {
     nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent,true);
 }
 
+void MainWindow::handleLogLevelSelection(){
+    ui->statusbar->showMessage("Handle Loglevel Selection!");
+
+    //determine the loglevel
+    tFilterLogType loglevel = tFilterLogType::NONE;
+    QString text = ui->loglevel_combo->currentText();
+    if(text == "DEBUG"){
+        loglevel = tFilterLogType::DEBUG;
+    }else if (text == "INFO") {
+        loglevel = tFilterLogType::INFO;
+    } else if (text == "WARNING") {
+        loglevel = tFilterLogType::WARNING;
+    } else if (text == "ERROR"){
+        loglevel = tFilterLogType::ERROR;
+    }
+
+    //send Loglevel set command
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::NONE, loglevel, 0);
+    sample.length = sizeof(command);
+
+    //TODO check validity of code fragment
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+
+    //TODO DEVELOPMENT
+    handleLogLevelACK();
+}
+
+void MainWindow::handleLogLevelACK() {
+    ui->statusbar->showMessage("Handle Loglevel ACK!");
+
+    resetControlTabVals();
+    initialization = true;
+    emit(guiUpdated());
+
+}
+
 void MainWindow::handleMapPushClick(){
     ui->statusbar->showMessage("Handle Map Push Click!");
 
     //open dialog
-    fileName = QFileDialog::getOpenFileName(this, "Choose map XML");
-    qDebug() << "XML map file" << fileName << "selected for opening";
-    if (fileName.isNull()) return;
+    fileNameMap = QFileDialog::getOpenFileName(this, "Choose map XML");
+    qDebug() << "XML map file" << fileNameMap << "selected for opening";
+    if (fileNameMap.isNull()) return;
 
-    //TODO go on here
-//    //pack and send map
-//    ADTFMediaSample sample;
-//    std::ifstream is (fileName.toUtf8(), std::ifstream::binary | std::ifstream::ate);
-//    if (!is) {
-//        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileName);
-//        return;
-//    }
-//    sample.length = is.tellg();
-//    is.seekg(0);
-//
-//    sample.data.reset(new char[sample.length]);
-//    sample.pinName = "MapXML";
-//    sample.mediaType = "";
-//    sample.streamTime = 0;
-//    is.read(sample.data.get(), sample.length);
-//    this->networkClient->send(sample);
-//
-//    ContentManager &contentManager = ContentManager::getInstance();
-//    contentManager.clear();
-//    contentManager.importFromXml(fileName.toUtf8());
-//
-//    this->updateMap();
-//    NavigationHelper::makeMapGraph();
+    //pack and send map
+    ADTFMediaSample sample;
+    std::ifstream is (fileNameMap.toUtf8(), std::ifstream::binary | std::ifstream::ate);
+    if (!is) {
+        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileNameMap);
+        return;
+    }
+    sample.length = is.tellg();
+    is.seekg(0);
 
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "MapXML";
+    sample.mediaType = "";
+    sample.streamTime = 0;
+    is.read(sample.data.get(), sample.length);
+    this->networkClient->send(sample);
 
+    //TODO DEVELOPMENT
+    handleMapPushACK();
+}
+
+void MainWindow::handleMapPushACK(){
+    ui->statusbar->showMessage("Handle Map Push ACK!");
+
+    ContentManager &contentManager = ContentManager::getInstance();
+    contentManager.clear();
+    contentManager.importFromXml(fileNameMap.toUtf8());
+
+    this->updateMap();
+    NavigationHelper::makeMapGraph();
 
     mapreceived = true;
     emit(guiUpdated());
@@ -996,6 +1044,9 @@ void MainWindow::handleCarConfigLoadClick(){
     ui->statusbar->showMessage("Handle Car Config Load Click!");
 
     //open dialog
+    fileNameCarConfig = QFileDialog::getOpenFileName(this, "Choose a Car Config File");
+    qDebug() << "Car config file" << fileNameCarConfig << "selected for opening";
+    if (fileNameCarConfig.isNull()) return;
 
     //send map via
 
@@ -1006,21 +1057,34 @@ void MainWindow::handleCarConfigLoadClick(){
 void MainWindow::handleCarConfigPushClick(){
     ui->statusbar->showMessage("Handle Car Config Push Click!");
 
-    //open dialog
+    //send car config values
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleCarConfigPushACK();
+}
+
+void MainWindow::handleCarConfigPushACK() {
+    ui->statusbar->showMessage("Handle Car Config Push ACK!");
 
     carconfreceived = true;
     ready = true;
     emit(guiUpdated());
+
 }
 
 void MainWindow::handleRouteInfoPushClick(){
     ui->statusbar->showMessage("Handle Route Info Push Click!");
 
-    //open dialog
+    //send route info
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleRouteInfoPushACK();
+}
+
+void MainWindow::handleRouteInfoPushACK() {
+    ui->statusbar->showMessage("Handle Route Info Push ACK!");
 
     routeinforreceived = true;
     emit(guiUpdated());
@@ -1029,10 +1093,15 @@ void MainWindow::handleRouteInfoPushClick(){
 void MainWindow::handleStartADClick(){
     ui->statusbar->showMessage("Handle Start AD Click!");
 
-    //open dialog
+    //send start ad signal
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleStartADACK();
+}
 
+void MainWindow::handleStartADACK() {
+    ui->statusbar->showMessage("Handle Start AD ACK!");
 
     ad_running = true;
     emit(guiUpdated());
@@ -1041,10 +1110,15 @@ void MainWindow::handleStartADClick(){
 void MainWindow::handleStartRCClick(){
     ui->statusbar->showMessage("Handle Start RC Click!");
 
-    //open dialog
+    //send start RC signal
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleStartRCACK();
+}
 
+void MainWindow::handleStartRCACK() {
+    ui->statusbar->showMessage("Handle Start RC ACK!");
 
     rc_running = true;
     emit(guiUpdated());
@@ -1053,10 +1127,15 @@ void MainWindow::handleStartRCClick(){
 void MainWindow::handleStopClick(){
     ui->statusbar->showMessage("Handle Stop Click!");
 
-    //open dialog
+    //send stop signal
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleStopACK();
+}
 
+void MainWindow::handleStopACK() {
+    ui->statusbar->showMessage("Handle Stop ACK!");
 
     ad_running = false;
     rc_running = false;
@@ -1067,11 +1146,17 @@ void MainWindow::handleStopClick(){
 void MainWindow::handleAbortClick(){
     ui->statusbar->showMessage("Handle Abort Click!");
 
-    //open dialog
+    //send abort signal
+    //TODO
 
-    //send map via
+    //TODO DEVELOPMENT
+    handleAbortACK();
+}
 
-    resetControlTabBools();
+void MainWindow::handleAbortACK() {
+    ui->statusbar->showMessage("Handle Abort ACK!");
+
+    resetControlTabVals();
     initialization = true;
     emit(guiUpdated());
 }
@@ -1080,28 +1165,37 @@ void MainWindow::updateControlTab() {
     //update car state
     if(state != tState::NONE){
         ui->state_val_label->setText(QString::fromStdString(tStateMap[state]));
+    }else{
+        ui->state_val_label->setText(QString::fromStdString("-"));
     }
 
     //update map filename
-    if(fileName != nullptr){
-        ui->map_xml_val_label->setText(fileName);
+    if(fileNameMap != nullptr){
+        ui->map_xml_val_label->setText(fileNameMap);
+    }else{
+        ui->map_xml_val_label->setText("-");
     }
 
     //update car config filename
-    if(carConfig != nullptr){
-        ui->car_config_val_label->setText(carConfig);
+    if(fileNameCarConfig != nullptr){
+        ui->car_config_val_label->setText(fileNameCarConfig);
+    }else{
+        ui->car_config_val_label->setText("-");
     }
 
     //update car x and y
-    if(carConfig != nullptr){
+    if(fileNameCarConfig != nullptr){
         //TODO load information for Car config object
-
         ui->car_x_val_edit->setText(QString::fromStdString("13"));
-        ui->car_x_val_edit->setText(QString::fromStdString("37"));
+        ui->car_y_val_edit->setText(QString::fromStdString("37"));
+    }else{
+        ui->car_x_val_edit->setText(QString::fromStdString("-"));
+        ui->car_y_val_edit->setText(QString::fromStdString("-"));
     }
 
 
     //manage control tab buttons
+    ui->loglevel_combo->setEnabled(!mapreceived);
     ui->map_load_button->setEnabled(initialization);
     ui->car_config_load_button->setEnabled(mapreceived);
     ui->abort_button->setEnabled(mapreceived);
@@ -1121,10 +1215,9 @@ void MainWindow::updateControlTab() {
         ui->abort_button->setEnabled(false);
     }
 
-
 }
 
-void MainWindow::resetControlTabBools() {
+void MainWindow::resetControlTabVals() {
     initialization = false;
     mapreceived = false;
     carconfselected = false;
@@ -1134,5 +1227,9 @@ void MainWindow::resetControlTabBools() {
     routeinforreceived = false;
     ad_running = false;
     emergency = false;
+
+    state =tState::NONE;
+    fileNameMap = nullptr;
+    fileNameCarConfig = nullptr;
 }
 

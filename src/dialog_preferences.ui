@@ -14,13 +14,14 @@
    <string>Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="preferences-desktop"/>
+   <iconset theme="preferences-desktop">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="general_tab">
       <attribute name="title">
@@ -149,28 +150,24 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="car_config_label">
            <property name="text">
             <string>Config</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Dummy</string>
-           </property>
-          </widget>
+          <widget class="QLineEdit" name="car_config_edit_label"/>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="load_car_config_button">
            <property name="text">
             <string>Load Config</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="save_car_config_button">
            <property name="text">
             <string>Save Config</string>
            </property>
@@ -198,5 +195,38 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>bb</sender>
+   <signal>accepted()</signal>
+   <receiver>dialog_preferences</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>313</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bb</sender>
+   <signal>rejected()</signal>
+   <receiver>dialog_preferences</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>313</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

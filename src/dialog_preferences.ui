@@ -157,19 +157,16 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="car_config_edit_label"/>
+          <widget class="QLineEdit" name="car_config_edit_label">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="load_car_config_button">
            <property name="text">
             <string>Load Config</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="save_car_config_button">
-           <property name="text">
-            <string>Save Config</string>
            </property>
           </widget>
          </item>

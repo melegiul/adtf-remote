@@ -48,7 +48,6 @@ public slots:
     void openPreferences();
     void connectNetwork();
     void disconnectNetwork();
-
     void networkConnected();
     void networkDisconnected();
     void networkReceived(ADTFMediaSample sample);
@@ -103,6 +102,8 @@ private:
     void processLogMsg(tLogMsg &logMsg);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();
+
+    void sendtSignalValue();
 
 signals:
     void nearfieldGridMapUpdated();
@@ -167,6 +168,9 @@ private:
     // TODO
     int car_height = 523;
     int car_width = 250;
+    int car_init_x;
+    int car_init_y;
+    int car_init_orientation;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;

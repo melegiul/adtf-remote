@@ -43,9 +43,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         {tState::EMERGENCY, "Emergency"}
     };
     QSettings settings;
-    this->car_height = settings.value("car/length", 400).toInt();
-    this->car_width = settings.value("car/width", 240).toInt();
     int ui_background = settings.value("ui/background", 180).toInt();
+
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+    this->car_height = carSettings.value("car/length", 400).toInt();
+    this->car_width = carSettings.value("car/width", 240).toInt();
 
     ui->setupUi(this);
 
@@ -163,6 +165,7 @@ void MainWindow::networkDisconnected() {
     ui->actionConnect->setEnabled(true);
     ui->connection_val_label->setText(QString::fromStdString("not connected"));
     ui->connection_val_label->setStyleSheet("QLabel { background-color : red}");
+    ui->loglevel_combo->setEnabled(false);
     resetControlTabVals();
     emit(guiUpdated());
 }
@@ -1021,9 +1024,6 @@ void MainWindow::handleMapPushClick(){
     sample.streamTime = 0;
     is.read(sample.data.get(), sample.length);
     this->networkClient->send(sample);
-
-    //TODO DEVELOPMENT
-    handleMapPushACK();
 }
 
 void MainWindow::handleMapPushACK(){
@@ -1048,7 +1048,12 @@ void MainWindow::handleCarConfigLoadClick(){
     qDebug() << "Car config file" << fileNameCarConfig << "selected for opening";
     if (fileNameCarConfig.isNull()) return;
 
-    //send map via
+    QSettings carSettings(QString::fromStdString(fileNameCarConfig.toStdString()), QSettings::IniFormat);
+    this->car_height = carSettings.value("car/length", 400).toInt();
+    this->car_width = carSettings.value("car/width", 240).toInt();
+    this->car_init_x = carSettings.value("car/init_x", 200).toInt();
+    this->car_init_y = carSettings.value("car/init_y", 200).toInt();
+    this->car_init_orientation = carSettings.value("car/init_orientation", 1).toInt();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1185,14 +1190,14 @@ void MainWindow::updateControlTab() {
 
     //update car x and y
     if(fileNameCarConfig != nullptr){
-        //TODO load information for Car config object
-        ui->car_x_val_edit->setText(QString::fromStdString("13"));
-        ui->car_y_val_edit->setText(QString::fromStdString("37"));
+        ui->car_x_val_edit->setText(""+this->car_init_x);
+        ui->car_y_val_edit->setText(""+this->car_init_y);
+        ui->car_orientation_val_edit->setText(""+this->car_init_orientation);
     }else{
         ui->car_x_val_edit->setText(QString::fromStdString("-"));
         ui->car_y_val_edit->setText(QString::fromStdString("-"));
+        ui->car_orientation_val_edit->setText(QString::fromStdString("-"));
     }
-
 
     //manage control tab buttons
     ui->loglevel_combo->setEnabled(!mapreceived);
@@ -1233,3 +1238,16 @@ void MainWindow::resetControlTabVals() {
     fileNameCarConfig = nullptr;
 }
 
+void MainWindow::sendtSignalValue() {
+//    //send Loglevel set command
+//    ADTFMediaSample sample;
+//    tSignalValue signal = tSignalValue();
+//    sample.length = sizeof(signal);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "tSignalValueSpeed";
+//    sample.mediaType = "tSignalValue";
+//    sample.streamTime = 0;
+//    memcpy(sample.data.get(), &signal, sample.length);
+//    this->networkClient->send(sample);
+}

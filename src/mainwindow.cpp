@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QSettings settings;
     int ui_background = settings.value("ui/background", 180).toInt();
 
-    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     this->car_height = carSettings.value("car/length", 400).toInt();
     this->car_width = carSettings.value("car/width", 240).toInt();
 
@@ -143,6 +143,9 @@ void MainWindow::connectNetwork()
     uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
+    
+    //TODO DEVELOPMENT
+    ui->loglevel_combo->setEnabled(true);
 }
 
 void MainWindow::disconnectNetwork()
@@ -1024,6 +1027,9 @@ void MainWindow::handleMapPushClick(){
     sample.streamTime = 0;
     is.read(sample.data.get(), sample.length);
     this->networkClient->send(sample);
+    
+    //TODO DEVELOPMENT
+    handleMapPushACK();
 }
 
 void MainWindow::handleMapPushACK(){
@@ -1044,16 +1050,16 @@ void MainWindow::handleCarConfigLoadClick(){
     ui->statusbar->showMessage("Handle Car Config Load Click!");
 
     //open dialog
-    fileNameCarConfig = QFileDialog::getOpenFileName(this, "Choose a Car Config File");
-    qDebug() << "Car config file" << fileNameCarConfig << "selected for opening";
+    fileNameCarConfig = QFileDialog::getOpenFileName(this, "Choose car configuration ini file");
+    qDebug() << "car configuration ini file" << fileNameCarConfig << "selected for opening";
     if (fileNameCarConfig.isNull()) return;
 
-    QSettings carSettings(QString::fromStdString(fileNameCarConfig.toStdString()), QSettings::IniFormat);
+    QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
     this->car_height = carSettings.value("car/length", 400).toInt();
     this->car_width = carSettings.value("car/width", 240).toInt();
-    this->car_init_x = carSettings.value("car/init_x", 200).toInt();
-    this->car_init_y = carSettings.value("car/init_y", 200).toInt();
-    this->car_init_orientation = carSettings.value("car/init_orientation", 1).toInt();
+    this->car_init_x = carSettings.value("odoinit/posx", 200).toInt();
+    this->car_init_y = carSettings.value("odoinit/posy", 200).toInt();
+    this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toInt();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1180,6 +1186,8 @@ void MainWindow::updateControlTab() {
     }else{
         ui->map_xml_val_label->setText("-");
     }
+    
+    
 
     //update car config filename
     if(fileNameCarConfig != nullptr){
@@ -1190,13 +1198,28 @@ void MainWindow::updateControlTab() {
 
     //update car x and y
     if(fileNameCarConfig != nullptr){
-        ui->car_x_val_edit->setText(""+this->car_init_x);
-        ui->car_y_val_edit->setText(""+this->car_init_y);
-        ui->car_orientation_val_edit->setText(""+this->car_init_orientation);
+        ui->car_x_val_edit->setText(QString::number(this->car_init_x));
+        ui->car_y_val_edit->setText(QString::number(this->car_init_y));
+        ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
     }else{
-        ui->car_x_val_edit->setText(QString::fromStdString("-"));
-        ui->car_y_val_edit->setText(QString::fromStdString("-"));
-        ui->car_orientation_val_edit->setText(QString::fromStdString("-"));
+    	if(mapreceived == true) {
+            QSettings settings;
+            QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+            this->car_height = carSettings.value("car/length", 400).toInt();
+            this->car_width = carSettings.value("car/width", 240).toInt();
+            this->car_init_x = carSettings.value("odoinit/posx", 200).toInt();
+            this->car_init_y = carSettings.value("odoinit/posy", 200).toInt();
+            this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toInt();
+        
+            ui->car_config_val_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
+            ui->car_x_val_edit->setText(QString::number(this->car_init_x));
+            ui->car_y_val_edit->setText(QString::number(this->car_init_y));
+            ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
+        } else {
+            ui->car_x_val_edit->setText(QString::fromStdString("-"));
+            ui->car_y_val_edit->setText(QString::fromStdString("-"));
+            ui->car_orientation_val_edit->setText(QString::fromStdString("-"));
+        }
     }
 
     //manage control tab buttons
@@ -1204,7 +1227,7 @@ void MainWindow::updateControlTab() {
     ui->map_load_button->setEnabled(initialization);
     ui->car_config_load_button->setEnabled(mapreceived);
     ui->abort_button->setEnabled(mapreceived);
-    ui->car_config_push_button->setEnabled(carconfselected);
+    ui->car_config_push_button->setEnabled(carconfselected || mapreceived);
     ui->navi_route_push_button->setEnabled(carconfreceived);
     ui->start_rc_button->setEnabled(ready);
     ui->start_ad_button->setEnabled(routeinforreceived);

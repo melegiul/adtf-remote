@@ -165,9 +165,8 @@ private:
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLine> detectedLine = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
-    // TODO
-    int car_height = 523;
-    int car_width = 250;
+    int car_height = 400;
+    int car_width = 240;
     int car_init_x;
     int car_init_y;
     int car_init_orientation;

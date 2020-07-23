@@ -38,13 +38,13 @@ static const char *mediaDescription = R"(
         </enum>
     </enums>
     <structs>
-        struct alignment="1" name="tLogMsg" version="1">
-            <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="timestamp" type="tUInt64" />
-            <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="logtype" type="tFilterLogType" />
-            <element alignment="1" arraysize="1" byteorder="LE" bytepos="12" name="filter" type="tUniaFilter" />
-            <element alignment="1" arraysize="1" byteorder="LE" bytepos="12" name="logcontext" type="tLogContext" />
-            <element alignment="1" arraysize="1" byteorder="LE" bytepos="16" name="payloadLength" type="tUInt32" />
-            <element alignment="1" arraysize="payloadLength" byteorder="LE" bytepos="20" name="ui8Data" type="tUInt8" />
+        <struct alignment="1" name="tLogMsg" version="1">
+           <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="timestamp" type="tUInt64" />
+           <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="logtype" type="tFilterLogType" />
+           <element alignment="1" arraysize="1" byteorder="LE" bytepos="12" name="filter" type="tUniaFilter" />
+           <element alignment="1" arraysize="1" byteorder="LE" bytepos="16" name="logcontext" type="tLogContext" />
+           <element alignment="1" arraysize="1" byteorder="LE" bytepos="20" name="payloadLength" type="tUInt32" />
+           <element alignment="1" arraysize="payloadLength" byteorder="LE" bytepos="24" name="ui8Data" type="tUInt8" />
         </struct>
     </structs>
 </adtf:ddl>

@@ -188,11 +188,11 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
-    } else if (sample.pinName == "state" && sample.mediaType == "tRemoteStateMsg") {
+    } else if (sample.pinName == "RemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
         std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
         this->setCarState(*statemsg);
         this->processRemoteStateMsg(*statemsg);
-    } else if (sample.pinName == "log" && sample.mediaType == "tLogMsg") {
+    } else if (sample.pinName == "RemoteLogMsgOut" && sample.mediaType == "tLogMsg") {
         std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
         this->processLogMsg(*logmsg);
     }
@@ -481,9 +481,9 @@ void MainWindow::updateCar() {
 
     //update car status messages
     ui->speed_val_label->setText(QString::fromStdString("to be done"));
-    ui->orientation_val_label->setText(QString::fromStdString(std::to_string((int) odo->orientation)));
-    ui->position_x_val_label->setText(QString::fromStdString(std::to_string((int) odo->pos.x)));
-    ui->position_y_val_label->setText(QString::fromStdString(std::to_string((int) odo->pos.y)));
+    ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
+    ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
+    ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
 
     car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
     car_filter->setRotation(-angle);
@@ -989,9 +989,6 @@ void MainWindow::handleLogLevelSelection(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
-
-    //TODO DEVELOPMENT
-    handleLogLevelACK();
 }
 
 void MainWindow::handleLogLevelACK() {
@@ -1027,9 +1024,6 @@ void MainWindow::handleMapPushClick(){
     sample.streamTime = 0;
     is.read(sample.data.get(), sample.length);
     this->networkClient->send(sample);
-    
-    //TODO DEVELOPMENT
-    handleMapPushACK();
 }
 
 void MainWindow::handleMapPushACK(){
@@ -1057,9 +1051,9 @@ void MainWindow::handleCarConfigLoadClick(){
     QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
     this->car_height = carSettings.value("car/length", 400).toInt();
     this->car_width = carSettings.value("car/width", 240).toInt();
-    this->car_init_x = carSettings.value("odoinit/posx", 200).toInt();
-    this->car_init_y = carSettings.value("odoinit/posy", 200).toInt();
-    this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toInt();
+    this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
+    this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
+    this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1207,9 +1201,9 @@ void MainWindow::updateControlTab() {
             QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
             this->car_height = carSettings.value("car/length", 400).toInt();
             this->car_width = carSettings.value("car/width", 240).toInt();
-            this->car_init_x = carSettings.value("odoinit/posx", 200).toInt();
-            this->car_init_y = carSettings.value("odoinit/posy", 200).toInt();
-            this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toInt();
+            this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
+            this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
+            this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
         
             ui->car_config_val_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
             ui->car_x_val_edit->setText(QString::number(this->car_init_x));

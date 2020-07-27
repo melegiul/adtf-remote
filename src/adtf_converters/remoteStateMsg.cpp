@@ -19,11 +19,12 @@ static const char *mediaDescription = R"(
             <element name="RC_RUNNING" value="130" />
             <element name="EMERGENCY" value="140" />
         </enum>
-        <structs>
-            <struct alignment="1" name="tRemoteStateMsg" version="1">
-                <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="state" type="tState" />
-            </struct>
-        </structs>
+    </enums>
+    <structs>
+       <struct alignment="1" name="tRemoteStateMsg" version="1">
+          <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="state" type="tState" />
+       </struct>
+    </structs>
 </adtf:ddl>
                                    )";
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();

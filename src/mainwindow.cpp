@@ -16,6 +16,7 @@
 #include "adtf_converters/nearfieldgridmap.h"
 #include "adtf_converters/remoteStateMsg.h"
 #include "adtf_converters/logMsg.h"
+#include "adtf_converters/speed.h"
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -144,12 +145,34 @@ void MainWindow::connectNetwork()
 
     this->networkClient->connectNetwork(host, port);
     
-    //TODO DEVELOPMENT
-    ui->loglevel_combo->setEnabled(true);
+    //send RemoteControlSignal Abort
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+    
 }
 
 void MainWindow::disconnectNetwork()
 {
+    //send RemoteControlSignal Abort
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+
     this->networkClient->disconnectNetwork();
 }
 
@@ -159,7 +182,7 @@ void MainWindow::networkConnected() {
     ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
     ui->connection_val_label->setText(QString::fromStdString("connected"));
     ui->connection_val_label->setStyleSheet("QLabel { background-color : green}");
-
+    ui->loglevel_combo->setEnabled(true);
     emit(guiUpdated());
 }
 
@@ -188,14 +211,17 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
-    } else if (sample.pinName == "RemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
+    } else if (sample.pinName == "RemoteMsgOut" && sample.mediaType == "tRemoteStateMsg") {
         std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
         this->setCarState(*statemsg);
         this->processRemoteStateMsg(*statemsg);
     } else if (sample.pinName == "RemoteLogMsgOut" && sample.mediaType == "tLogMsg") {
         std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
         this->processLogMsg(*logmsg);
-    }
+    } else if (sample.pinName == "SpeedOut" && sample.mediaType == "tSpeed") {
+        tSpeed speed = adtf_converter::from_network::speed(sample);
+        this->setCarSpeed(speed);
+    } 
     //FIXME concrete pinNames and Datatypes to be set
     //TODO add new data Pins here
 }
@@ -475,12 +501,13 @@ void MainWindow::setupDetectedLine() {
 
 void MainWindow::updateCar() {
     if (car_filter == nullptr) setupCar();
-    if (odo == nullptr) return;
+    if (odo == nullptr ) return;
+    if (speed == nullptr ) return;
     auto angle = odo->orientation * 180 / M_PI;
     if (angle < -0.5) angle += 360;
 
     //update car status messages
-    ui->speed_val_label->setText(QString::fromStdString("to be done"));
+    ui->speed_val_label->setText(QString::fromStdString(std::to_string((float) speed->combinedSpeed)));
     ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
     ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
     ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
@@ -689,6 +716,12 @@ void MainWindow::saveDialog() {
 void MainWindow::setCarOdometry(tCarOdometry &odo) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
     this->odo = &odo;
+    emit(carUpdated());
+}
+
+void MainWindow::setCarSpeed(tSpeed &speed) {
+    // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
+    this->speed = &speed;
     emit(carUpdated());
 }
 
@@ -982,7 +1015,6 @@ void MainWindow::handleLogLevelSelection(){
     tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::NONE, loglevel, 0);
     sample.length = sizeof(command);
 
-    //TODO check validity of code fragment
     sample.data.reset(new char[sample.length]);
     sample.pinName = "tRemoteCommandMsg";
     sample.mediaType = "tRemoteCommandMsg";
@@ -1054,6 +1086,7 @@ void MainWindow::handleCarConfigLoadClick(){
     this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
     this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
     this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+    //TODO extend to the updated 
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1063,7 +1096,12 @@ void MainWindow::handleCarConfigPushClick(){
     ui->statusbar->showMessage("Handle Car Config Push Click!");
 
     //send car config values
+    //send tCarSimulatorInitStruct
     //TODO
+    
+    //send tLaneDetectionFusionInitStruct
+    //TODO   
+
 
     //TODO DEVELOPMENT
     handleCarConfigPushACK();
@@ -1181,8 +1219,6 @@ void MainWindow::updateControlTab() {
         ui->map_xml_val_label->setText("-");
     }
     
-    
-
     //update car config filename
     if(fileNameCarConfig != nullptr){
         ui->car_config_val_label->setText(fileNameCarConfig);
@@ -1250,7 +1286,7 @@ void MainWindow::resetControlTabVals() {
     ad_running = false;
     emergency = false;
 
-    state =tState::NONE;
+    state = tState::NONE;
     fileNameMap = nullptr;
     fileNameCarConfig = nullptr;
 }

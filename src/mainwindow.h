@@ -75,6 +75,7 @@ private:
 // graphics import
 public:
     void setCarOdometry(tCarOdometry &odo);
+    void setCarSpeed(tSpeed &speed);
     void setTrapezoidCoords(tTrapezoid &coords);
     void setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine);
     void setNearfieldgridmap(tNearfieldGridMapArray &root);
@@ -162,6 +163,7 @@ private:
     ContentManager &manager = ContentManager::getInstance();
     GraphicsViewZoom *zoom_rotate_manager = nullptr;
     tCarOdometry *odo = nullptr;
+    tSpeed *speed = nullptr;
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLine> detectedLine = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;

@@ -39,6 +39,7 @@ adtf_add_executable(UNIAutonomRemoteGUI
     adtf_converters/nearfieldgridmap.cpp
     adtf_converters/remoteStateMsg.cpp
     adtf_converters/logMsg.cpp
+    adtf_converters/speed.cpp
 
     CustomGraphicsItems/NearfieldMapItem.cpp
     CustomGraphicsItems/SpecialMarkingItem.cpp

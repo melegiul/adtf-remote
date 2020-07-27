@@ -22,7 +22,7 @@ static const char *mediaDescription = R"(
     </enums>
     <structs>
        <struct alignment="1" name="tRemoteStateMsg" version="1">
-          <element alignment="1" arraysize="1" byteorder="LE" bytepos="4" name="state" type="tState" />
+          <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="state" type="tState" />
        </struct>
     </structs>
 </adtf:ddl>

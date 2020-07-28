@@ -75,7 +75,7 @@ private:
 // graphics import
 public:
     void setCarOdometry(tCarOdometry &odo);
-    void setCarSpeed(tSpeed &speed);
+    void setCarSpeed(tSpeed &speedy);
     void setTrapezoidCoords(tTrapezoid &coords);
     void setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine);
     void setNearfieldgridmap(tNearfieldGridMapArray &root);
@@ -103,7 +103,7 @@ private:
     void processLogMsg(tLogMsg &logMsg);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();
-
+    tCarConfigStruct prepareCarConfigStruct();
     void sendtSignalValue();
 
 signals:

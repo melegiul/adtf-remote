@@ -17,6 +17,7 @@ find_package(OpenCV REQUIRED)
 include_directories(.)
 include_directories(include)
 include_directories(/usr/local/include/opencv4)
+include_directories(build/UNIAutonomRemoteGUI_autogen/include)
 
 adtf_add_executable(UNIAutonomRemoteGUI
     main.cpp

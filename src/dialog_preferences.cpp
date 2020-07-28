@@ -9,6 +9,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
 {
     this->setupUi(this);
 
+    this->tabWidget->setCurrentIndex(0);
     connect(this, &PreferencesDialog::accepted, this, &PreferencesDialog::savePreferences);
     connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
 
@@ -36,7 +37,6 @@ void PreferencesDialog::showPreferences() {
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200).toInt());
     this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200).toInt());
-    this->sb_car_init_orientation->setValue(carSettings.value("odoinit/orientation", 1).toInt());
     this->sb_car_length->setValue(carSettings.value("car/length", 400).toInt());
     this->sb_car_width->setValue(carSettings.value("car/width", 240).toInt());
     this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300).toInt());

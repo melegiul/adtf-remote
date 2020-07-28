@@ -22,7 +22,7 @@ static const char *mediaDescription = R"(
     </structs>
 </adtf:ddl>
 )";
-static const uint length = 16;
+
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 

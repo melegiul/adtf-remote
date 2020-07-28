@@ -64,9 +64,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
     // control tab related code
-    // connection update with connection menu trigger
     connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
-    // odometry update with updateCar trigger
 
     connect(this, SIGNAL(guiUpdated()), this, SLOT(updateControlTab()));
     connect(ui->loglevel_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelSelection()));
@@ -146,32 +144,32 @@ void MainWindow::connectNetwork()
     this->networkClient->connectNetwork(host, port);
     
     //send RemoteControlSignal Abort
-    ADTFMediaSample sample;
-    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
-    sample.length = sizeof(command);
-
-    sample.data.reset(new char[sample.length]);
-    sample.pinName = "tRemoteCommandMsg";
-    sample.mediaType = "tRemoteCommandMsg";
-    sample.streamTime = 0;
-    memcpy(sample.data.get(), &command, sample.length);
-    this->networkClient->send(sample);
+//    ADTFMediaSample sample;
+//    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+//    sample.length = sizeof(command);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "tRemoteCommandMsg";
+//    sample.mediaType = "tRemoteCommandMsg";
+//    sample.streamTime = 0;
+//    memcpy(sample.data.get(), &command, sample.length);
+//    this->networkClient->send(sample);
     
 }
 
 void MainWindow::disconnectNetwork()
 {
     //send RemoteControlSignal Abort
-    ADTFMediaSample sample;
-    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
-    sample.length = sizeof(command);
-
-    sample.data.reset(new char[sample.length]);
-    sample.pinName = "tRemoteCommandMsg";
-    sample.mediaType = "tRemoteCommandMsg";
-    sample.streamTime = 0;
-    memcpy(sample.data.get(), &command, sample.length);
-    this->networkClient->send(sample);
+//    ADTFMediaSample sample;
+//    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+//    sample.length = sizeof(command);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "tRemoteCommandMsg";
+//    sample.mediaType = "tRemoteCommandMsg";
+//    sample.streamTime = 0;
+//    memcpy(sample.data.get(), &command, sample.length);
+//    this->networkClient->send(sample);
 
     this->networkClient->disconnectNetwork();
 }
@@ -219,8 +217,8 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
         std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
         this->processLogMsg(*logmsg);
     } else if (sample.pinName == "SpeedOut" && sample.mediaType == "tSpeed") {
-        tSpeed speed = adtf_converter::from_network::speed(sample);
-        this->setCarSpeed(speed);
+        tSpeed speedy = adtf_converter::from_network::speed(sample);
+        this->setCarSpeed(speedy);
     } 
     //FIXME concrete pinNames and Datatypes to be set
     //TODO add new data Pins here
@@ -719,10 +717,9 @@ void MainWindow::setCarOdometry(tCarOdometry &odo) {
     emit(carUpdated());
 }
 
-void MainWindow::setCarSpeed(tSpeed &speed) {
+void MainWindow::setCarSpeed(tSpeed &speedy) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
-    this->speed = &speed;
-    emit(carUpdated());
+    this->speed = &speedy;
 }
 
 
@@ -1010,6 +1007,20 @@ void MainWindow::handleLogLevelSelection(){
         loglevel = tFilterLogType::ERROR;
     }
 
+    if(!initialization){
+        ADTFMediaSample sample;
+        tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+        sample.length = sizeof(command);
+
+        sample.data.reset(new char[sample.length]);
+        sample.pinName = "tRemoteCommandMsg";
+        sample.mediaType = "tRemoteCommandMsg";
+        sample.streamTime = 0;
+        memcpy(sample.data.get(), &command, sample.length);
+        this->networkClient->send(sample);
+
+    }
+
     //send Loglevel set command
     ADTFMediaSample sample;
     tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::NONE, loglevel, 0);
@@ -1086,7 +1097,6 @@ void MainWindow::handleCarConfigLoadClick(){
     this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
     this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
     this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
-    //TODO extend to the updated 
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1095,16 +1105,17 @@ void MainWindow::handleCarConfigLoadClick(){
 void MainWindow::handleCarConfigPushClick(){
     ui->statusbar->showMessage("Handle Car Config Push Click!");
 
-    //send car config values
-    //send tCarSimulatorInitStruct
-    //TODO
-    
-    //send tLaneDetectionFusionInitStruct
-    //TODO   
+    //send tCarConfigStruct
+    ADTFMediaSample sample;
+    tCarConfigStruct config = prepareCarConfigStruct();
+    sample.length = sizeof(config);
 
-
-    //TODO DEVELOPMENT
-    handleCarConfigPushACK();
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tCarConfigStruct";
+    sample.mediaType = "tCarConfigStruct";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &config, sample.length);
+    this->networkClient->send(sample);
 }
 
 void MainWindow::handleCarConfigPushACK() {
@@ -1113,7 +1124,6 @@ void MainWindow::handleCarConfigPushACK() {
     carconfreceived = true;
     ready = true;
     emit(guiUpdated());
-
 }
 
 void MainWindow::handleRouteInfoPushClick(){
@@ -1137,10 +1147,16 @@ void MainWindow::handleStartADClick(){
     ui->statusbar->showMessage("Handle Start AD Click!");
 
     //send start ad signal
-    //TODO
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::START, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
 
-    //TODO DEVELOPMENT
-    handleStartADACK();
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 }
 
 void MainWindow::handleStartADACK() {
@@ -1154,10 +1170,16 @@ void MainWindow::handleStartRCClick(){
     ui->statusbar->showMessage("Handle Start RC Click!");
 
     //send start RC signal
-    //TODO
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::RC, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
 
-    //TODO DEVELOPMENT
-    handleStartRCACK();
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 }
 
 void MainWindow::handleStartRCACK() {
@@ -1171,10 +1193,16 @@ void MainWindow::handleStopClick(){
     ui->statusbar->showMessage("Handle Stop Click!");
 
     //send stop signal
-    //TODO
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::STOP, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
 
-    //TODO DEVELOPMENT
-    handleStopACK();
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 }
 
 void MainWindow::handleStopACK() {
@@ -1190,17 +1218,22 @@ void MainWindow::handleAbortClick(){
     ui->statusbar->showMessage("Handle Abort Click!");
 
     //send abort signal
-    //TODO
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
 
-    //TODO DEVELOPMENT
-    handleAbortACK();
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 }
 
 void MainWindow::handleAbortACK() {
     ui->statusbar->showMessage("Handle Abort ACK!");
 
     resetControlTabVals();
-    initialization = true;
     emit(guiUpdated());
 }
 
@@ -1291,16 +1324,32 @@ void MainWindow::resetControlTabVals() {
     fileNameCarConfig = nullptr;
 }
 
+tCarConfigStruct MainWindow::prepareCarConfigStruct() {
+    QSettings settings;
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+
+    tUInt32 length = carSettings.value("car/length", 400).toInt();
+    tUInt32 width = carSettings.value("car/width", 240).toInt();
+    cv::Point2f initpos = cv::Point2f(ui->car_x_val_edit->text().toFloat(), ui->car_y_val_edit->text().toFloat());
+    tFloat32 initorientation = ui->car_orientation_val_edit->text().toFloat();
+    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toFloat(), carSettings.value("carview/leftneary", 300).toFloat());
+    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toFloat(), carSettings.value("carview/leftfary", 300).toFloat());
+    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", -300).toFloat(), carSettings.value("carview/rightfary", 300).toFloat());
+    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", -300).toFloat(), carSettings.value("carview/rightneary", 300).toFloat());
+
+    tCarConfigStruct carConfigStruct = tCarConfigStruct(length, width, initpos, initorientation, traLeftNear, traLeftFar, traRightFar, traRightNear);
+    return carConfigStruct;
+}
+
 void MainWindow::sendtSignalValue() {
-//    //send Loglevel set command
 //    ADTFMediaSample sample;
-//    tSignalValue signal = tSignalValue();
-//    sample.length = sizeof(signal);
+//    tSignalValue command = tSignalValue(0);
+//    sample.length = sizeof(command);
 //
 //    sample.data.reset(new char[sample.length]);
-//    sample.pinName = "tSignalValueSpeed";
+//    sample.pinName = "tSignalValue";
 //    sample.mediaType = "tSignalValue";
 //    sample.streamTime = 0;
-//    memcpy(sample.data.get(), &signal, sample.length);
+//    memcpy(sample.data.get(), &command, sample.length);
 //    this->networkClient->send(sample);
 }

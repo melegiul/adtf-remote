@@ -227,7 +227,12 @@ void MainWindow::processRemoteStateMsg(tRemoteStateMsg & rmtStateMsg){
     if(rmtStateMsg.state == tState::INITIALIZATION) {
         handleAbortACK();
     } else if (rmtStateMsg.state == tState::READY) {
-        handleStopACK();
+        if(stopClick){
+            handleStopACK();
+            stopClick = false;
+        }else{
+            handleCarConfigPushACK();
+        }
     } else if (rmtStateMsg.state == tState::AD_RUNNING) {
         handleStartADACK();
     } else if (rmtStateMsg.state == tState::RC_RUNNING) {
@@ -1193,7 +1198,7 @@ void MainWindow::handleStartRCACK() {
 
 void MainWindow::handleStopClick(){
     ui->statusbar->showMessage("Handle Stop Click!");
-
+    stopClick = true;
     //send stop signal
     ADTFMediaSample sample;
     tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::STOP, tFilterLogType::NONE, 0);
@@ -1319,6 +1324,7 @@ void MainWindow::resetControlTabVals() {
     rc_running = false;
     routeinforreceived = false;
     ad_running = false;
+    stopClick = false;
     emergency = false;
 
     state = tState::NONE;

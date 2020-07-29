@@ -70,6 +70,7 @@ private:
     bool ready = false;
     bool ad_running = false;
     bool rc_running = false;
+    bool stopClick = false;
     bool emergency = false;
 
 // graphics import

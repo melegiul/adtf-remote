@@ -35,14 +35,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
-    std::map<tState, std::string> tStateMap = {
-        {tState::NONE, "None"},
-        {tState::INITIALIZATION, "Initialization"},
-        {tState::READY, "Ready"},
-        {tState::AD_RUNNING, "AD_Running"},
-        {tState::RC_RUNNING, "RC_Running"},
-        {tState::EMERGENCY, "Emergency"}
-    };
     QSettings settings;
     int ui_background = settings.value("ui/background", 180).toInt();
 

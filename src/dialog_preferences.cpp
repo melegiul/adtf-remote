@@ -35,8 +35,9 @@ void PreferencesDialog::showPreferences() {
     this->car_config_edit_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
     this->sb_background->setValue(settings.value("ui/background", 180).toInt());
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
-    this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200).toInt());
-    this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200).toInt());
+    this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200).toFloat());
+    this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200).toFloat());
+    this->sb_car_init_orientation->setValue(carSettings.value("odoinit/orientation", 1).toFloat());
     this->sb_car_length->setValue(carSettings.value("car/length", 400).toInt());
     this->sb_car_width->setValue(carSettings.value("car/width", 240).toInt());
     this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300).toInt());

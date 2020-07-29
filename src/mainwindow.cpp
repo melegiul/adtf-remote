@@ -394,7 +394,6 @@ void MainWindow::clearAndSetupStaticElements() {
     navMarker_filter->setZValue(3);
 
     scene->addItem(static_filter);
-    scene->addItem(navMarker_filter);
 }
 
 

@@ -6,131 +6,428 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
-    <height>236</height>
+    <width>628</width>
+    <height>460</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="lb_ipaddress">
-     <property name="text">
-      <string>IP Address</string>
+  <property name="windowIcon">
+   <iconset theme="preferences-desktop">
+    <normaloff>.</normaloff>.</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
+     <widget class="QWidget" name="general_tab">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="1" column="0">
+        <widget class="QLabel" name="lb_ipaddress">
+         <property name="text">
+          <string>IP Address</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="le_ipaddress">
+         <property name="text">
+          <string>127.0.0.1</string>
+         </property>
+         <property name="placeholderText">
+          <string>10.0.0.51</string>
+         </property>
+         <property name="clearButtonEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lb_port">
+         <property name="text">
+          <string>Port</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="sb_port">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>65535</number>
+         </property>
+         <property name="value">
+          <number>9546</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="visu_tab">
+      <attribute name="title">
+       <string>Visualization</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lb_background">
+         <property name="text">
+          <string>Background color (0 - 255)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="sb_background">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>180</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="car_config_tab">
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <attribute name="title">
+       <string>Car</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>572</width>
+            <height>560</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Initial Odometry</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_4">
+              <item row="0" column="0">
+               <widget class="QLabel" name="lb_car_init_pos_x">
+                <property name="text">
+                 <string>Position X</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="sb_car_init_pos_x">
+                <property name="maximum">
+                 <number>1000000</number>
+                </property>
+                <property name="value">
+                 <number>200</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="lb_car_init_pos_y">
+                <property name="text">
+                 <string>Position Y</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QSpinBox" name="sb_car_init_pos_y">
+                <property name="maximum">
+                 <number>1000000</number>
+                </property>
+                <property name="value">
+                 <number>200</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lb_car_init_orientation">
+                <property name="text">
+                 <string>Orientation</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="sb_car_init_orientation">
+                <property name="minimum">
+                 <number>-1</number>
+                </property>
+                <property name="maximum">
+                 <number>1</number>
+                </property>
+                <property name="singleStep">
+                 <number>1</number>
+                </property>
+                <property name="stepType">
+                 <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+                </property>
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>Car Parameters</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="lb_car_length">
+                <property name="text">
+                 <string>Length (mm)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="sb_car_length">
+                <property name="maximum">
+                 <number>45000</number>
+                </property>
+                <property name="value">
+                 <number>200</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="lb_car_width">
+                <property name="text">
+                 <string>Width (mm)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QSpinBox" name="sb_car_width">
+                <property name="maximum">
+                 <number>5000</number>
+                </property>
+                <property name="value">
+                 <number>120</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>Car View</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_5">
+              <item row="7" column="0">
+               <widget class="QLabel" name="lb_right_far_y">
+                <property name="text">
+                 <string>Right Far Y</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QSpinBox" name="sb_right_far_y">
+                <property name="maximum">
+                 <number>1000</number>
+                </property>
+                <property name="value">
+                 <number>600</number>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="lb_right_far_x">
+                <property name="text">
+                 <string>Right Far X</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QSpinBox" name="sb_right_far_x">
+                <property name="maximum">
+                 <number>500</number>
+                </property>
+                <property name="value">
+                 <number>300</number>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="lb_left_far_y">
+                <property name="text">
+                 <string>Left Far Y</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QSpinBox" name="sb_left_far_y">
+                <property name="maximum">
+                 <number>1000</number>
+                </property>
+                <property name="value">
+                 <number>600</number>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="lb_left_far_x">
+                <property name="text">
+                 <string>Left Far X</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="sb_left_far_x">
+                <property name="minimum">
+                 <number>-500</number>
+                </property>
+                <property name="maximum">
+                 <number>0</number>
+                </property>
+                <property name="value">
+                 <number>-300</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="lb_right_near_y">
+                <property name="text">
+                 <string>Right Near Y</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QSpinBox" name="sb_right_near_y">
+                <property name="maximum">
+                 <number>500</number>
+                </property>
+                <property name="value">
+                 <number>300</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lb_right_near_x">
+                <property name="text">
+                 <string>Right Near X</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="sb_right_near_x">
+                <property name="maximum">
+                 <number>500</number>
+                </property>
+                <property name="value">
+                 <number>300</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="lb_left_near_y">
+                <property name="text">
+                 <string>Left Near Y</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QSpinBox" name="sb_left_near_y">
+                <property name="maximum">
+                 <number>500</number>
+                </property>
+                <property name="value">
+                 <number>300</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lb_left_near_x">
+                <property name="text">
+                 <string>Left Near X</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="sb_left_near_x">
+                <property name="minimum">
+                 <number>-500</number>
+                </property>
+                <property name="maximum">
+                 <number>0</number>
+                </property>
+                <property name="value">
+                 <number>-300</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="car_config_label">
+           <property name="text">
+            <string>Config</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="car_config_edit_label">
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="load_car_config_button">
+           <property name="text">
+            <string>Load Config</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="le_ipaddress">
-     <property name="placeholderText">
-      <string>10.0.0.51</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lb_port">
-     <property name="text">
-      <string>Port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="sb_port">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>65535</number>
-     </property>
-     <property name="value">
-      <number>9546</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
+   <item>
     <widget class="QDialogButtonBox" name="bb">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
      <property name="centerButtons">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lb_car_length">
-     <property name="text">
-      <string>Car length (mm)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QSpinBox" name="sb_car_length">
-     <property name="maximum">
-      <number>45000</number>
-     </property>
-     <property name="value">
-      <number>200</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lb_car_width">
-     <property name="text">
-      <string>Car width (mm)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lb_background">
-     <property name="text">
-      <string>Background color (0 - 255)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QSpinBox" name="sb_background">
-     <property name="maximum">
-      <number>255</number>
-     </property>
-     <property name="value">
-      <number>180</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QSpinBox" name="sb_car_width">
-     <property name="maximum">
-      <number>5000</number>
-     </property>
-     <property name="value">
-      <number>120</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>The following settings needs a restart to take effect:</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>le_ipaddress</tabstop>
-  <tabstop>sb_port</tabstop>
-  <tabstop>sb_car_length</tabstop>
-  <tabstop>sb_car_width</tabstop>
-  <tabstop>sb_background</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -140,12 +437,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>230</x>
-     <y>115</y>
+     <x>313</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
+     <x>313</x>
+     <y>229</y>
     </hint>
    </hints>
   </connection>
@@ -156,12 +453,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>322</x>
-     <y>115</y>
+     <x>313</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>313</x>
+     <y>229</y>
     </hint>
    </hints>
   </connection>

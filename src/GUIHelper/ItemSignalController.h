@@ -32,8 +32,6 @@ public:
 public:
     void sendSignClicked(StreetSign *s, Lane *l);
 
-    void sendAddSignClicked(StreetSign *s, Lane *l);
-
     void sendAddNavigationMarkerClicked(std::shared_ptr<NavigationMarker> &navMarker);
 
     void sendMarkerMoved(NavigationMarkerItem * navMarkerItem);
@@ -48,8 +46,6 @@ public:
 
 signals:
     void signClicked(StreetSign *s, Lane *l);
-
-    void addSignClicked(StreetSign *s, Lane *l);
 
     void updateMap();
 

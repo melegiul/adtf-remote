@@ -8,14 +8,15 @@
 #include <QGraphicsItem>
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "dialog_preferences.h"
 #include "networkclient.h"
 #include "adtf_converters/carodometry.h"
 #include "adtf_converters/trapezoid.h"
 #include "adtf_converters/detectedline.h"
 #include "adtf_converters/nearfieldgridmap.h"
-
+#include "adtf_converters/remoteStateMsg.h"
+#include "adtf_converters/logMsg.h"
+#include "adtf_converters/speed.h"
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -30,22 +31,20 @@
 #include "CustomGraphicsItems/InvisibleLineItem.h"
 #include "GUIHelper/GraphicsViewZoom.h"
 
-
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
     QSettings settings;
-    this->car_height = settings.value("car/length", 400).toInt();
-    this->car_width = settings.value("car/width", 240).toInt();
     int ui_background = settings.value("ui/background", 180).toInt();
+
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+    this->car_height = carSettings.value("car/length", 400).toInt();
+    this->car_width = carSettings.value("car/width", 240).toInt();
 
     ui->setupUi(this);
 
     connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
-    //connect(ui->map_view, &ResizeGraphicsView::resized, this, &MainWindow::updateMap);
 
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
-    connect(ui->actionOpenMap, &QAction::triggered, this, &MainWindow::openMapXML);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
 
@@ -54,7 +53,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
-    // import from old widget code
+    connect(this, SIGNAL(guiUpdated()), this, SLOT(updateControlTab()));
+    connect(ui->loglevel_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelSelection()));
+    connect(ui->map_load_button, SIGNAL(clicked()), this, SLOT(handleMapPushClick()));
+    connect(ui->car_config_load_button, SIGNAL(clicked()), this, SLOT(handleCarConfigLoadClick()));
+    connect(ui->car_config_push_button, SIGNAL(clicked()), this, SLOT(handleCarConfigPushClick()));
+    connect(ui->navi_route_push_button, SIGNAL(clicked()), this, SLOT(handleRouteInfoPushClick()));
+    connect(ui->start_ad_button, SIGNAL(clicked()), this, SLOT(handleStartADClick()));
+    connect(ui->start_rc_button, SIGNAL(clicked()), this, SLOT(handleStartRCClick()));
+    connect(ui->running_stop_button, SIGNAL(clicked()), this, SLOT(handleStopClick()));
+    connect(ui->abort_button, SIGNAL(clicked()), this, SLOT(handleAbortClick()));
+
+    // view tab related code
     ui->tabWidget->setCurrentIndex(0);
     ui->dynamic_tree->expandAll();
     ui->static_tree->expandAll();
@@ -66,13 +76,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);
-
-    ui->street_sign_items_cmbbox->clear();
-    for (int i = 0; i < eStreetSigns::NONE + 1; i++) {
-        ui->street_sign_items_cmbbox->addItem(QString(enumStrings<eStreetSigns>::data[i]));
-    }
-    ui->street_sign_items_cmbbox->setCurrentIndex(eStreetSigns::NONE);
-    ui->editor_remove_streetsign->setEnabled(false);
 
     clearAndSetupStaticElements();
 
@@ -93,20 +96,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionExportMap, SIGNAL(triggered()), this, SLOT(saveDialog()));
     connect(ui->exportNavMarkerButton, SIGNAL(clicked()), this, SLOT(exportNavMarker()));
     connect(ui->importNavMarkerButton, SIGNAL(clicked()), this, SLOT(importNavMarker()));
-    connect(ui->editor_remove_streetsign, SIGNAL(clicked()), this, SLOT(removeSelectedSign()));
     connect(ui->static_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
             SLOT(updateStaticFilters(QTreeWidgetItem * , int)));
     connect(ui->dynamic_tree, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
             SLOT(updateDynamicFilters(QTreeWidgetItem * , int)));
-    connect(ui->editor_checkbox, SIGNAL(stateChanged(int)), this, SLOT(setEditingMode(int)));
-    connect(ui->street_sign_items_cmbbox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSelectedSign(int)));
     connect(ui->removeNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteNavigationMarker()));
     connect(ui->removeAllNavigationMarkerButton, SIGNAL(clicked()), this, SLOT(deleteAllNavigationMarker()));
     connect(ui->calculateRouteButton, SIGNAL(clicked()), this, SLOT(calculateRoute()));
 
     ItemSignalController &cont = ItemSignalController::getInstance();
-    connect(&cont, SIGNAL(signClicked(StreetSign * , Lane * )), this, SLOT(updateSignEditor(StreetSign * , Lane * )));
-    connect(&cont, SIGNAL(addSignClicked(StreetSign * , Lane * )), this, SLOT(addSign(StreetSign * , Lane * )));
     connect(&cont, SIGNAL(updateMap()), this, SLOT(updateMap()));
     connect(&cont, SIGNAL(addNavigationMarkerClicked(std::shared_ptr<NavigationMarker> & )), this, SLOT(addNavigationMarker(std::shared_ptr<NavigationMarker> & )));
     connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
@@ -117,35 +115,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::openMapXML() {
-    QString fileName = QFileDialog::getOpenFileName(this, "Choose map XML");
-    qDebug() << "XML map file" << fileName << "selected for opening";
-    if (fileName.isNull()) return;
-
-    ADTFMediaSample sample;
-    std::ifstream is (fileName.toUtf8(), std::ifstream::binary | std::ifstream::ate);
-    if (!is) {
-        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileName);
-        return;
-    }
-    sample.length = is.tellg();
-    is.seekg(0);
-
-    sample.data.reset(new char[sample.length]);
-    sample.pinName = "MapXML";
-    sample.mediaType = "";
-    sample.streamTime = 0;
-    is.read(sample.data.get(), sample.length);
-    this->networkClient->send(sample);
-
-    ContentManager &contentManager = ContentManager::getInstance();
-    contentManager.clear();
-    contentManager.importFromXml(fileName.toUtf8());
-
-    this->updateMap();
-    NavigationHelper::makeMapGraph();
 }
 
 void MainWindow::openPreferences() {
@@ -160,10 +129,35 @@ void MainWindow::connectNetwork()
     uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
+    
+    //send RemoteControlSignal Abort
+//    ADTFMediaSample sample;
+//    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+//    sample.length = sizeof(command);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "tRemoteCommandMsg";
+//    sample.mediaType = "tRemoteCommandMsg";
+//    sample.streamTime = 0;
+//    memcpy(sample.data.get(), &command, sample.length);
+//    this->networkClient->send(sample);
+    
 }
 
 void MainWindow::disconnectNetwork()
 {
+    //send RemoteControlSignal Abort
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+
     this->networkClient->disconnectNetwork();
 }
 
@@ -171,11 +165,20 @@ void MainWindow::networkConnected() {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
     ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
+    ui->connection_val_label->setText(QString::fromStdString("connected"));
+    ui->connection_val_label->setStyleSheet("QLabel { background-color : green}");
+    ui->loglevel_combo->setEnabled(true);
+    emit(guiUpdated());
 }
 
 void MainWindow::networkDisconnected() {
     ui->actionDisconnect->setEnabled(false);
     ui->actionConnect->setEnabled(true);
+    ui->connection_val_label->setText(QString::fromStdString("not connected"));
+    ui->connection_val_label->setStyleSheet("QLabel { background-color : red}");
+    ui->loglevel_combo->setEnabled(false);
+    resetControlTabVals();
+    emit(guiUpdated());
 }
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
@@ -193,11 +196,59 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
+    } else if (sample.pinName == "RemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
+        std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
+        this->setCarState(*statemsg);
+        this->processRemoteStateMsg(*statemsg);
+    } else if (sample.pinName == "RemoteLogMsgOut" && sample.mediaType == "tLogMsg") {
+        std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
+        this->processLogMsg(*logmsg);
+    } else if (sample.pinName == "SpeedOut" && sample.mediaType == "tSpeed") {
+        tSpeed speedy = adtf_converter::from_network::speed(sample);
+        this->setCarSpeed(speedy);
     }
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
     ui->statusbar->showMessage(errorMsg);
+}
+
+void MainWindow::processRemoteStateMsg(tRemoteStateMsg & rmtStateMsg){
+    if(rmtStateMsg.state == tState::INITIALIZATION) {
+        handleAbortACK();
+    } else if (rmtStateMsg.state == tState::READY) {
+        if(stopClick){
+            handleStopACK();
+            stopClick = false;
+        }else{
+            handleCarConfigPushACK();
+        }
+    } else if (rmtStateMsg.state == tState::AD_RUNNING) {
+        handleStartADACK();
+    } else if (rmtStateMsg.state == tState::RC_RUNNING) {
+        handleStartRCACK();
+    } else if (rmtStateMsg.state == tState::EMERGENCY) {
+        //TODO
+    } else {
+        //default case
+    }
+}
+
+void MainWindow::processLogMsg(tLogMsg &logMsg){
+    if(logMsg.filterLogType == tFilterLogType::ACK){
+        if(logMsg.uniaFilter == tUniaFilter::STATEMACHINE){
+            if(logMsg.logContext == tLogContext::NONE){
+                handleLogLevelACK();
+            } else if(logMsg.logContext == tLogContext::MAP){
+                handleMapPushACK();
+            } else if(logMsg.logContext == tLogContext::AC){
+                handleCarConfigPushACK();
+            } else if(logMsg.logContext == tLogContext::RI){
+                handleRouteInfoPushACK();
+            }
+        }
+    }
+    //TODO handle log in general
 }
 
 
@@ -222,6 +273,7 @@ void MainWindow::updateStaticFilters(QTreeWidgetItem *item, int column) {
     else if (item->text(0) == "Invisible Street Lines") invisible_lines_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Street Areas") lanes_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Direction of Traffic") lane_direction_filter->setVisible(item->checkState(column));
+    else if (item->text(0) == "Navigation Marker") navMarker_filter->setVisible(item->checkState(column));
 
     // needed to resolve a bug within QT: if a parent node is selected when every child was unselected by hand,
     // events are only generated for children, not for the parent -> parents stays invisible
@@ -237,7 +289,8 @@ void MainWindow::updateDynamicFilters(QTreeWidgetItem *item, int column) {
     if (trapezoid_filter == nullptr) setupTrapezoid();
     if (detected_line_filter == nullptr) setupDetectedLine();
     if (item->text(0) == "Car") car_filter->setVisible(item->checkState(column));
-    else if (item->text(0) == "Nearfieldgridmap") nearfield_map_filter->setVisible(item->checkState(column));
+    //FIXME when we are back in car context, nearfieldgridmap needs to be visualized
+    else if (item->text(0) == "Nearfieldgridmap") return;//nearfield_map_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Active Lane") {
         show_active_lanes = item->checkState(column);
         colorLanesOfInterest();
@@ -315,7 +368,7 @@ void MainWindow::clearAndSetupStaticElements() {
     invisible_lines_filter = new TreeNodeItem(meta_filter);
     lanes_filter = new TreeNodeItem(meta_filter);
     lane_direction_filter = new TreeNodeItem(meta_filter);
-    navMarker_filter = new TreeNodeItem();
+    navMarker_filter = new TreeNodeItem(meta_filter);
 
     // z-value is only relevant in relation with sibling items
     meta_filter->setZValue(-1);
@@ -331,7 +384,6 @@ void MainWindow::clearAndSetupStaticElements() {
     navMarker_filter->setZValue(3);
 
     scene->addItem(static_filter);
-    scene->addItem(navMarker_filter);
 }
 
 
@@ -361,7 +413,7 @@ void MainWindow::updateMap() {
         ui->map_view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
         zoom_rotate_manager->adjustMeasure();
     }
-    setEditingMode(ui->editor_checkbox->checkState());
+    //setEditingMode(ui->editor_checkbox->checkState());
     colorLanesOfInterest();
 }
 
@@ -386,7 +438,8 @@ void MainWindow::setupCar() {
     car_filter->setZValue(2); // put car on top
     scene->addItem(car_filter);
 
-    setupNearfieldGridMap();
+    //FIXME for future use in car context
+    //setupNearfieldGridMap();
 }
 
 //Setup the trapezoid by creating a QGraphicsPolygonItem and set properties
@@ -437,21 +490,26 @@ void MainWindow::setupDetectedLine() {
 
 
 void MainWindow::updateCar() {
-    if (car_filter == nullptr) setupCar();
-    if (odo == nullptr) return;
-    auto angle = odo->orientation * 180 / M_PI;
-    if (angle < -0.5) angle += 360;
+    if(carconfreceived){
+        if (car_filter == nullptr) setupCar();
+        if (odo == nullptr ) return;
+        if (speed == nullptr ) return;
+        auto angle = odo->orientation * 180 / M_PI;
+        if (angle < -0.5) angle += 360;
 
-    ui->car_x->setText(QString::fromStdString(std::to_string((int) odo->pos.x)));
-    ui->car_y->setText(QString::fromStdString(std::to_string((int) odo->pos.y)));
-    ui->car_th->setText(QString::fromStdString(std::to_string((int) std::round(angle))));
+        //update car status messages
+        ui->speed_val_label->setText(QString::fromStdString(std::to_string((float) speed->combinedSpeed)));
+        ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
+        ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
+        ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
 
-    car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
-    car_filter->setRotation(-angle);
+        car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
+        car_filter->setRotation(-angle);
 
-    if (show_active_lanes) colorLanesOfInterest();
+        if (show_active_lanes) colorLanesOfInterest();
 
-    focusOnCar();
+        focusOnCar();
+    }
 }
 
 //Update the position of the trapezoid
@@ -502,7 +560,7 @@ void MainWindow::colorLanesOfInterest() const {
     for (auto item: lanes_filter->childItems()) {
         auto item_cast = qgraphicsitem_cast<LaneItem *>(item);
         if (item_cast != nullptr) {
-            if(ui->editor_checkbox->isChecked() && item_cast->isEqual(selected_lane)){
+            if(/*ui->editor_checkbox->isChecked() &&*/ item_cast->isEqual(selected_lane)){
                 item_cast->colorSelected();
             } else {
                 item_cast->colorRegular();
@@ -515,7 +573,7 @@ void MainWindow::colorLanesOfInterest() const {
         for (auto item : list_of_items) {
             auto lane = qgraphicsitem_cast<LaneItem *>(item);
             if (lane != nullptr) {
-                if(!lane->isEqual(selected_lane) || !ui->editor_checkbox->isChecked()) {
+                if(!lane->isEqual(selected_lane) /*|| !ui->editor_checkbox->isChecked()*/) {
                     lane->colorCarOnTop();
                 }
             }
@@ -653,6 +711,11 @@ void MainWindow::setCarOdometry(tCarOdometry &odo) {
     emit(carUpdated());
 }
 
+void MainWindow::setCarSpeed(tSpeed &speedy) {
+    // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
+    this->speed = &speedy;
+}
+
 
 void MainWindow::setTrapezoidCoords(tTrapezoid &coords) {
     this->coords = &coords;
@@ -673,75 +736,11 @@ void MainWindow::setNearfieldgridmap(tNearfieldGridMapArray &root) {
     emit(nearfieldGridMapUpdated());
 }
 
-
-void MainWindow::setEditingMode(int state) {
-    state && selected_sign != nullptr ? ui->street_sign_items_cmbbox->setEnabled(true) : ui->street_sign_items_cmbbox->setEnabled(false);
-    state && selected_sign != nullptr ? ui->editor_remove_streetsign->setEnabled(true) : ui->editor_remove_streetsign->setEnabled(false);
-
-    for (auto item: signs_filter->childItems()) {
-        auto *sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-        state ? sign_item->enableEditing() : sign_item->disableEditing();
-    }
-    colorLanesOfInterest();
+void MainWindow::setCarState(tRemoteStateMsg &statemsg) {
+    state = statemsg.state;
+    emit(guiUpdated());
 }
 
-void MainWindow::updateSignEditor(StreetSign *s, Lane *l) {
-    selected_sign = s;
-    selected_lane = l;
-    if(s != nullptr && l != nullptr){
-        ui->lane_id_editor_txt->setText(QString(std::to_string(l->getId()).c_str()));
-        auto old = ui->street_sign_items_cmbbox->blockSignals(true);
-        ui->street_sign_items_cmbbox->setCurrentIndex(s->sign);
-        ui->street_sign_items_cmbbox->blockSignals(old);
-        ui->editor_x_pos->setText(QString(std::to_string(s->location->x).c_str()));
-        ui->editor_y_pos->setText(QString(std::to_string(s->location->y).c_str()));
-        if(ui->editor_checkbox->isChecked()){
-            ui->street_sign_items_cmbbox->setEnabled(true);
-            ui->editor_remove_streetsign->setEnabled(true);
-        }
-
-    } else {
-        ui->lane_id_editor_txt->setText("");
-        auto old = ui->street_sign_items_cmbbox->blockSignals(true);
-        ui->street_sign_items_cmbbox->setCurrentIndex(eStreetSigns::NONE);
-        ui->street_sign_items_cmbbox->blockSignals(old);
-        ui->editor_x_pos->setText("");
-        ui->editor_y_pos->setText("");
-        ui->street_sign_items_cmbbox->setEnabled(false);
-        ui->editor_remove_streetsign->setEnabled(false);
-    }
-    colorLanesOfInterest();
-}
-
-void MainWindow::updateSelectedSign(int state) {
-    if (selected_sign != nullptr) {
-        selected_sign->sign = eStreetSigns(state);
-        for (auto item: signs_filter->childItems()) {
-            auto sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-            if (sign_item->isEqual(selected_sign)) {
-                delete item;
-                addSign(selected_sign, selected_lane);
-                break;
-            }
-        }
-        setEditingMode(ui->editor_checkbox->checkState());
-        colorLanesOfInterest();
-    }
-}
-
-void MainWindow::removeSelectedSign() {
-    if (selected_lane != nullptr && selected_sign != nullptr) {
-        selected_lane->removeSign(selected_sign);
-        for (auto item: signs_filter->childItems()) {
-            auto sign_item = qgraphicsitem_cast<StreetSignItem *>(item);
-            if (sign_item->isEqual(selected_sign)) {
-                delete item;
-                break;
-            }
-        }
-        updateSignEditor(nullptr, nullptr);
-    }
-}
 
 void MainWindow::setSignRotations(double angle) {
     for (auto sign: signs_filter->childItems()) {
@@ -978,11 +977,377 @@ void MainWindow::setupNearfieldGridMap() {
             nearfieldgridmap = n4;
         }
     }
-    nearfield_map_filter = new NearfieldMapItem(nearfieldgridmap,car_filter);
-    nearfield_map_filter->setRotation(nearfield_map_filter->rotation() + 180);//car starts with front down
-    nearfield_map_filter->setOpacity(0.7);
-    nearfield_map_filter->setPos(car_width/2 + GRIDMAP_WIDTH/2,car_height/2 + GRIDMAP_HEIGHT/2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
-    nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());
-    nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent,true);
+    if (nearfield_map_filter != nullptr) {
+        nearfield_map_filter = new NearfieldMapItem(nearfieldgridmap, car_filter);
+        nearfield_map_filter->setRotation(nearfield_map_filter->rotation() + 180);//car starts with front down
+        nearfield_map_filter->setOpacity(0.7);
+        nearfield_map_filter->setPos(car_width / 2 + GRIDMAP_WIDTH / 2,
+                                     car_height / 2 + GRIDMAP_HEIGHT / 2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
+        nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());
+        nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent, true);
+    }
 }
 
+void MainWindow::handleLogLevelSelection(){
+    ui->statusbar->showMessage("Handle Loglevel Selection!");
+
+    //determine the loglevel
+    tFilterLogType loglevel = tFilterLogType::NONE;
+    QString text = ui->loglevel_combo->currentText();
+    if(text == "DEBUG"){
+        loglevel = tFilterLogType::DEBUG;
+    }else if (text == "INFO") {
+        loglevel = tFilterLogType::INFO;
+    } else if (text == "WARNING") {
+        loglevel = tFilterLogType::WARNING;
+    } else if (text == "ERROR"){
+        loglevel = tFilterLogType::ERROR;
+    }
+
+    if(!initialization){
+        ADTFMediaSample sample;
+        tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+        sample.length = sizeof(command);
+
+        sample.data.reset(new char[sample.length]);
+        sample.pinName = "tRemoteCommandMsg";
+        sample.mediaType = "tRemoteCommandMsg";
+        sample.streamTime = 0;
+        memcpy(sample.data.get(), &command, sample.length);
+        this->networkClient->send(sample);
+
+    }
+
+    //send Loglevel set command
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::NONE, loglevel, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleLogLevelACK() {
+    ui->statusbar->showMessage("Handle Loglevel ACK!");
+
+    resetControlTabVals();
+    initialization = true;
+    emit(guiUpdated());
+
+}
+
+void MainWindow::handleMapPushClick(){
+    ui->statusbar->showMessage("Handle Map Push Click!");
+
+    //open dialog
+    fileNameMap = QFileDialog::getOpenFileName(this, "Choose map XML");
+    qDebug() << "XML map file" << fileNameMap << "selected for opening";
+    if (fileNameMap.isNull()) return;
+
+    //pack and send map
+    ADTFMediaSample sample;
+    std::ifstream is (fileNameMap.toUtf8(), std::ifstream::binary | std::ifstream::ate);
+    if (!is) {
+        QMessageBox::warning(this, "Cannot open file", "Cannot open file: " + fileNameMap);
+        return;
+    }
+    sample.length = is.tellg();
+    is.seekg(0);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "MapXML";
+    sample.mediaType = "";
+    sample.streamTime = 0;
+    is.read(sample.data.get(), sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleMapPushACK(){
+    ui->statusbar->showMessage("Handle Map Push ACK!");
+
+    ContentManager &contentManager = ContentManager::getInstance();
+    contentManager.clear();
+    contentManager.importFromXml(fileNameMap.toUtf8());
+
+    this->updateMap();
+    NavigationHelper::makeMapGraph();
+
+    mapreceived = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleCarConfigLoadClick(){
+    ui->statusbar->showMessage("Handle Car Config Load Click!");
+
+    //open dialog
+    fileNameCarConfig = QFileDialog::getOpenFileName(this, "Choose car configuration ini file");
+    qDebug() << "car configuration ini file" << fileNameCarConfig << "selected for opening";
+    if (fileNameCarConfig.isNull()) return;
+
+    QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
+    this->car_height = carSettings.value("car/length", 400).toInt();
+    this->car_width = carSettings.value("car/width", 240).toInt();
+    this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
+    this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
+    this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+
+    carconfselected = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleCarConfigPushClick(){
+    ui->statusbar->showMessage("Handle Car Config Push Click!");
+
+    //send tCarConfigStruct
+    ADTFMediaSample sample;
+    tCarConfigStruct config = prepareCarConfigStruct();
+    sample.length = sizeof(config);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tCarConfigStruct";
+    sample.mediaType = "tCarConfigStruct";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &config, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleCarConfigPushACK() {
+    ui->statusbar->showMessage("Handle Car Config Push ACK!");
+
+    carconfreceived = true;
+    ready = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleRouteInfoPushClick(){
+    ui->statusbar->showMessage("Handle Route Info Push Click!");
+
+    //send route info
+    //TODO
+
+    //TODO DEVELOPMENT
+    handleRouteInfoPushACK();
+}
+
+void MainWindow::handleRouteInfoPushACK() {
+    ui->statusbar->showMessage("Handle Route Info Push ACK!");
+
+    routeinforreceived = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStartADClick(){
+    ui->statusbar->showMessage("Handle Start AD Click!");
+
+    //send start ad signal
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::START, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleStartADACK() {
+    ui->statusbar->showMessage("Handle Start AD ACK!");
+
+    ad_running = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStartRCClick(){
+    ui->statusbar->showMessage("Handle Start RC Click!");
+
+    //send start RC signal
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::RC, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleStartRCACK() {
+    ui->statusbar->showMessage("Handle Start RC ACK!");
+
+    rc_running = true;
+    emit(guiUpdated());
+}
+
+void MainWindow::handleStopClick(){
+    ui->statusbar->showMessage("Handle Stop Click!");
+    stopClick = true;
+    //send stop signal
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::STOP, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleStopACK() {
+    ui->statusbar->showMessage("Handle Stop ACK!");
+
+    ad_running = false;
+    rc_running = false;
+
+    emit(guiUpdated());
+}
+
+void MainWindow::handleAbortClick(){
+    ui->statusbar->showMessage("Handle Abort Click!");
+
+    //send abort signal
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+void MainWindow::handleAbortACK() {
+    ui->statusbar->showMessage("Handle Abort ACK!");
+
+    resetControlTabVals();
+    emit(guiUpdated());
+}
+
+void MainWindow::updateControlTab() {
+    //update car state
+    if(state != tState::NONE){
+        ui->state_val_label->setText(QString::fromStdString(tStateMap[state]));
+    }else{
+        ui->state_val_label->setText(QString::fromStdString("-"));
+    }
+
+    //update map filename
+    if(fileNameMap != nullptr){
+        ui->map_xml_val_label->setText(fileNameMap);
+    }else{
+        ui->map_xml_val_label->setText("-");
+    }
+    
+    //update car config filename
+    if(fileNameCarConfig != nullptr){
+        ui->car_config_val_label->setText(fileNameCarConfig);
+    }else{
+        ui->car_config_val_label->setText("-");
+    }
+
+    //update car x and y
+    if(fileNameCarConfig != nullptr){
+        ui->car_x_val_edit->setText(QString::number(this->car_init_x));
+        ui->car_y_val_edit->setText(QString::number(this->car_init_y));
+        ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
+    }else{
+    	if(mapreceived == true) {
+            QSettings settings;
+            QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+            this->car_height = carSettings.value("car/length", 400).toInt();
+            this->car_width = carSettings.value("car/width", 240).toInt();
+            this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
+            this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
+            this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+        
+            ui->car_config_val_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
+            ui->car_x_val_edit->setText(QString::number(this->car_init_x));
+            ui->car_y_val_edit->setText(QString::number(this->car_init_y));
+            ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
+        } else {
+            ui->car_x_val_edit->setText(QString::fromStdString("-"));
+            ui->car_y_val_edit->setText(QString::fromStdString("-"));
+            ui->car_orientation_val_edit->setText(QString::fromStdString("-"));
+        }
+    }
+
+    //manage control tab buttons
+    ui->loglevel_combo->setEnabled(!mapreceived);
+    ui->map_load_button->setEnabled(initialization);
+    ui->car_config_load_button->setEnabled(mapreceived);
+    ui->abort_button->setEnabled(mapreceived);
+    ui->car_config_push_button->setEnabled(carconfselected || mapreceived);
+    ui->navi_route_push_button->setEnabled(carconfreceived);
+    ui->start_rc_button->setEnabled(ready);
+    ui->start_ad_button->setEnabled(routeinforreceived);
+    ui->running_stop_button->setEnabled(ad_running || rc_running);
+    if(emergency){
+        ui->map_load_button->setEnabled(false);
+        ui->car_config_load_button->setEnabled(false);
+        ui->car_config_push_button->setEnabled(false);
+        ui->navi_route_push_button->setEnabled(false);
+        ui->start_ad_button->setEnabled(false);
+        ui->start_rc_button->setEnabled(false);
+        ui->running_stop_button->setEnabled(false);
+        ui->abort_button->setEnabled(false);
+    }
+
+}
+
+void MainWindow::resetControlTabVals() {
+    initialization = false;
+    mapreceived = false;
+    carconfselected = false;
+    carconfreceived = false;
+    ready = false;
+    rc_running = false;
+    routeinforreceived = false;
+    ad_running = false;
+    stopClick = false;
+    emergency = false;
+
+    state = tState::NONE;
+    fileNameMap = nullptr;
+    fileNameCarConfig = nullptr;
+}
+
+tCarConfigStruct MainWindow::prepareCarConfigStruct() {
+    QSettings settings;
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+
+    tUInt32 length = carSettings.value("car/length", 400).toInt();
+    tUInt32 width = carSettings.value("car/width", 240).toInt();
+    cv::Point2f initpos = cv::Point2f(ui->car_x_val_edit->text().toFloat(), ui->car_y_val_edit->text().toFloat());
+    tFloat32 initorientation = ui->car_orientation_val_edit->text().toFloat();
+    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toFloat(), carSettings.value("carview/leftneary", 300).toFloat());
+    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toFloat(), carSettings.value("carview/leftfary", 300).toFloat());
+    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", -300).toFloat(), carSettings.value("carview/rightfary", 300).toFloat());
+    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", -300).toFloat(), carSettings.value("carview/rightneary", 300).toFloat());
+
+    tCarConfigStruct carConfigStruct = tCarConfigStruct(length, width, initpos, initorientation, traLeftNear, traLeftFar, traRightFar, traRightNear);
+    return carConfigStruct;
+}
+
+void MainWindow::sendtSignalValue() {
+//    ADTFMediaSample sample;
+//    tSignalValue command = tSignalValue(0);
+//    sample.length = sizeof(command);
+//
+//    sample.data.reset(new char[sample.length]);
+//    sample.pinName = "tSignalValue";
+//    sample.mediaType = "tSignalValue";
+//    sample.streamTime = 0;
+//    memcpy(sample.data.get(), &command, sample.length);
+//    this->networkClient->send(sample);
+}

@@ -5,6 +5,7 @@
 #include <QString>
 
 #include "adtfmediasample.h"
+#include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
 
 class NetworkClient;
@@ -44,11 +45,9 @@ public:
     ~MainWindow();
 
 public slots:
-    void openMapXML();
     void openPreferences();
     void connectNetwork();
     void disconnectNetwork();
-
     void networkConnected();
     void networkDisconnected();
     void networkReceived(ADTFMediaSample sample);
@@ -58,12 +57,30 @@ private:
     Ui::MainWindow *ui;
     NetworkClient *networkClient;
 
+    //control tab related
+    tState state = tState::NONE;
+    std::map<tState, std::string> tStateMap;
+    QString fileNameMap = nullptr;
+    QString fileNameCarConfig = nullptr;
+    bool mapreceived = false;
+    bool carconfselected = false;
+    bool carconfreceived = false;
+    bool routeinforreceived = false;
+    bool initialization = false;
+    bool ready = false;
+    bool ad_running = false;
+    bool rc_running = false;
+    bool stopClick = false;
+    bool emergency = false;
+
 // graphics import
 public:
     void setCarOdometry(tCarOdometry &odo);
+    void setCarSpeed(tSpeed &speedy);
     void setTrapezoidCoords(tTrapezoid &coords);
     void setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine);
     void setNearfieldgridmap(tNearfieldGridMapArray &root);
+    void setCarState(tRemoteStateMsg &statemsg);
     void clearAndSetupStaticElements();
     void clearAll();
     void stop();
@@ -84,12 +101,18 @@ private:
     void checkAllTrees(Qt::CheckState st);
     void clearAllNavMarkerItems();
     void buildNavigationMarkerItemsFromXmlList();
+    void processLogMsg(tLogMsg &logMsg);
+    void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
+    void resetControlTabVals();
+    tCarConfigStruct prepareCarConfigStruct();
+    void sendtSignalValue();
 
 signals:
     void nearfieldGridMapUpdated();
     void carUpdated();
     void trapezoidUpdated();
     void detectedLineUpdated();
+    void guiUpdated();
 
 public slots:
     void updateMap();
@@ -103,14 +126,11 @@ private slots:
     void updateCar();
     void updateTrapezoid();
     void updateDetectedLine();
+    void updateControlTab();
     void focusOnCar();
     void updateStaticFilters(QTreeWidgetItem *item, int column);
     void updateDynamicFilters(QTreeWidgetItem *item, int column);
     void updateMousePosition(QPointF position);
-    void setEditingMode(int state);
-    void updateSignEditor(StreetSign *s, Lane *l);
-    void updateSelectedSign(int state);
-    void removeSelectedSign();
     void setSignRotations(double angle);
     void setupNearfieldGridMap();
     void deleteNavigationMarker();
@@ -119,6 +139,24 @@ private slots:
     void calculateRoute();
     void exportNavMarker();
     void importNavMarker();
+    void handleLogLevelSelection();
+    void handleLogLevelACK();
+    void handleMapPushClick();
+    void handleMapPushACK();
+    void handleCarConfigLoadClick();
+    void handleCarConfigPushClick();
+    void handleCarConfigPushACK();
+    void handleRouteInfoPushClick();
+    void handleRouteInfoPushACK();
+    void handleStartADClick();
+    void handleStartADACK();
+    void handleStartRCClick();
+    void handleStartRCACK();
+    void handleStopClick();
+    void handleStopACK();
+    void handleAbortClick();
+    void handleAbortACK();
+
 
 private:
     QGraphicsScene *scene = nullptr;
@@ -126,12 +164,15 @@ private:
     ContentManager &manager = ContentManager::getInstance();
     GraphicsViewZoom *zoom_rotate_manager = nullptr;
     tCarOdometry *odo = nullptr;
+    tSpeed *speed = nullptr;
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLine> detectedLine = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
-    // TODO
-    int car_height = 523;
-    int car_width = 250;
+    int car_height = 400;
+    int car_width = 240;
+    int car_init_x;
+    int car_init_y;
+    int car_init_orientation;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;
@@ -169,6 +210,8 @@ private:
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
+
+
 };
 
 #endif // __MAINWINDOW_H

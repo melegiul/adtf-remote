@@ -1,7 +1,7 @@
 #include <adtf_plugin_sdk.h>
 
 #include "../adtfmediasample.h"
-#include "user_structs.h"
+#include "helper_structs.h"
 #include "carodometry.h"
 
 using namespace adtf;
@@ -22,7 +22,7 @@ static const char *mediaDescription = R"(
     </structs>
 </adtf:ddl>
 )";
-static const uint length = 16;
+
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 

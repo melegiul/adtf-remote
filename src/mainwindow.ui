@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>800</height>
+    <height>830</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,80 +81,472 @@
         </property>
        </spacer>
       </item>
-      <item>
-       <widget class="Line" name="line_right">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lbs_car_x">
-        <property name="text">
-         <string>Car X:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="car_x">
-        <property name="minimumSize">
-         <size>
-          <width>40</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>-1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lbs_car_y">
-        <property name="text">
-         <string>Y:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="car_y">
-        <property name="minimumSize">
-         <size>
-          <width>40</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>-1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lbs_orientation">
-        <property name="text">
-         <string>Orientation:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="car_th">
-        <property name="minimumSize">
-         <size>
-          <width>40</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>-1</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item row="1" column="1" rowspan="2">
      <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="control_tab">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="icon">
+        <iconset theme="control">
+         <normaloff>.</normaloff>.</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Control</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QGroupBox" name="car_status_group">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Car Status</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="connection_label">
+             <property name="text">
+              <string>Connection</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="connection_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: red;</string>
+             </property>
+             <property name="text">
+              <string>not connected</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="state_label">
+             <property name="text">
+              <string>State</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="state_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="loglevel_label">
+             <property name="text">
+              <string>LogLevel</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="loglevel_combo">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="currentText">
+              <string>ERROR</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>ERROR</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>WARNING</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>INFO</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>DEBUG</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="speed_label">
+             <property name="text">
+              <string>Speed</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="speed_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="orientation_label">
+             <property name="text">
+              <string>Orientation</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="orientation_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="position_x_label">
+             <property name="text">
+              <string>Position X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLabel" name="position_x_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="position_y_label">
+             <property name="text">
+              <string>Position Y</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLabel" name="position_y_val_label">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="map_init_group">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Map Init</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QPushButton" name="map_load_button">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Load Map from File and Push</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout_2">
+             <item row="1" column="0">
+              <widget class="QLabel" name="map_xml_label">
+               <property name="text">
+                <string>Map              </string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="map_xml_val_label">
+               <property name="text">
+                <string>-</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="car_init_group">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Car Config Init</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="car_x_label">
+               <property name="text">
+                <string>X</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="car_x_val_edit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="car_y_label">
+               <property name="text">
+                <string>Y</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="car_y_val_edit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout">
+             <item row="1" column="0">
+              <widget class="QLabel" name="car_orientation_label">
+               <property name="text">
+                <string>Orientation</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="car_orientation_val_edit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="car_config_load_button">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Load Config from File</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="car_config_push_button">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Push Config to Car</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout_5">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="car_config_label">
+               <property name="text">
+                <string>Config          </string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="car_config_val_label">
+               <property name="text">
+                <string>-</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="navi_init_group">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Navigation Init</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QPushButton" name="navi_route_push_button">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Push Route to Car</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Running</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="start_ad_button">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Start AD</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="start_rc_button">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Start RC</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="running_stop_button">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Stop</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="abort_button">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: red;</string>
+          </property>
+          <property name="text">
+           <string>Abort</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="view_tab">
        <attribute name="title">
         <string>View</string>
@@ -322,6 +714,14 @@
              <enum>Checked</enum>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Navigation Marker</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
           </item>
          </widget>
         </item>
@@ -338,6 +738,9 @@
            </property>
            <property name="checkState">
             <enum>Checked</enum>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
            </property>
            <item>
             <property name="text">
@@ -384,90 +787,6 @@
           </property>
           <property name="checked">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="editor_tab">
-       <attribute name="title">
-        <string>Street Sign Editor</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="QCheckBox" name="editor_checkbox">
-          <property name="text">
-           <string>Edit Mode</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="lane_id_label">
-            <property name="text">
-             <string>Lane ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="Sign_type_label">
-            <property name="text">
-             <string>Sign Type</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lane_id_editor_txt">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QFontComboBox" name="street_sign_items_cmbbox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="editor_pos_x_label">
-            <property name="text">
-             <string>Position X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="editor_x_pos">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="editor_pos_x_label_2">
-            <property name="text">
-             <string>Position Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLabel" name="editor_y_pos">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QPushButton" name="editor_remove_streetsign">
-          <property name="text">
-           <string>Remove Sign</string>
-          </property>
-          <property name="icon">
-           <iconset theme="remove"/>
           </property>
          </widget>
         </item>
@@ -641,7 +960,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGeneral">
@@ -662,7 +981,6 @@
     <property name="title">
      <string>Map</string>
     </property>
-    <addaction name="actionOpenMap"/>
     <addaction name="actionExportMap"/>
    </widget>
    <addaction name="menuGeneral"/>
@@ -672,7 +990,8 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -683,24 +1002,14 @@
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset theme="preferences"/>
+    <iconset theme="preferences-desktop">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Preferences</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="icon">
-    <iconset theme="document-open"/>
-   </property>
-   <property name="text">
-    <string>Open Map XML</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionConnect">
@@ -728,18 +1037,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
-   </property>
-  </action>
-  <action name="actionOpenMap">
-   <property name="icon">
-    <iconset theme="document-open">
-     <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
-   </property>
-   <property name="text">
-    <string>Open Map from XML</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionExportMap">
@@ -778,10 +1075,6 @@
   <tabstop>static_tree</tabstop>
   <tabstop>dynamic_tree</tabstop>
   <tabstop>scope_button</tabstop>
-  <tabstop>editor_checkbox</tabstop>
-  <tabstop>lane_id_editor_txt</tabstop>
-  <tabstop>street_sign_items_cmbbox</tabstop>
-  <tabstop>editor_remove_streetsign</tabstop>
   <tabstop>navigationMarkerListWidget</tabstop>
   <tabstop>calculateRouteButton</tabstop>
   <tabstop>removeNavigationMarkerButton</tabstop>

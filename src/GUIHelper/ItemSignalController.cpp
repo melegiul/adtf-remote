@@ -9,10 +9,6 @@ void ItemSignalController::sendSignClicked(StreetSign *s, Lane *l) {
     emit signClicked(s, l);
 }
 
-void ItemSignalController::sendAddSignClicked(StreetSign *s, Lane *l) {
-    emit addSignClicked(s, l);
-}
-
 void ItemSignalController::sendUpdateMap() {
     emit updateMap();
 }

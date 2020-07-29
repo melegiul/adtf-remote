@@ -4,6 +4,6 @@ struct ADTFMediaSample;
 
 namespace adtf_converter {
     namespace from_network {
-        tTrapezoid trapezoid(const ADTFMediaSample &sample);
+        tSpeed speed(const ADTFMediaSample &sample);
     }
 }

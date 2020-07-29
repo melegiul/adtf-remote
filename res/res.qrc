@@ -3,6 +3,7 @@
     <qresource>
         <file alias="compass.png">images/compass.png</file>
         <file alias="car.png">images/truck.png</file>
+        <file alias="mclaren.png">images/mclaren.png</file>
         <file alias="arrow.png">images/arrow.png</file>
         <file alias="parking.png">images/parking.png</file>
         <file alias="zebra.png">images/zebra.png</file>

@@ -160,16 +160,16 @@ void MainWindow::connectNetwork()
 void MainWindow::disconnectNetwork()
 {
     //send RemoteControlSignal Abort
-//    ADTFMediaSample sample;
-//    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
-//    sample.length = sizeof(command);
-//
-//    sample.data.reset(new char[sample.length]);
-//    sample.pinName = "tRemoteCommandMsg";
-//    sample.mediaType = "tRemoteCommandMsg";
-//    sample.streamTime = 0;
-//    memcpy(sample.data.get(), &command, sample.length);
-//    this->networkClient->send(sample);
+    ADTFMediaSample sample;
+    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tRemoteCommandMsg";
+    sample.mediaType = "tRemoteCommandMsg";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 
     this->networkClient->disconnectNetwork();
 }
@@ -298,7 +298,8 @@ void MainWindow::updateDynamicFilters(QTreeWidgetItem *item, int column) {
     if (trapezoid_filter == nullptr) setupTrapezoid();
     if (detected_line_filter == nullptr) setupDetectedLine();
     if (item->text(0) == "Car") car_filter->setVisible(item->checkState(column));
-    else if (item->text(0) == "Nearfieldgridmap") nearfield_map_filter->setVisible(item->checkState(column));
+    //FIXME when we are back in car context, nearfieldgridmap needs to be visualized
+    else if (item->text(0) == "Nearfieldgridmap") return;//nearfield_map_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Active Lane") {
         show_active_lanes = item->checkState(column);
         colorLanesOfInterest();
@@ -447,7 +448,8 @@ void MainWindow::setupCar() {
     car_filter->setZValue(2); // put car on top
     scene->addItem(car_filter);
 
-    setupNearfieldGridMap();
+    //FIXME for future use in car context
+    //setupNearfieldGridMap();
 }
 
 //Setup the trapezoid by creating a QGraphicsPolygonItem and set properties
@@ -983,12 +985,15 @@ void MainWindow::setupNearfieldGridMap() {
             nearfieldgridmap = n4;
         }
     }
-    nearfield_map_filter = new NearfieldMapItem(nearfieldgridmap,car_filter);
-    nearfield_map_filter->setRotation(nearfield_map_filter->rotation() + 180);//car starts with front down
-    nearfield_map_filter->setOpacity(0.7);
-    nearfield_map_filter->setPos(car_width/2 + GRIDMAP_WIDTH/2,car_height/2 + GRIDMAP_HEIGHT/2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
-    nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());
-    nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent,true);
+    if (nearfield_map_filter != nullptr) {
+        nearfield_map_filter = new NearfieldMapItem(nearfieldgridmap, car_filter);
+        nearfield_map_filter->setRotation(nearfield_map_filter->rotation() + 180);//car starts with front down
+        nearfield_map_filter->setOpacity(0.7);
+        nearfield_map_filter->setPos(car_width / 2 + GRIDMAP_WIDTH / 2,
+                                     car_height / 2 + GRIDMAP_HEIGHT / 2 + HEIGHT_DIFF_GRIDMAPMID_CARMID);
+        nearfield_map_filter->setTransformOriginPoint(car_filter->boundingRect().center());
+        nearfield_map_filter->setFlag(QGraphicsItem::GraphicsItemFlag::ItemStacksBehindParent, true);
+    }
 }
 
 void MainWindow::handleLogLevelSelection(){

@@ -739,6 +739,9 @@
            <property name="checkState">
             <enum>Checked</enum>
            </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
            <item>
             <property name="text">
              <string>Nearfieldgridmap</string>

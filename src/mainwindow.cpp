@@ -55,9 +55,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
     connect(this->networkClient, &NetworkClient::errored, this, &MainWindow::networkErrored);
 
-    // control tab related code
-    connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
-
     connect(this, SIGNAL(guiUpdated()), this, SLOT(updateControlTab()));
     connect(ui->loglevel_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelSelection()));
     connect(ui->map_load_button, SIGNAL(clicked()), this, SLOT(handleMapPushClick()));
@@ -201,7 +198,7 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
-    } else if (sample.pinName == "RemoteMsgOut" && sample.mediaType == "tRemoteStateMsg") {
+    } else if (sample.pinName == "RemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
         std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
         this->setCarState(*statemsg);
         this->processRemoteStateMsg(*statemsg);
@@ -211,9 +208,7 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
     } else if (sample.pinName == "SpeedOut" && sample.mediaType == "tSpeed") {
         tSpeed speedy = adtf_converter::from_network::speed(sample);
         this->setCarSpeed(speedy);
-    } 
-    //FIXME concrete pinNames and Datatypes to be set
-    //TODO add new data Pins here
+    }
 }
 
 void MainWindow::networkErrored(QString errorMsg) {
@@ -224,7 +219,12 @@ void MainWindow::processRemoteStateMsg(tRemoteStateMsg & rmtStateMsg){
     if(rmtStateMsg.state == tState::INITIALIZATION) {
         handleAbortACK();
     } else if (rmtStateMsg.state == tState::READY) {
-        handleStopACK();
+        if(stopClick){
+            handleStopACK();
+            stopClick = false;
+        }else{
+            handleCarConfigPushACK();
+        }
     } else if (rmtStateMsg.state == tState::AD_RUNNING) {
         handleStartADACK();
     } else if (rmtStateMsg.state == tState::RC_RUNNING) {
@@ -386,7 +386,6 @@ void MainWindow::clearAndSetupStaticElements() {
     navMarker_filter->setZValue(3);
 
     scene->addItem(static_filter);
-    scene->addItem(navMarker_filter);
 }
 
 
@@ -493,24 +492,26 @@ void MainWindow::setupDetectedLine() {
 
 
 void MainWindow::updateCar() {
-    if (car_filter == nullptr) setupCar();
-    if (odo == nullptr ) return;
-    if (speed == nullptr ) return;
-    auto angle = odo->orientation * 180 / M_PI;
-    if (angle < -0.5) angle += 360;
+    if(carconfreceived){
+        if (car_filter == nullptr) setupCar();
+        if (odo == nullptr ) return;
+        if (speed == nullptr ) return;
+        auto angle = odo->orientation * 180 / M_PI;
+        if (angle < -0.5) angle += 360;
 
-    //update car status messages
-    ui->speed_val_label->setText(QString::fromStdString(std::to_string((float) speed->combinedSpeed)));
-    ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
-    ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
-    ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
+        //update car status messages
+        ui->speed_val_label->setText(QString::fromStdString(std::to_string((float) speed->combinedSpeed)));
+        ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
+        ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
+        ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
 
-    car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
-    car_filter->setRotation(-angle);
+        car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
+        car_filter->setRotation(-angle);
 
-    if (show_active_lanes) colorLanesOfInterest();
+        if (show_active_lanes) colorLanesOfInterest();
 
-    focusOnCar();
+        focusOnCar();
+    }
 }
 
 //Update the position of the trapezoid
@@ -1189,7 +1190,7 @@ void MainWindow::handleStartRCACK() {
 
 void MainWindow::handleStopClick(){
     ui->statusbar->showMessage("Handle Stop Click!");
-
+    stopClick = true;
     //send stop signal
     ADTFMediaSample sample;
     tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::STOP, tFilterLogType::NONE, 0);
@@ -1315,6 +1316,7 @@ void MainWindow::resetControlTabVals() {
     rc_running = false;
     routeinforreceived = false;
     ad_running = false;
+    stopClick = false;
     emergency = false;
 
     state = tState::NONE;

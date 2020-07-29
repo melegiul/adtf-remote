@@ -31,8 +31,6 @@
 #include "CustomGraphicsItems/InvisibleLineItem.h"
 #include "GUIHelper/GraphicsViewZoom.h"
 
-
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
     QSettings settings;

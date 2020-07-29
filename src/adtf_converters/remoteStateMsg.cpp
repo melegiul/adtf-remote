@@ -1,7 +1,7 @@
 #include <adtf_plugin_sdk.h>
 
 #include "../adtfmediasample.h"
-#include "user_structs.h"
+#include "helper_structs.h"
 #include "remoteStateMsg.h"
 
 using namespace adtf;
@@ -36,7 +36,7 @@ std::unique_ptr<tRemoteStateMsg> adtf_converter::from_network::remoteStateMsg(co
         pCoderInitialized = true;
     }
 
-    //TODO adapt to user_structs.h
+    //TODO adapt to helper_structs.h
     assert(sample.mediaType == mediaType);
     pCoder->Begin(sample.data.get(), sample.length);
 

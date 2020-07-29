@@ -1,7 +1,7 @@
 #include <adtf_plugin_sdk.h>
 
 #include "../adtfmediasample.h"
-#include "user_structs.h"
+#include "helper_structs.h"
 #include "logMsg.h"
 
 using namespace adtf;
@@ -58,7 +58,7 @@ std::unique_ptr<tLogMsg> adtf_converter::from_network::logMsg(const ADTFMediaSam
         pCoderInitialized = true;
     }
 
-    //TODO adapt to user_structs.h
+    //TODO adapt to helper_structs.h
     assert(sample.mediaType == mediaType);
     uint64_t timestamp;
     tFilterLogType logtype;

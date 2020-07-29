@@ -2,7 +2,7 @@
 
 #include "../adtfmediasample.h"
 #include "trapezoid.h"
-#include "user_structs.h"
+#include "helper_structs.h"
 
 using namespace adtf;
 

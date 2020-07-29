@@ -1,4 +1,4 @@
-#include "user_structs.h"
+#include "helper_structs.h"
 
 struct ADTFMediaSample;
 

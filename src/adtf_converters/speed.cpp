@@ -1,7 +1,7 @@
 #include <adtf_plugin_sdk.h>
 
 #include "../adtfmediasample.h"
-#include "user_structs.h"
+#include "helper_structs.h"
 #include "speed.h"
 
 using namespace adtf;

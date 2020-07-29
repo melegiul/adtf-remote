@@ -98,7 +98,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="control_tab">
        <property name="enabled">
@@ -709,6 +709,14 @@
            <item>
             <property name="text">
              <string>Direction of Traffic</string>
+            </property>
+            <property name="checkState">
+             <enum>Checked</enum>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Navigation Marker</string>
             </property>
             <property name="checkState">
              <enum>Checked</enum>

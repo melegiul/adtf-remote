@@ -283,6 +283,7 @@ void MainWindow::updateStaticFilters(QTreeWidgetItem *item, int column) {
     else if (item->text(0) == "Invisible Street Lines") invisible_lines_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Street Areas") lanes_filter->setVisible(item->checkState(column));
     else if (item->text(0) == "Direction of Traffic") lane_direction_filter->setVisible(item->checkState(column));
+    else if (item->text(0) == "Navigation Marker") navMarker_filter->setVisible(item->checkState(column));
 
     // needed to resolve a bug within QT: if a parent node is selected when every child was unselected by hand,
     // events are only generated for children, not for the parent -> parents stays invisible
@@ -377,7 +378,7 @@ void MainWindow::clearAndSetupStaticElements() {
     invisible_lines_filter = new TreeNodeItem(meta_filter);
     lanes_filter = new TreeNodeItem(meta_filter);
     lane_direction_filter = new TreeNodeItem(meta_filter);
-    navMarker_filter = new TreeNodeItem();
+    navMarker_filter = new TreeNodeItem(meta_filter);
 
     // z-value is only relevant in relation with sibling items
     meta_filter->setZValue(-1);

@@ -49,18 +49,11 @@ LaneItem::LaneItem(Lane *lane, QGraphicsItem *parent) : QGraphicsPolygonItem(par
 
 void LaneItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QMenu menu;
-    QAction *addSignAction = menu.addAction("Add Sign");
     QAction *addNavMarkingAction = menu.addAction("Add Navigation Target");
     QAction *selectedAction = menu.exec(event->screenPos());
 
     Node *pos = new Node(event->scenePos().x(), event->scenePos().y());
-    if (selectedAction == addSignAction) {
-        // this is hacky, but works just fine.
-        auto *sign = new StreetSign(eStreetSigns::NONE, pos);
-        lane->signs.push_back(sign);
-        ItemSignalController::getInstance().sendAddSignClicked(sign, lane);
-    }
-    else if (selectedAction == addNavMarkingAction) {
+    if (selectedAction == addNavMarkingAction) {
         //this line registers the datatype shared pointer in the Qt framework
         qRegisterMetaType<std::shared_ptr<NavigationMarker>>();
         std::shared_ptr<NavigationMarker> navMarker = std::make_shared<NavigationMarker>(pos, eNavType::Final, lane);

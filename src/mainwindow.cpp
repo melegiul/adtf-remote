@@ -183,27 +183,27 @@ void MainWindow::networkDisconnected() {
 
 void MainWindow::networkReceived(ADTFMediaSample sample)
 {
-    if (sample.pinName == "CarOdometry" && sample.mediaType == "tCarOdometry") {
+    if (sample.pinName == "tCarOdometryOut" && sample.mediaType == "tCarOdometry") {
         tCarOdometry odometry = adtf_converter::from_network::carOdometry(sample);
         this->setCarOdometry(odometry);
-    } else if (sample.pinName == "Trapezoid" && sample.mediaType == "tTrapezoid") {
+    } else if (sample.pinName == "tTrapezoidOut" && sample.mediaType == "tTrapezoid") {
         tTrapezoid trapezoid = adtf_converter::from_network::trapezoid(sample);
         this->setTrapezoidCoords(trapezoid);
-    } else if (sample.pinName == "DetectedLine_POD" && sample.mediaType == "tDetectedLine_POD") {
+    } else if (sample.pinName == "tDetectedLineArrayOut" && sample.mediaType == "tDetectedLineArray") {
         std::vector<DetectedLine_POD> lines = adtf_converter::from_network::detectedLine(sample);
         std::unique_ptr<tDetectedLine> tDetLines = adtf_converter::from_network::detectedLinePOD(lines);
         this->setDetectedLine(std::move(tDetLines));
-    } else if (sample.pinName == "NearfieldGridmap" && sample.mediaType == "tNearfieldGridMapArray") {
+    } else if (sample.pinName == "tNearfieldGridMapArrayOut" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
         this->setNearfieldgridmap(*nearfieldGrid);
-    } else if (sample.pinName == "RemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
+    } else if (sample.pinName == "tRemoteStateMsgOut" && sample.mediaType == "tRemoteStateMsg") {
         std::unique_ptr<tRemoteStateMsg> statemsg = adtf_converter::from_network::remoteStateMsg(sample);
         this->setCarState(*statemsg);
         this->processRemoteStateMsg(*statemsg);
-    } else if (sample.pinName == "RemoteLogMsgOut" && sample.mediaType == "tLogMsg") {
+    } else if (sample.pinName == "tLogMsgOut" && sample.mediaType == "tLogMsg") {
         std::unique_ptr<tLogMsg> logmsg = adtf_converter::from_network::logMsg(sample);
         this->processLogMsg(*logmsg);
-    } else if (sample.pinName == "SpeedOut" && sample.mediaType == "tSpeed") {
+    } else if (sample.pinName == "tSpeedOut" && sample.mediaType == "tSpeed") {
         tSpeed speedy = adtf_converter::from_network::speed(sample);
         this->setCarSpeed(speedy);
     }
@@ -248,6 +248,7 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
             }
         }
     }
+    qDebug() << "[" << logMsg.timestamp << "] [" << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
     //TODO handle log in general
 }
 
@@ -312,7 +313,7 @@ void MainWindow::clearAll() {
         delete static_filter;
         static_filter = nullptr;
     }
-    if (nearfield_map_filter != nullptr){ //wallerni 25.2.20
+    if (nearfield_map_filter != nullptr){
         scene->removeItem(nearfield_map_filter);
         delete nearfield_map_filter;
         nearfield_map_filter = nullptr;

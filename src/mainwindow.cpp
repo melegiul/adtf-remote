@@ -35,10 +35,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     QSettings settings;
     int ui_background = settings.value("ui/background", 180).toInt();
-
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
-    this->car_height = carSettings.value("car/length", 400).toInt();
-    this->car_width = carSettings.value("car/width", 240).toInt();
 
     ui->setupUi(this);
 
@@ -162,6 +159,7 @@ void MainWindow::disconnectNetwork()
 }
 
 void MainWindow::networkConnected() {
+    this->state = tState::INITIALIZATION;
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
     ui->statusbar->showMessage("Connected to " + this->networkClient->getPeer());
@@ -453,10 +451,10 @@ void MainWindow::setupTrapezoid() {
         delete trapezoid_filter;
     }
 
-    trapezoid_filter = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF((int) coords->pos_A.x, (int) coords->pos_A.y)
-                                                            << QPointF((int) coords->pos_B.x, (int) coords->pos_B.y)
-                                                            << QPointF((int) coords->pos_C.x, (int) coords->pos_C.y)
-                                                            << QPointF((int) coords->pos_D.x, (int) coords->pos_D.y)));
+    trapezoid_filter = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF(coords->pos_A.x, coords->pos_A.y)
+                                                            << QPointF(coords->pos_B.x, coords->pos_B.y)
+                                                            << QPointF(coords->pos_C.x, coords->pos_C.y)
+                                                            << QPointF(coords->pos_D.x, coords->pos_D.y)));
 
     trapezoid_filter->setPen(QPen(Qt::green, 30, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     trapezoid_filter->setZValue(1000);
@@ -493,20 +491,14 @@ void MainWindow::setupDetectedLine() {
 void MainWindow::updateCar() {
     if(carconfreceived){
         if (car_filter == nullptr) setupCar();
-        if (odo == nullptr ) return;
-        if (speed == nullptr ) return;
-        auto angle = odo->orientation * 180 / M_PI;
-        if (angle < -0.5) angle += 360;
+        if(odo == nullptr) return;
 
-        //update car status messages
-        ui->speed_val_label->setText(QString::fromStdString(std::to_string((float) speed->combinedSpeed)));
-        ui->orientation_val_label->setText(QString::fromStdString(std::to_string((float) odo->orientation)));
-        ui->position_x_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.x)));
-        ui->position_y_val_label->setText(QString::fromStdString(std::to_string((float) odo->pos.y)));
+        auto angle = odo->orientation * 180 / M_PI;
+
+        if (angle < -0.5) angle += 360;
 
         car_filter->setPos(odo->pos.x - car_width / 2., odo->pos.y - car_height / 2.);
         car_filter->setRotation(-angle);
-
         if (show_active_lanes) colorLanesOfInterest();
 
         focusOnCar();
@@ -518,10 +510,10 @@ void MainWindow::updateTrapezoid() {
     if (trapezoid_filter == nullptr) setupTrapezoid();
     if (coords == nullptr) return;
 
-    trapezoid_filter->setPolygon(QPolygonF(QVector<QPointF>() << QPointF((int) coords->pos_A.x, (int) coords->pos_A.y)
-                                                              << QPointF((int) coords->pos_B.x, (int) coords->pos_B.y)
-                                                              << QPointF((int) coords->pos_C.x, (int) coords->pos_C.y)
-                                                              << QPointF((int) coords->pos_D.x, (int) coords->pos_D.y)));
+    trapezoid_filter->setPolygon(QPolygonF(QVector<QPointF>() << QPointF(coords->pos_A.x,  coords->pos_A.y)
+                                                              << QPointF(coords->pos_B.x, coords->pos_B.y)
+                                                              << QPointF(coords->pos_C.x, coords->pos_C.y)
+                                                              << QPointF(coords->pos_D.x, coords->pos_D.y)));
 }
 //Update detected Lines. First remove all Lines then add the new detected lines
 void MainWindow::updateDetectedLine() {
@@ -706,35 +698,47 @@ void MainWindow::saveDialog() {
 }
 
 
-void MainWindow::setCarOdometry(tCarOdometry &odo) {
+void MainWindow::setCarOdometry(tCarOdometry &odom) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
-    this->odo = &odo;
-    emit(carUpdated());
+    if(ad_running || rc_running){
+        this->odo = &odom;
+        emit(carUpdated());
+        emit(guiUpdated());
+    }
 }
 
 void MainWindow::setCarSpeed(tSpeed &speedy) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
-    this->speed = &speedy;
+    if(ad_running || rc_running){
+        this->speed = &speedy;
+    }
 }
 
 
-void MainWindow::setTrapezoidCoords(tTrapezoid &coords) {
-    this->coords = &coords;
-    emit(trapezoidUpdated());
+void MainWindow::setTrapezoidCoords(tTrapezoid &coordis) {
+    if(ad_running || rc_running) {
+        this->coords = &coordis;
+        //qDebug()  << "global trapezoid " << coords->pos_A.x << " " << coords->pos_A.y << " " << coords->pos_B.x << " " << coords->pos_B.y << " " << coords->pos_C.x << " " << coords->pos_C.y << " " << coords->pos_D.x << " " << coords->pos_D.y ;
+        emit(trapezoidUpdated());
+    }
 }
 
 void MainWindow::setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine) {
-    this->detectedLine = detectedLine;
-    emit(detectedLineUpdated());
+    if(ad_running || rc_running) {
+        this->detectedLine = detectedLine;
+        emit(detectedLineUpdated());
+    }
 }
 
 void MainWindow::setNearfieldgridmap(tNearfieldGridMapArray &root) {
-    this->nearfieldgridmap = MapTreeNode::generateFromArray(&root);
-    if(this->nearfieldgridmap == nullptr) {
-        //printw("Nullptr\n");
-        this->nearfieldgridmap = new MapTreeNode(1);
+    if(ad_running || rc_running) {
+        this->nearfieldgridmap = MapTreeNode::generateFromArray(&root);
+        if (this->nearfieldgridmap == nullptr) {
+            //printw("Nullptr\n");
+            this->nearfieldgridmap = new MapTreeNode(1);
+        }
+        emit(nearfieldGridMapUpdated());
     }
-    emit(nearfieldGridMapUpdated());
 }
 
 void MainWindow::setCarState(tRemoteStateMsg &statemsg) {
@@ -1045,7 +1049,7 @@ void MainWindow::handleMapPushClick(){
     ui->statusbar->showMessage("Handle Map Push Click!");
 
     //open dialog
-    fileNameMap = QFileDialog::getOpenFileName(this, "Choose map XML");
+    fileNameMap = QFileDialog::getOpenFileName(this, "Choose map XML", "/home/uniautonom/smds-uniautonom-remotecontrol-src/");
     qDebug() << "XML map file" << fileNameMap << "selected for opening";
     if (fileNameMap.isNull()) return;
 
@@ -1121,6 +1125,7 @@ void MainWindow::handleCarConfigPushACK() {
 
     carconfreceived = true;
     ready = true;
+    emit(carUpdated());
     emit(guiUpdated());
 }
 
@@ -1161,6 +1166,7 @@ void MainWindow::handleStartADACK() {
     ui->statusbar->showMessage("Handle Start AD ACK!");
 
     ad_running = true;
+    rc_running = false;
     emit(guiUpdated());
 }
 
@@ -1184,6 +1190,7 @@ void MainWindow::handleStartRCACK() {
     ui->statusbar->showMessage("Handle Start RC ACK!");
 
     rc_running = true;
+    ad_running = false;
     emit(guiUpdated());
 }
 
@@ -1232,15 +1239,58 @@ void MainWindow::handleAbortACK() {
     ui->statusbar->showMessage("Handle Abort ACK!");
 
     resetControlTabVals();
+    //resetMemberVariables();
     emit(guiUpdated());
 }
 
 void MainWindow::updateControlTab() {
     //update car state
     if(state != tState::NONE){
-        ui->state_val_label->setText(QString::fromStdString(tStateMap[state]));
+        ui->state_val_label->setText(QString::fromStdString(tStateMap.find(state)->second));
+        switch(state){
+            case tState::INITIALIZATION:
+            {
+                ui->state_val_label->setStyleSheet("QLabel { background-color : yellow}");
+                break;
+            }
+            case tState::READY:
+            {
+                ui->state_val_label->setStyleSheet("QLabel { background-color : green}");
+                break;
+            }
+            case tState::AD_RUNNING:
+            {
+                ui->state_val_label->setStyleSheet("QLabel { background-color : orange}");
+                break;
+            }
+            case tState::RC_RUNNING:
+            {
+                ui->state_val_label->setStyleSheet("QLabel { background-color : orange}");
+                break;
+            }
+            case tState::EMERGENCY:
+            {
+                ui->state_val_label->setStyleSheet("QLabel { background-color : red}");
+                break;
+            }
+        }
     }else{
         ui->state_val_label->setText(QString::fromStdString("-"));
+    }
+    if(speed != nullptr){
+        ui->speed_val_label->setText(QString::fromStdString(std::to_string(speed->combinedSpeed)));
+    }else{
+        ui->speed_val_label->setText(QString::fromStdString("-"));
+    }
+
+    if(odo != nullptr) {
+        ui->orientation_val_label->setText(QString::fromStdString(std::to_string(odo->orientation)));
+        ui->position_x_val_label->setText(QString::fromStdString(std::to_string(odo->pos.x)));
+        ui->position_y_val_label->setText(QString::fromStdString(std::to_string(odo->pos.y)));
+    }else{
+        ui->orientation_val_label->setText(QString::fromStdString("-"));
+        ui->position_x_val_label->setText(QString::fromStdString("-"));
+        ui->position_y_val_label->setText(QString::fromStdString("-"));
     }
 
     //update map filename
@@ -1303,7 +1353,6 @@ void MainWindow::updateControlTab() {
         ui->running_stop_button->setEnabled(false);
         ui->abort_button->setEnabled(false);
     }
-
 }
 
 void MainWindow::resetControlTabVals() {
@@ -1318,23 +1367,41 @@ void MainWindow::resetControlTabVals() {
     stopClick = false;
     emergency = false;
 
-    state = tState::NONE;
+    state = tState::INITIALIZATION;
     fileNameMap = nullptr;
     fileNameCarConfig = nullptr;
 }
 
+void MainWindow::resetMemberVariables(){
+    manager.clear();
+    odo = nullptr;
+    speed = nullptr;
+    coords = nullptr;
+    detectedLine = nullptr;
+    nearfieldgridmap = nullptr;
+
+    state = tState::NONE;
+    fileNameMap = nullptr;
+    fileNameCarConfig = nullptr;
+    car_height = 0;
+    car_width = 0;
+    car_init_x = 0.0;
+    car_init_y = 0.0;
+    car_init_orientation = 0.0;
+}
+
 tCarConfigStruct MainWindow::prepareCarConfigStruct() {
     QSettings settings;
-    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+    QSettings carSettings(fileNameCarConfig.isNull() ? settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString() : fileNameCarConfig, QSettings::IniFormat);
 
     tUInt32 length = carSettings.value("car/length", 400).toInt();
     tUInt32 width = carSettings.value("car/width", 240).toInt();
     cv::Point2f initpos = cv::Point2f(ui->car_x_val_edit->text().toFloat(), ui->car_y_val_edit->text().toFloat());
     tFloat32 initorientation = ui->car_orientation_val_edit->text().toFloat();
-    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toFloat(), carSettings.value("carview/leftneary", 300).toFloat());
-    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toFloat(), carSettings.value("carview/leftfary", 300).toFloat());
-    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", -300).toFloat(), carSettings.value("carview/rightfary", 300).toFloat());
-    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", -300).toFloat(), carSettings.value("carview/rightneary", 300).toFloat());
+    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toInt(), carSettings.value("carview/leftneary", 300).toInt());
+    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toInt(), carSettings.value("carview/leftfary", 600).toInt());
+    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", 300).toInt(), carSettings.value("carview/rightfary", 600).toInt());
+    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", 300).toInt(), carSettings.value("carview/rightneary", 300).toInt());
 
     tCarConfigStruct carConfigStruct = tCarConfigStruct(length, width, initpos, initorientation, traLeftNear, traLeftFar, traRightFar, traRightNear);
     return carConfigStruct;

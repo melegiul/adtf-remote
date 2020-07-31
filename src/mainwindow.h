@@ -59,7 +59,6 @@ private:
 
     //control tab related
     tState state = tState::NONE;
-    std::map<tState, std::string> tStateMap;
     QString fileNameMap = nullptr;
     QString fileNameCarConfig = nullptr;
     bool mapreceived = false;
@@ -104,6 +103,7 @@ private:
     void processLogMsg(tLogMsg &logMsg);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();
+    void resetMemberVariables();
     tCarConfigStruct prepareCarConfigStruct();
     void sendtSignalValue();
 
@@ -168,11 +168,11 @@ private:
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLine> detectedLine = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
-    int car_height = 400;
-    int car_width = 240;
-    int car_init_x;
-    int car_init_y;
-    int car_init_orientation;
+    int car_height;
+    int car_width;
+    tFloat32 car_init_x;
+    tFloat32 car_init_y;
+    tFloat32 car_init_orientation;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;
@@ -205,7 +205,6 @@ private:
     QGraphicsItem *detected_line_filter = nullptr;
     QGraphicsItem *nearfield_map_filter = nullptr;
 
-    StreetSign *selected_sign = nullptr;
     Lane *selected_lane = nullptr;
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;

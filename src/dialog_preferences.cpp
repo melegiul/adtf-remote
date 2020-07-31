@@ -24,7 +24,8 @@ void PreferencesDialog::loadPreferences() {
     
     QSettings settings;
     settings.setValue("car/settings", fileNameCarConfig);
-    
+
+    savePreferences();
     showPreferences();
 }
 

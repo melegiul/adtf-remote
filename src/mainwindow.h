@@ -77,7 +77,7 @@ public:
     void setCarOdometry(tCarOdometry &odo);
     void setCarSpeed(tSpeed &speedy);
     void setTrapezoidCoords(tTrapezoid &coords);
-    void setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine);
+    void setDetectedLine(std::shared_ptr<tDetectedLineArray> detectedLine);
     void setNearfieldgridmap(tNearfieldGridMapArray &root);
     void setCarState(tRemoteStateMsg &statemsg);
     void clearAndSetupStaticElements();
@@ -166,7 +166,7 @@ private:
     tCarOdometry *odo = nullptr;
     tSpeed *speed = nullptr;
     tTrapezoid *coords = nullptr;
-    std::shared_ptr<tDetectedLine> detectedLine = nullptr;
+    std::shared_ptr<tDetectedLineArray> detectedLineArray = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
     int car_height;
     int car_width;

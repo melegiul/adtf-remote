@@ -25,7 +25,7 @@ std::unique_ptr<tNearfieldGridMapArray> adtf_converter::from_network::nearfieldG
         assert(sample.mediaType == mediaType);
         pCoder->Begin(sample.data.get(), sample.length);
 
-        std::vector<DetectedLine_POD> lines;
+        std::vector<tUInt8> lines;
         uint16_t arraySize;
 
         pCoder->Get("length", &arraySize);

@@ -188,8 +188,8 @@ void MainWindow::networkReceived(ADTFMediaSample sample)
         tTrapezoid trapezoid = adtf_converter::from_network::trapezoid(sample);
         this->setTrapezoidCoords(trapezoid);
     } else if (sample.pinName == "tDetectedLineArrayOut" && sample.mediaType == "tDetectedLineArray") {
-        std::vector<DetectedLine_POD> lines = adtf_converter::from_network::detectedLine(sample);
-        std::unique_ptr<tDetectedLine> tDetLines = adtf_converter::from_network::detectedLinePOD(lines);
+        std::vector<tDetectedLine> lines = adtf_converter::from_network::detectedLineArray(sample);
+        std::unique_ptr<tDetectedLineArray> tDetLines = adtf_converter::from_network::detectedLine(lines);
         this->setDetectedLine(std::move(tDetLines));
     } else if (sample.pinName == "tNearfieldGridMapArrayOut" && sample.mediaType == "tNearfieldGridMapArray") {
         std::unique_ptr<tNearfieldGridMapArray> nearfieldGrid = adtf_converter::from_network::nearfieldGridmap(sample);
@@ -462,7 +462,7 @@ void MainWindow::setupTrapezoid() {
 }
 //Setup the detected Lines and add it to the scene
 void MainWindow::setupDetectedLine() {
-    if (detectedLine == nullptr)
+    if (detectedLineArray == nullptr)
         return;
 
     if (detected_line_filter != nullptr) {
@@ -470,12 +470,12 @@ void MainWindow::setupDetectedLine() {
         delete detected_line_filter;
     }
 
-    if (detectedLine->arraySize >= 0 && show_detected_line) {
+    if (detectedLineArray->arraySize >= 0 && show_detected_line) {
 
-        for (int i = 0; i < detectedLine->arraySize; i++) {
+        for (int i = 0; i < detectedLineArray->arraySize; i++) {
 
-            QLineF line = QLineF((qreal) detectedLine->detectedLine[i].fromPos.x, (qreal) detectedLine->detectedLine[i].fromPos.y,
-                                 (qreal) detectedLine->detectedLine[i].toPos.x, (qreal) detectedLine->detectedLine[i].toPos.y);
+            QLineF line = QLineF((qreal) detectedLineArray->detectedLines[i].fromPos.x, (qreal) detectedLineArray->detectedLines[i].fromPos.y,
+                                 (qreal) detectedLineArray->detectedLines[i].toPos.x, (qreal) detectedLineArray->detectedLines[i].toPos.y);
 
 
             QGraphicsLineItem *lineItem = new QGraphicsLineItem(line, detected_line_filter);
@@ -518,10 +518,10 @@ void MainWindow::updateTrapezoid() {
 //Update detected Lines. First remove all Lines then add the new detected lines
 void MainWindow::updateDetectedLine() {
     if (detected_line_filter == nullptr && show_detected_line) setupDetectedLine();
-    if (detectedLine == nullptr) return;
+    if (detectedLineArray == nullptr) return;
 
 
-    if (detectedLine->arraySize >= 0) {
+    if (detectedLineArray->arraySize >= 0) {
 
             foreach (QGraphicsItem *item, scene->items()) {
                 QGraphicsLineItem *lineItem = dynamic_cast<QGraphicsLineItem*>(item);
@@ -529,12 +529,12 @@ void MainWindow::updateDetectedLine() {
             }
 
         if (show_detected_line) {
-            for (int i = 0; i < detectedLine->arraySize; i++) {
+            for (int i = 0; i < detectedLineArray->arraySize; i++) {
 
-                QLineF line = QLineF((qreal) detectedLine->detectedLine[i].fromPos.x,
-                                     (qreal) detectedLine->detectedLine[i].fromPos.y,
-                                     (qreal) detectedLine->detectedLine[i].toPos.x,
-                                     (qreal) detectedLine->detectedLine[i].toPos.y);
+                QLineF line = QLineF((qreal) detectedLineArray->detectedLines[i].fromPos.x,
+                                     (qreal) detectedLineArray->detectedLines[i].fromPos.y,
+                                     (qreal) detectedLineArray->detectedLines[i].toPos.x,
+                                     (qreal) detectedLineArray->detectedLines[i].toPos.y);
 
 
                 QGraphicsLineItem *lineItem = new QGraphicsLineItem(line, detected_line_filter);
@@ -723,9 +723,9 @@ void MainWindow::setTrapezoidCoords(tTrapezoid &coordis) {
     }
 }
 
-void MainWindow::setDetectedLine(std::shared_ptr<tDetectedLine> detectedLine) {
+void MainWindow::setDetectedLine(std::shared_ptr<tDetectedLineArray> detectedLineArray) {
     if(ad_running || rc_running) {
-        this->detectedLine = detectedLine;
+        this->detectedLineArray = detectedLineArray;
         emit(detectedLineUpdated());
     }
 }
@@ -1377,7 +1377,7 @@ void MainWindow::resetMemberVariables(){
     odo = nullptr;
     speed = nullptr;
     coords = nullptr;
-    detectedLine = nullptr;
+    detectedLineArray = nullptr;
     nearfieldgridmap = nullptr;
 
     state = tState::NONE;

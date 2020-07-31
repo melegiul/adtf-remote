@@ -489,7 +489,7 @@ void MainWindow::setupDetectedLine() {
 
 void MainWindow::updateCar() {
     if(carconfreceived){
-        if (car_filter == nullptr) setupCar();
+        if(car_filter == nullptr) setupCar();
         if(odo == nullptr) return;
 
         auto angle = odo->orientation * 180 / M_PI;
@@ -1093,11 +1093,11 @@ void MainWindow::handleCarConfigLoadClick(){
     if (fileNameCarConfig.isNull()) return;
 
     QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
-    this->car_height = carSettings.value("car/length", 400).toInt();
-    this->car_width = carSettings.value("car/width", 240).toInt();
-    this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
-    this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
-    this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+    car_height = carSettings.value("car/length", 400).toInt();
+    car_width = carSettings.value("car/width", 240).toInt();
+    car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
+    car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
+    car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1390,13 +1390,18 @@ tCarConfigStruct MainWindow::prepareCarConfigStruct() {
     QSettings carSettings(fileNameCarConfig.isNull() ? settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString() : fileNameCarConfig, QSettings::IniFormat);
 
     tUInt32 length = carSettings.value("car/length", 400).toInt();
+    car_height = length;
     tUInt32 width = carSettings.value("car/width", 240).toInt();
+    car_width = width;
     cv::Point2f initpos = cv::Point2f(ui->car_x_val_edit->text().toFloat(), ui->car_y_val_edit->text().toFloat());
+    car_init_x = initpos.x;
+    car_init_y = initpos.y;
     tFloat32 initorientation = ui->car_orientation_val_edit->text().toFloat();
-    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toInt(), carSettings.value("carview/leftneary", 300).toInt());
-    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toInt(), carSettings.value("carview/leftfary", 600).toInt());
-    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", 300).toInt(), carSettings.value("carview/rightfary", 600).toInt());
-    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", 300).toInt(), carSettings.value("carview/rightneary", 300).toInt());
+    car_init_orientation = initorientation;
+    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toFloat(), carSettings.value("carview/leftneary", 300).toFloat());
+    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toFloat(), carSettings.value("carview/leftfary", 600).toFloat());
+    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", 300).toFloat(), carSettings.value("carview/rightfary", 600).toFloat());
+    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", 300).toFloat(), carSettings.value("carview/rightneary", 300).toFloat());
 
     tCarConfigStruct carConfigStruct = tCarConfigStruct(length, width, initpos, initorientation, traLeftNear, traLeftFar, traRightFar, traRightNear);
     return carConfigStruct;

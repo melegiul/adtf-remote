@@ -8,6 +8,9 @@ using namespace adtf;
 
 static const std::string mediaType = "tDetectedLineArray";
 static const char *mediaDescription = R"(
+                                    <datatypes>
+                                      <datatype description="Point2i from open cv" name="Point" size="64" />
+                                    </datatypes>
                                       <structs>
                                             <struct alignment="1" name="tDetectedLine" version="1">
                                                 <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="startPos" type="Point" />
@@ -15,7 +18,7 @@ static const char *mediaDescription = R"(
                                             </struct>
                                                 <struct alignment="1" name="tDetectedLineArray" version="1">
                                                 <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="arraySize" type="tInt32" />
-                                                <element alignment="1" arraysize="arraySize" byteorder="LE" bytepos="5" name="detectedLineArray" type="tDetectedLine" />
+                                                <element alignment="1" arraysize="arraySize" byteorder="LE" bytepos="4" name="detectedLineArray" type="tDetectedLine" />
                                             </struct>
                                       </structs>
                                    )";

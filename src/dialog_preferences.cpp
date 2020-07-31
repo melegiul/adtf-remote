@@ -13,6 +13,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
     connect(this, &PreferencesDialog::accepted, this, &PreferencesDialog::savePreferences);
     connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
 
+    savePreferences();
     showPreferences();
 }
 
@@ -25,7 +26,6 @@ void PreferencesDialog::loadPreferences() {
     QSettings settings;
     settings.setValue("car/settings", fileNameCarConfig);
 
-    savePreferences();
     showPreferences();
 }
 
@@ -41,14 +41,14 @@ void PreferencesDialog::showPreferences() {
     this->sb_car_init_orientation->setValue(carSettings.value("odoinit/orientation", 1).toFloat());
     this->sb_car_length->setValue(carSettings.value("car/length", 400).toInt());
     this->sb_car_width->setValue(carSettings.value("car/width", 240).toInt());
-    this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300).toInt());
-    this->sb_left_near_y->setValue(carSettings.value("carview/leftneary", 300).toInt());
-    this->sb_right_near_x->setValue(carSettings.value("carview/rightnearx", 300).toInt());
-    this->sb_right_near_y->setValue(carSettings.value("carview/rightneary", 300).toInt());
-    this->sb_left_far_x->setValue(carSettings.value("carview/leftfarx", -300).toInt());
-    this->sb_left_far_y->setValue(carSettings.value("carview/leftfary", 600).toInt());
-    this->sb_right_far_x->setValue(carSettings.value("carview/rightfarx", 300).toInt());
-    this->sb_right_far_y->setValue(carSettings.value("carview/rightfary", 600).toInt());
+    this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300).toFloat());
+    this->sb_left_near_y->setValue(carSettings.value("carview/leftneary", 300).toFloat());
+    this->sb_right_near_x->setValue(carSettings.value("carview/rightnearx", 300).toFloat());
+    this->sb_right_near_y->setValue(carSettings.value("carview/rightneary", 300).toFloat());
+    this->sb_left_far_x->setValue(carSettings.value("carview/leftfarx", -300).toFloat());
+    this->sb_left_far_y->setValue(carSettings.value("carview/leftfary", 600).toFloat());
+    this->sb_right_far_x->setValue(carSettings.value("carview/rightfarx", 300).toFloat());
+    this->sb_right_far_y->setValue(carSettings.value("carview/rightfary", 600).toFloat());
 }
 
 void PreferencesDialog::savePreferences() {

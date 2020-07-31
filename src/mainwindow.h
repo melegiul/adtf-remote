@@ -168,11 +168,11 @@ private:
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLineArray> detectedLineArray = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
-    int car_height;
-    int car_width;
-    tFloat32 car_init_x;
-    tFloat32 car_init_y;
-    tFloat32 car_init_orientation;
+    int car_height = 400;
+    int car_width = 240;
+    tFloat32 car_init_x = 0.0;
+    tFloat32 car_init_y = 0.0;
+    tFloat32 car_init_orientation = 0.0;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;

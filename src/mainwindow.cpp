@@ -412,7 +412,6 @@ void MainWindow::updateMap() {
         ui->map_view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
         zoom_rotate_manager->adjustMeasure();
     }
-    //setEditingMode(ui->editor_checkbox->checkState());
     colorLanesOfInterest();
 }
 
@@ -1313,7 +1312,7 @@ void MainWindow::updateControlTab() {
         ui->car_y_val_edit->setText(QString::number(this->car_init_y));
         ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
     }else{
-    	if(mapreceived == true) {
+    	if(mapreceived) {
             QSettings settings;
             QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
             this->car_height = carSettings.value("car/length", 400).toInt();
@@ -1366,10 +1365,6 @@ void MainWindow::resetControlTabVals() {
     ad_running = false;
     stopClick = false;
     emergency = false;
-
-    state = tState::INITIALIZATION;
-    fileNameMap = nullptr;
-    fileNameCarConfig = nullptr;
 }
 
 void MainWindow::resetMemberVariables(){

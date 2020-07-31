@@ -24,6 +24,7 @@ static const char *mediaDescription = R"(
             <element name="STATEMACHINE" value="100"/>
             <element name="TRAJECTORYPLANNER" value="110" />
             <element name="LANEDETECTIONFUSION" value="120" />
+            <element name="CARSIMULATOR" value="130" />
         </enum>
         <enum name="tLogContext" type="tUInt32">
             <element name="NONE" value="0" />

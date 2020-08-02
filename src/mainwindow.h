@@ -105,7 +105,8 @@ private:
     void resetControlTabVals();
     void resetMemberVariables();
     tCarConfigStruct prepareCarConfigStruct();
-    void sendtSignalValue();
+    void sendtSignalValueSteer();
+    void sendtSignalValueSpeed();
 
 signals:
     void nearfieldGridMapUpdated();
@@ -164,15 +165,18 @@ private:
     ContentManager &manager = ContentManager::getInstance();
     GraphicsViewZoom *zoom_rotate_manager = nullptr;
     tCarOdometry *odo = nullptr;
-    tSpeed *speed = nullptr;
     tTrapezoid *coords = nullptr;
     std::shared_ptr<tDetectedLineArray> detectedLineArray = nullptr;
     MapTreeNode *nearfieldgridmap = nullptr;
+    tFloat32 car_speed = 0.0f;
     int car_height = 400;
     int car_width = 240;
-    tFloat32 car_init_x = 0.0;
-    tFloat32 car_init_y = 0.0;
-    tFloat32 car_init_orientation = 0.0;
+    tFloat32 car_init_x = 0.0f;
+    tFloat32 car_init_y = 0.0f;
+    tFloat32 car_init_orientation = 0.0f;
+    tFloat32 car_pos_x = 0.0f;
+    tFloat32 car_pos_y = 0.0f;
+    tFloat32 car_orientation = 0.0f;
     bool scoped = false;
     bool show_active_lanes = true;
     bool show_trapezoid = true;

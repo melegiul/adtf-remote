@@ -165,6 +165,7 @@ void MainWindow::networkDisconnected() {
     ui->connection_val_label->setText(QString::fromStdString("not connected"));
     ui->connection_val_label->setStyleSheet("QLabel { background-color : red}");
     ui->loglevel_combo->setEnabled(false);
+    state = tState::NONE;
     resetControlTabVals();
     emit(guiUpdated());
 }
@@ -216,7 +217,8 @@ void MainWindow::processRemoteStateMsg(tRemoteStateMsg & rmtStateMsg){
     } else if (rmtStateMsg.state == tState::RC_RUNNING) {
         handleStartRCACK();
     } else if (rmtStateMsg.state == tState::EMERGENCY) {
-        //TODO
+        //this case should not occur in rc mode currently
+        disconnectNetwork();
     } else {
         //default case
     }
@@ -691,6 +693,9 @@ void MainWindow::setCarOdometry(tCarOdometry &odom) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
     if(ready || ad_running || rc_running){
         this->odo = &odom;
+        car_pos_x = odo->pos.x;
+        car_pos_y = odo->pos.y;
+        car_orientation = odo->orientation;
         emit(carUpdated());
         emit(guiUpdated());
     }
@@ -699,7 +704,7 @@ void MainWindow::setCarOdometry(tCarOdometry &odom) {
 void MainWindow::setCarSpeed(tSpeed &speedy) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
     if(ready || ad_running || rc_running){
-        this->speed = &speedy;
+        car_speed = speedy.combinedSpeed;
     }
 }
 
@@ -1069,6 +1074,15 @@ void MainWindow::handleMapPushACK(){
     this->updateMap();
     NavigationHelper::makeMapGraph();
 
+    QSettings settings;
+    QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
+    car_height = carSettings.value("car/length", 400).toInt();
+    car_width = carSettings.value("car/width", 240).toInt();
+    car_init_x = carSettings.value("odoinit/posx", 200.0f).toFloat();
+    car_init_y = carSettings.value("odoinit/posy", 200.0f).toFloat();
+    car_init_orientation = carSettings.value("odoinit/orientation", 0.1f).toFloat();
+    fileNameCarConfig = settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString();
+
     mapreceived = true;
     emit(guiUpdated());
 }
@@ -1084,9 +1098,9 @@ void MainWindow::handleCarConfigLoadClick(){
     QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
     car_height = carSettings.value("car/length", 400).toInt();
     car_width = carSettings.value("car/width", 240).toInt();
-    car_init_x = carSettings.value("odoinit/posx", 200.0).toFloat();
-    car_init_y = carSettings.value("odoinit/posy", 200.0).toFloat();
-    car_init_orientation = carSettings.value("odoinit/orientation", 0.1).toFloat();
+    car_init_x = carSettings.value("odoinit/posx", 200.0f).toFloat();
+    car_init_y = carSettings.value("odoinit/posy", 200.0f).toFloat();
+    car_init_orientation = carSettings.value("odoinit/orientation", 0.1f).toFloat();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1123,10 +1137,11 @@ void MainWindow::handleCarConfigPushACK() {
 void MainWindow::handleRouteInfoPushClick(){
     ui->statusbar->showMessage("Handle Route Info Push Click!");
 
-    //send route info
-    //TODO
+    //TODO TEAM XBOX CONTROLLER
+    sendtSignalValueSteer();
+    sendtSignalValueSpeed();
 
-    //TODO DEVELOPMENT
+    //FIXME DEVELOPMENT LINE
     handleRouteInfoPushACK();
 }
 
@@ -1229,6 +1244,7 @@ void MainWindow::handleAbortClick(){
 void MainWindow::handleAbortACK() {
     ui->statusbar->showMessage("Handle Abort ACK!");
 
+    clearAndSetupStaticElements();
     ui->loglevel_combo->setCurrentIndex(0);
     resetControlTabVals();
     resetMemberVariables();
@@ -1265,21 +1281,25 @@ void MainWindow::updateControlTab() {
                 ui->state_val_label->setStyleSheet("QLabel { background-color : red}");
                 break;
             }
+            case tState::NONE:
+            {
+                break;
+            }
         }
     }else{
         ui->state_val_label->setStyleSheet("QLabel { background-color : white}");
         ui->state_val_label->setText(QString::fromStdString("-"));
     }
-    if(speed != nullptr){
-        ui->speed_val_label->setText(QString::number(speed->combinedSpeed, 'f', 2));
+    if(car_speed != 0.0f){
+        ui->speed_val_label->setText(QString::number(car_speed, 'f', 1));
     }else{
         ui->speed_val_label->setText(QString::fromStdString("-"));
     }
 
-    if(odo != nullptr) {
-        ui->orientation_val_label->setText(QString::number(odo->orientation, 'f', 1));
-        ui->position_x_val_label->setText(QString::number(odo->pos.x, 'f', 1));
-        ui->position_y_val_label->setText(QString::number(odo->pos.y, 'f', 1));
+    if(car_pos_x != 0.0f || car_pos_y != 0.0f || car_orientation != 0.0f) {
+        ui->orientation_val_label->setText(QString::number(car_orientation, 'f', 1));
+        ui->position_x_val_label->setText(QString::number(car_pos_x, 'f', 1));
+        ui->position_y_val_label->setText(QString::number(car_pos_y, 'f', 1));
     }else{
         ui->orientation_val_label->setText(QString::fromStdString("-"));
         ui->position_x_val_label->setText(QString::fromStdString("-"));
@@ -1307,15 +1327,6 @@ void MainWindow::updateControlTab() {
         ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation, 'f', 2));
     }else{
     	if(mapreceived || carconfreceived || ad_running || rc_running) {
-            QSettings settings;
-            QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
-            this->car_height = carSettings.value("car/length", 400).toInt();
-            this->car_width = carSettings.value("car/width", 240).toInt();
-            this->car_init_x = carSettings.value("odoinit/posx", 200.0).toFloat();
-            this->car_init_y = carSettings.value("odoinit/posy", 200.0).toFloat();
-            this->car_init_orientation = carSettings.value("odoinit/orientation", 0.1).toFloat();
-        
-            ui->car_config_val_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
             ui->car_x_val_edit->setText(QString::number(this->car_init_x, 'f', 2));
             ui->car_y_val_edit->setText(QString::number(this->car_init_y, 'f', 2));
             ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation, 'f', 2));
@@ -1362,9 +1373,11 @@ void MainWindow::resetControlTabVals() {
 }
 
 void MainWindow::resetMemberVariables(){
-    manager.clear();
+    car_speed = 0.0f;
     odo = nullptr;
-    speed = nullptr;
+    car_pos_x = 0.0f;
+    car_pos_y = 0.0f;
+    car_orientation = 0.0f;
     coords = nullptr;
     detectedLineArray = nullptr;
     nearfieldgridmap = nullptr;
@@ -1387,25 +1400,39 @@ tCarConfigStruct MainWindow::prepareCarConfigStruct() {
     car_init_y = initpos.y;
     tFloat32 initorientation = ui->car_orientation_val_edit->text().toFloat();
     car_init_orientation = initorientation;
-    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300).toFloat(), carSettings.value("carview/leftneary", 300).toFloat());
-    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300).toFloat(), carSettings.value("carview/leftfary", 600).toFloat());
-    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", 300).toFloat(), carSettings.value("carview/rightfary", 600).toFloat());
-    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", 300).toFloat(), carSettings.value("carview/rightneary", 300).toFloat());
+    cv::Point2f traLeftNear = cv::Point2f(carSettings.value("carview/leftnearx", -300.0f).toFloat(), carSettings.value("carview/leftneary", 300.0f).toFloat());
+    cv::Point2f traLeftFar = cv::Point2f(carSettings.value("carview/leftfarx", -300.0f).toFloat(), carSettings.value("carview/leftfary", 600.0f).toFloat());
+    cv::Point2f traRightFar = cv::Point2f(carSettings.value("carview/rightfarx", 300.0f).toFloat(), carSettings.value("carview/rightfary", 600.0f).toFloat());
+    cv::Point2f traRightNear = cv::Point2f(carSettings.value("carview/rightnearx", 300.0f).toFloat(), carSettings.value("carview/rightneary", 300.0f).toFloat());
 
     tCarConfigStruct carConfigStruct = tCarConfigStruct(length, width, initpos, initorientation, traLeftNear, traLeftFar, traRightFar, traRightNear);
     return carConfigStruct;
 }
 
-//TODO SEND SIGNAL VALUES TO TEST PATH
-void MainWindow::sendtSignalValue() {
-//    ADTFMediaSample sample;
-//    tSignalValue command = tSignalValue(0);
-//    sample.length = sizeof(command);
-//
-//    sample.data.reset(new char[sample.length]);
-//    sample.pinName = "tSignalValue";
-//    sample.mediaType = "tSignalValue";
-//    sample.streamTime = 0;
-//    memcpy(sample.data.get(), &command, sample.length);
-//    this->networkClient->send(sample);
+//FIXME TEAM XBOX CONTROLLER: DUMMY FOR DATA SEND
+void MainWindow::sendtSignalValueSteer() {
+    ADTFMediaSample sample;
+    tSignalValue command = tSignalValue(119.0f);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tSignalValueSteer";
+    sample.mediaType = "tSignalValue";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
+}
+
+//FIXME TEAM XBOX CONTROLLER: DUMMY FOR DATA SEND
+void MainWindow::sendtSignalValueSpeed() {
+    ADTFMediaSample sample;
+    tSignalValue command = tSignalValue(179.0f);
+    sample.length = sizeof(command);
+
+    sample.data.reset(new char[sample.length]);
+    sample.pinName = "tSignalValueSpeed";
+    sample.mediaType = "tSignalValue";
+    sample.streamTime = 0;
+    memcpy(sample.data.get(), &command, sample.length);
+    this->networkClient->send(sample);
 }

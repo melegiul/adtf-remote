@@ -1248,6 +1248,28 @@ void MainWindow::handleAbortACK() {
     ui->loglevel_combo->setCurrentIndex(0);
     resetControlTabVals();
     resetMemberVariables();
+
+    //HOTFIX
+    if (trapezoid_filter != nullptr) {
+        scene->removeItem(trapezoid_filter);
+        delete trapezoid_filter;
+        trapezoid_filter = nullptr;
+    }
+    foreach (QGraphicsItem *item, scene->items()) {
+        QGraphicsLineItem *lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+        if (lineItem != nullptr && lineItem->parentItem() == detected_line_filter) scene->removeItem(lineItem);
+    }
+    if (detected_line_filter != nullptr) {
+        scene->removeItem(detected_line_filter);
+        delete detected_line_filter;
+        detected_line_filter = nullptr;
+    }
+    if (car_filter != nullptr) {
+        scene->removeItem(car_filter);
+        delete car_filter;
+        car_filter = nullptr;
+    }
+
     emit(guiUpdated());
 }
 

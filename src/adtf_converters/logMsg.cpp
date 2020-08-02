@@ -1,61 +1,21 @@
 #include <adtf_plugin_sdk.h>
+#include <iostream>
 
 #include "../adtfmediasample.h"
 #include "helper_structs.h"
 #include "logMsg.h"
+#include "mediaDesciptionSingleton.h"
 
 using namespace adtf;
 
 static const std::string mediaType = "tLogMsg";
-static const char *mediaDescription = R"(
-<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<adtf:ddl xmlns:adtf="adtf">
-    <enums>
-        <enum name="tFilterLogType" type="tUInt32">
-            <element name="NONE" value="0" />
-            <element name="DEBUG" value="100" />
-            <element name="INFO" value="110" />
-            <element name="WARNING" value="120" />
-            <element name="ERROR" value="130" />
-            <element name="CRITICAL" value="140" />
-            <element name="ACK" value="150" />
-        </enum>
-        <enum name="tUniaFilter" type="tUInt32">
-            <element name="STATEMACHINE" value="100"/>
-            <element name="TRAJECTORYPLANNER" value="110" />
-            <element name="LANEDETECTIONFUSION" value="120" />
-            <element name="CARSIMULATOR" value="130" />
-        </enum>
-        <enum name="tLogContext" type="tUInt32">
-            <element name="NONE" value="0" />
-            <element name="MAP" value="100"/>
-            <element name="AC" value="110"/>
-            <element name="RI" value="120"/>
-            <element name="INITIALIZATION" value="200" />
-            <element name="READY" value="210" />
-            <element name="AD_RUNNING" value="220" />
-            <element name="RC_RUNNING" value="230" />
-            <element name="EMERGENCY" value="240" />
-        </enum>
-    </enums>
-    <structs>
-        <struct alignment="1" name="tLogMsg" version="1">
-           <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="timestamp" type="tUInt64" />
-           <element alignment="1" arraysize="1" byteorder="LE" bytepos="8" name="logtype" type="tFilterLogType" />
-           <element alignment="1" arraysize="1" byteorder="LE" bytepos="12" name="filter" type="tUniaFilter" />
-           <element alignment="1" arraysize="1" byteorder="LE" bytepos="16" name="logcontext" type="tLogContext" />
-           <element alignment="1" arraysize="1" byteorder="LE" bytepos="20" name="payloadLength" type="tUInt32" />
-           <element alignment="1" arraysize="payloadLength" byteorder="LE" bytepos="24" name="ui8Data" type="tUInt8" />
-        </struct>
-    </structs>
-</adtf:ddl>
-)";
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
 std::unique_ptr<tLogMsg> adtf_converter::from_network::logMsg(const ADTFMediaSample &sample) {
+
     if (!pCoderInitialized) {
-        pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
+        pCoder->Create(mediaType.data(), mediaDesciptionSingleton::getInstance().getMediaDescription().c_str(), IMediaDescription::MDF_DDL_DEFAULT_VERSION);
         pCoderInitialized = true;
     }
 

@@ -33,30 +33,32 @@ void PreferencesDialog::showPreferences() {
     QSettings settings;
     this->le_ipaddress->setText(settings.value("network/ipaddress").toString());
     this->sb_port->setValue(settings.value("network/port", 9536).toInt());
+    this->le_description->setText(settings.value("description/path").toString());
     this->car_config_edit_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
     this->sb_background->setValue(settings.value("ui/background", 180).toInt());
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
-    this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200).toFloat());
-    this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200).toFloat());
-    this->sb_car_init_orientation->setValue(carSettings.value("odoinit/orientation", 1).toFloat());
+    this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200.0).toFloat());
+    this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200.0).toFloat());
+    this->sb_car_init_orientation->setValue(carSettings.value("odoinit/orientation", 0.1).toFloat());
     this->sb_car_length->setValue(carSettings.value("car/length", 400).toInt());
     this->sb_car_width->setValue(carSettings.value("car/width", 240).toInt());
-    this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300).toFloat());
-    this->sb_left_near_y->setValue(carSettings.value("carview/leftneary", 300).toFloat());
-    this->sb_right_near_x->setValue(carSettings.value("carview/rightnearx", 300).toFloat());
-    this->sb_right_near_y->setValue(carSettings.value("carview/rightneary", 300).toFloat());
-    this->sb_left_far_x->setValue(carSettings.value("carview/leftfarx", -300).toFloat());
-    this->sb_left_far_y->setValue(carSettings.value("carview/leftfary", 600).toFloat());
-    this->sb_right_far_x->setValue(carSettings.value("carview/rightfarx", 300).toFloat());
-    this->sb_right_far_y->setValue(carSettings.value("carview/rightfary", 600).toFloat());
+    this->sb_left_near_x->setValue(carSettings.value("carview/leftnearx", -300.0).toFloat());
+    this->sb_left_near_y->setValue(carSettings.value("carview/leftneary", 300.0).toFloat());
+    this->sb_right_near_x->setValue(carSettings.value("carview/rightnearx", 300.0).toFloat());
+    this->sb_right_near_y->setValue(carSettings.value("carview/rightneary", 300.0).toFloat());
+    this->sb_left_far_x->setValue(carSettings.value("carview/leftfarx", -300.0).toFloat());
+    this->sb_left_far_y->setValue(carSettings.value("carview/leftfary", 600.0).toFloat());
+    this->sb_right_far_x->setValue(carSettings.value("carview/rightfarx", 300.0).toFloat());
+    this->sb_right_far_y->setValue(carSettings.value("carview/rightfary", 600.0).toFloat());
 }
 
 void PreferencesDialog::savePreferences() {
     QSettings settings;
     settings.setValue("network/ipaddress", this->le_ipaddress->text());
     settings.setValue("network/port", this->sb_port->value());
+    settings.setValue("description/path", this->le_description->text());
     settings.setValue("ui/background", this->sb_background->value());
-    settings.setValue("car/settings", this->car_config_edit_label->text());
+    settings.setValue("car/settings", this->car_config_edit_label->text() == "" ? "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini" : this->car_config_edit_label->text());
 
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     carSettings.setValue("odoinit/posx", this->sb_car_init_pos_x->value());

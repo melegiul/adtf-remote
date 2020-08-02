@@ -3,22 +3,17 @@
 #include "../adtfmediasample.h"
 #include "helper_structs.h"
 #include "nearfieldgridmap.h"
+#include "mediaDesciptionSingleton.h"
 
 using namespace adtf;
 
 static const std::string mediaType = "tNearfieldGridMapArray";
-static const char *mediaDescription = R"(
-                                      <struct alignment="1" name="tNearfieldGridMapArray" version="1">
-                                          <element alignment="1" arraysize="1" byteorder="LE" bytepos="0" name="length" type="tUInt16" />
-                                          <element alignment="1" arraysize="length" byteorder="LE" bytepos="2" name="occupancyList" type="tUInt8" />
-                                      </struct>
-                                   )";
 static cObjectPtr<cMediaCoder> pCoder = new cMediaCoder();
 static bool pCoderInitialized = false;
 
 std::unique_ptr<tNearfieldGridMapArray> adtf_converter::from_network::nearfieldGridmap(const ADTFMediaSample &sample) {
         if (!pCoderInitialized) {
-            pCoder->Create(mediaType.data(), mediaDescription, IMediaDescription::MDF_DDL_DEFAULT_VERSION);
+            pCoder->Create(mediaType.data(), mediaDesciptionSingleton::getInstance().getMediaDescription().c_str(), IMediaDescription::MDF_DDL_DEFAULT_VERSION);
             pCoderInitialized = true;
         }
 

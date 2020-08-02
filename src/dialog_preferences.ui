@@ -68,6 +68,20 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Media Descritption Path</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="le_description">
+         <property name="text">
+          <string>/home/uniautonom/smds-uniautonom-remotecontrol-src/global/description/uni_autonom.description</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="visu_tab">
@@ -130,30 +144,10 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="sb_car_init_pos_x">
-                <property name="maximum">
-                 <number>1000000</number>
-                </property>
-                <property name="value">
-                 <number>200</number>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="lb_car_init_pos_y">
                 <property name="text">
                  <string>Position Y</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="sb_car_init_pos_y">
-                <property name="maximum">
-                 <number>1000000</number>
-                </property>
-                <property name="value">
-                 <number>200</number>
                 </property>
                </widget>
               </item>
@@ -164,22 +158,48 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="sb_car_init_orientation">
+              <item row="0" column="1">
+               <widget class="QDoubleSpinBox" name="sb_car_init_pos_x">
                 <property name="minimum">
-                 <number>-1</number>
+                 <double>-10000000.000000000000000</double>
                 </property>
                 <property name="maximum">
-                 <number>1</number>
+                 <double>10000000.000000000000000</double>
                 </property>
                 <property name="singleStep">
-                 <number>1</number>
-                </property>
-                <property name="stepType">
-                 <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+                 <double>0.100000000000000</double>
                 </property>
                 <property name="value">
-                 <number>1</number>
+                 <double>200.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDoubleSpinBox" name="sb_car_init_pos_y">
+                <property name="minimum">
+                 <double>-1000000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+                <property name="value">
+                 <double>200.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QDoubleSpinBox" name="sb_car_init_orientation">
+                <property name="maximum">
+                 <double>6.200000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+                <property name="value">
+                 <double>0.100000000000000</double>
                 </property>
                </widget>
               </item>
@@ -232,23 +252,13 @@
            <item>
             <widget class="QGroupBox" name="groupBox_3">
              <property name="title">
-              <string>Car View</string>
+              <string>Car View (relative to Car)</string>
              </property>
              <layout class="QFormLayout" name="formLayout_5">
               <item row="7" column="0">
                <widget class="QLabel" name="lb_right_far_y">
                 <property name="text">
                  <string>Right Far Y</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QSpinBox" name="sb_right_far_y">
-                <property name="maximum">
-                 <number>1000</number>
-                </property>
-                <property name="value">
-                 <number>600</number>
                 </property>
                </widget>
               </item>
@@ -259,30 +269,10 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QSpinBox" name="sb_right_far_x">
-                <property name="maximum">
-                 <number>500</number>
-                </property>
-                <property name="value">
-                 <number>300</number>
-                </property>
-               </widget>
-              </item>
               <item row="5" column="0">
                <widget class="QLabel" name="lb_left_far_y">
                 <property name="text">
                  <string>Left Far Y</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QSpinBox" name="sb_left_far_y">
-                <property name="maximum">
-                 <number>1000</number>
-                </property>
-                <property name="value">
-                 <number>600</number>
                 </property>
                </widget>
               </item>
@@ -293,33 +283,10 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QSpinBox" name="sb_left_far_x">
-                <property name="minimum">
-                 <number>-500</number>
-                </property>
-                <property name="maximum">
-                 <number>0</number>
-                </property>
-                <property name="value">
-                 <number>-300</number>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="0">
                <widget class="QLabel" name="lb_right_near_y">
                 <property name="text">
                  <string>Right Near Y</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="sb_right_near_y">
-                <property name="maximum">
-                 <number>500</number>
-                </property>
-                <property name="value">
-                 <number>300</number>
                 </property>
                </widget>
               </item>
@@ -330,30 +297,10 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="sb_right_near_x">
-                <property name="maximum">
-                 <number>500</number>
-                </property>
-                <property name="value">
-                 <number>300</number>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="lb_left_near_y">
                 <property name="text">
                  <string>Left Near Y</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="sb_left_near_y">
-                <property name="maximum">
-                 <number>500</number>
-                </property>
-                <property name="value">
-                 <number>300</number>
                 </property>
                </widget>
               </item>
@@ -365,15 +312,106 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="sb_left_near_x">
+               <widget class="QDoubleSpinBox" name="sb_left_near_x">
                 <property name="minimum">
-                 <number>-500</number>
+                 <double>-1000.000000000000000</double>
                 </property>
                 <property name="maximum">
-                 <number>0</number>
+                 <double>1000.000000000000000</double>
                 </property>
                 <property name="value">
-                 <number>-300</number>
+                 <double>-300.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QDoubleSpinBox" name="sb_left_far_y">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>600.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QDoubleSpinBox" name="sb_left_far_x">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>-300.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDoubleSpinBox" name="sb_left_near_y">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>300.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QDoubleSpinBox" name="sb_right_far_x">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>300.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QDoubleSpinBox" name="sb_right_far_y">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>600.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QDoubleSpinBox" name="sb_right_near_x">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>300.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QDoubleSpinBox" name="sb_right_near_y">
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>300.000000000000000</double>
                 </property>
                </widget>
               </item>

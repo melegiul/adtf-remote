@@ -6,6 +6,7 @@
 #include <QSettings>
 
 #include <QGraphicsItem>
+#include <adtf_converters/mediaDesciptionSingleton.h>
 
 #include "mainwindow.h"
 #include "dialog_preferences.h"
@@ -17,6 +18,7 @@
 #include "adtf_converters/remoteStateMsg.h"
 #include "adtf_converters/logMsg.h"
 #include "adtf_converters/speed.h"
+#include "adtf_converters/mediaDesciptionSingleton.h"
 
 #include "Map/ContentManager.hpp"
 #include "CustomGraphicsItems/TreeNodeItem.h"
@@ -37,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     int ui_background = settings.value("ui/background", 180).toInt();
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
 
+    mediaDesciptionSingleton::getInstance().loadDescription(settings.value("description/path", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/description/uni_autonom.description").toString().toStdString());
     ui->setupUi(this);
 
     connect(ui->map_view, &ResizeGraphicsView::resized, ui->measure_bar, &BottomLeftGraphicsView::resize);
@@ -126,19 +129,6 @@ void MainWindow::connectNetwork()
     uint16_t port = settings.value("network/port").toUInt();
 
     this->networkClient->connectNetwork(host, port);
-    
-    //send RemoteControlSignal Abort
-//    ADTFMediaSample sample;
-//    tRemoteCommandMsg command = tRemoteCommandMsg(tRemoteControlSignal::ABORT, tFilterLogType::NONE, 0);
-//    sample.length = sizeof(command);
-//
-//    sample.data.reset(new char[sample.length]);
-//    sample.pinName = "tRemoteCommandMsg";
-//    sample.mediaType = "tRemoteCommandMsg";
-//    sample.streamTime = 0;
-//    memcpy(sample.data.get(), &command, sample.length);
-//    this->networkClient->send(sample);
-    
 }
 
 void MainWindow::disconnectNetwork()
@@ -699,7 +689,7 @@ void MainWindow::saveDialog() {
 
 void MainWindow::setCarOdometry(tCarOdometry &odom) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
-    if(ad_running || rc_running){
+    if(ready || ad_running || rc_running){
         this->odo = &odom;
         emit(carUpdated());
         emit(guiUpdated());
@@ -708,14 +698,14 @@ void MainWindow::setCarOdometry(tCarOdometry &odom) {
 
 void MainWindow::setCarSpeed(tSpeed &speedy) {
     // ensures that carUpdate is called within Widget (only Widget is allowed to update the map)
-    if(ad_running || rc_running){
+    if(ready || ad_running || rc_running){
         this->speed = &speedy;
     }
 }
 
 
 void MainWindow::setTrapezoidCoords(tTrapezoid &coordis) {
-    if(ad_running || rc_running) {
+    if(ready || ad_running || rc_running) {
         this->coords = &coordis;
         //qDebug()  << "global trapezoid " << coords->pos_A.x << " " << coords->pos_A.y << " " << coords->pos_B.x << " " << coords->pos_B.y << " " << coords->pos_C.x << " " << coords->pos_C.y << " " << coords->pos_D.x << " " << coords->pos_D.y ;
         emit(trapezoidUpdated());
@@ -723,14 +713,14 @@ void MainWindow::setTrapezoidCoords(tTrapezoid &coordis) {
 }
 
 void MainWindow::setDetectedLine(std::shared_ptr<tDetectedLineArray> detectedLineArray) {
-    if(ad_running || rc_running) {
+    if(ready || ad_running || rc_running) {
         this->detectedLineArray = detectedLineArray;
         emit(detectedLineUpdated());
     }
 }
 
 void MainWindow::setNearfieldgridmap(tNearfieldGridMapArray &root) {
-    if(ad_running || rc_running) {
+    if(ready || ad_running || rc_running) {
         this->nearfieldgridmap = MapTreeNode::generateFromArray(&root);
         if (this->nearfieldgridmap == nullptr) {
             //printw("Nullptr\n");
@@ -1041,7 +1031,6 @@ void MainWindow::handleLogLevelACK() {
     resetControlTabVals();
     initialization = true;
     emit(guiUpdated());
-
 }
 
 void MainWindow::handleMapPushClick(){
@@ -1095,9 +1084,9 @@ void MainWindow::handleCarConfigLoadClick(){
     QSettings carSettings(fileNameCarConfig, QSettings::IniFormat);
     car_height = carSettings.value("car/length", 400).toInt();
     car_width = carSettings.value("car/width", 240).toInt();
-    car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
-    car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
-    car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+    car_init_x = carSettings.value("odoinit/posx", 200.0).toFloat();
+    car_init_y = carSettings.value("odoinit/posy", 200.0).toFloat();
+    car_init_orientation = carSettings.value("odoinit/orientation", 0.1).toFloat();
 
     carconfselected = true;
     emit(guiUpdated());
@@ -1122,10 +1111,13 @@ void MainWindow::handleCarConfigPushClick(){
 void MainWindow::handleCarConfigPushACK() {
     ui->statusbar->showMessage("Handle Car Config Push ACK!");
 
+    initialization = false;
+    carconfselected = false;
+    mapreceived = false;
     carconfreceived = true;
     ready = true;
-    emit(carUpdated());
-    emit(guiUpdated());
+    tCarOdometry startOdo = tCarOdometry(cv::Point2f(car_init_x, car_init_y), car_init_orientation, 0);
+    this->setCarOdometry(startOdo);
 }
 
 void MainWindow::handleRouteInfoPushClick(){
@@ -1237,8 +1229,9 @@ void MainWindow::handleAbortClick(){
 void MainWindow::handleAbortACK() {
     ui->statusbar->showMessage("Handle Abort ACK!");
 
+    ui->loglevel_combo->setCurrentIndex(0);
     resetControlTabVals();
-    //resetMemberVariables();
+    resetMemberVariables();
     emit(guiUpdated());
 }
 
@@ -1274,18 +1267,19 @@ void MainWindow::updateControlTab() {
             }
         }
     }else{
+        ui->state_val_label->setStyleSheet("QLabel { background-color : white}");
         ui->state_val_label->setText(QString::fromStdString("-"));
     }
     if(speed != nullptr){
-        ui->speed_val_label->setText(QString::fromStdString(std::to_string(speed->combinedSpeed)));
+        ui->speed_val_label->setText(QString::number(speed->combinedSpeed, 'f', 2));
     }else{
         ui->speed_val_label->setText(QString::fromStdString("-"));
     }
 
     if(odo != nullptr) {
-        ui->orientation_val_label->setText(QString::fromStdString(std::to_string(odo->orientation)));
-        ui->position_x_val_label->setText(QString::fromStdString(std::to_string(odo->pos.x)));
-        ui->position_y_val_label->setText(QString::fromStdString(std::to_string(odo->pos.y)));
+        ui->orientation_val_label->setText(QString::number(odo->orientation, 'f', 1));
+        ui->position_x_val_label->setText(QString::number(odo->pos.x, 'f', 1));
+        ui->position_y_val_label->setText(QString::number(odo->pos.y, 'f', 1));
     }else{
         ui->orientation_val_label->setText(QString::fromStdString("-"));
         ui->position_x_val_label->setText(QString::fromStdString("-"));
@@ -1308,23 +1302,23 @@ void MainWindow::updateControlTab() {
 
     //update car x and y
     if(fileNameCarConfig != nullptr){
-        ui->car_x_val_edit->setText(QString::number(this->car_init_x));
-        ui->car_y_val_edit->setText(QString::number(this->car_init_y));
-        ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
+        ui->car_x_val_edit->setText(QString::number(this->car_init_x, 'f', 2));
+        ui->car_y_val_edit->setText(QString::number(this->car_init_y, 'f', 2));
+        ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation, 'f', 2));
     }else{
-    	if(mapreceived) {
+    	if(mapreceived || carconfreceived || ad_running || rc_running) {
             QSettings settings;
             QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
             this->car_height = carSettings.value("car/length", 400).toInt();
             this->car_width = carSettings.value("car/width", 240).toInt();
-            this->car_init_x = carSettings.value("odoinit/posx", 200).toFloat();
-            this->car_init_y = carSettings.value("odoinit/posy", 200).toFloat();
-            this->car_init_orientation = carSettings.value("odoinit/orientation", 1).toFloat();
+            this->car_init_x = carSettings.value("odoinit/posx", 200.0).toFloat();
+            this->car_init_y = carSettings.value("odoinit/posy", 200.0).toFloat();
+            this->car_init_orientation = carSettings.value("odoinit/orientation", 0.1).toFloat();
         
             ui->car_config_val_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
-            ui->car_x_val_edit->setText(QString::number(this->car_init_x));
-            ui->car_y_val_edit->setText(QString::number(this->car_init_y));
-            ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation));
+            ui->car_x_val_edit->setText(QString::number(this->car_init_x, 'f', 2));
+            ui->car_y_val_edit->setText(QString::number(this->car_init_y, 'f', 2));
+            ui->car_orientation_val_edit->setText(QString::number(this->car_init_orientation, 'f', 2));
         } else {
             ui->car_x_val_edit->setText(QString::fromStdString("-"));
             ui->car_y_val_edit->setText(QString::fromStdString("-"));
@@ -1336,7 +1330,7 @@ void MainWindow::updateControlTab() {
     ui->loglevel_combo->setEnabled(!mapreceived);
     ui->map_load_button->setEnabled(initialization);
     ui->car_config_load_button->setEnabled(mapreceived);
-    ui->abort_button->setEnabled(mapreceived);
+    ui->abort_button->setEnabled(carconfreceived || ad_running || rc_running);
     ui->car_config_push_button->setEnabled(carconfselected || mapreceived);
     ui->navi_route_push_button->setEnabled(carconfreceived);
     ui->start_rc_button->setEnabled(ready);
@@ -1375,14 +1369,9 @@ void MainWindow::resetMemberVariables(){
     detectedLineArray = nullptr;
     nearfieldgridmap = nullptr;
 
-    state = tState::NONE;
+    state = tState::INITIALIZATION;
     fileNameMap = nullptr;
     fileNameCarConfig = nullptr;
-    car_height = 0;
-    car_width = 0;
-    car_init_x = 0.0;
-    car_init_y = 0.0;
-    car_init_orientation = 0.0;
 }
 
 tCarConfigStruct MainWindow::prepareCarConfigStruct() {
@@ -1407,6 +1396,7 @@ tCarConfigStruct MainWindow::prepareCarConfigStruct() {
     return carConfigStruct;
 }
 
+//TODO SEND SIGNAL VALUES TO TEST PATH
 void MainWindow::sendtSignalValue() {
 //    ADTFMediaSample sample;
 //    tSignalValue command = tSignalValue(0);

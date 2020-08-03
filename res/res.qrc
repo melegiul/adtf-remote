@@ -1,0 +1,31 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file alias="compass.png">images/compass.png</file>
+        <file alias="car.png">images/truck.png</file>
+        <file alias="mclaren.png">images/mclaren.png</file>
+        <file alias="arrow.png">images/arrow.png</file>
+        <file alias="parking.png">images/parking.png</file>
+        <file alias="zebra.png">images/zebra.png</file>
+        <file alias="VZ_206.png">images/VZ_206.png</file>
+        <file alias="VZ_102.png">images/VZ_102.png</file>
+        <file alias="VZ_123.png">images/VZ_123.png</file>
+        <file alias="VZ_274_50.png">images/VZ_274_50.png</file>
+        <file alias="VZ_274_100.png">images/VZ_274_100.png</file>
+        <file alias="VZ_314.png">images/VZ_314.png</file>
+        <file alias="VZ_267.png">images/VZ_267.png</file>
+        <file alias="VZ_276.png">images/VZ_276.png</file>
+        <file alias="VZ_215.png">images/VZ_215.png</file>
+        <file alias="VZ_350_10.png">images/VZ_350_10.png</file>
+        <file alias="VZ_350_20.png">images/VZ_350_20.png</file>
+        <file alias="VZ_205.png">images/VZ_205.png</file>
+        <file alias="VZ_209_30.png">images/VZ_209_30.png</file>
+        <file alias="VZ_301.png">images/VZ_301.png</file>
+        <file alias="VZ_220_10.png">images/VZ_220_10.png</file>
+        <file alias="VZ_220_20.png">images/VZ_220_20.png</file>
+        <file alias="LandmarkAutonomous.png">images/LandmarkAutonomous.png</file>
+        <file alias="NONE.png">images/NONE.png</file>
+        <file alias="leftArrow.png">images/leftArrow.png</file>
+        <file alias="uniautonom.png">images/UniAutonom.png</file>
+    </qresource>
+</RCC>

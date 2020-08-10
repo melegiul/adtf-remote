@@ -30,7 +30,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d350f262-f6fa-4aa9-a311-57c318ca3681" name="Default Changelist" comment="" />
+    <list default="true" id="d350f262-f6fa-4aa9-a311-57c318ca3681" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,7 +42,6 @@
     <option name="clangTidyViaClangd" value="false" />
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -54,7 +55,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/CMakeLists.txt" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RecentsManager">
@@ -62,8 +63,8 @@
       <recent name="$PROJECT_DIR$/src/cmake-build-debug/UNIAutonomRemoteGUI_autogen/include" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.UNIAutonomRemoteGUI">
-    <configuration name="UNIAutonomRemoteGUI" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="uniautonom_remotegui" TARGET_NAME="UNIAutonomRemoteGUI" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="uniautonom_remotegui" RUN_TARGET_NAME="UNIAutonomRemoteGUI">
+  <component name="RunManager" selected="CMake Application.Unnamed">
+    <configuration name="UNIAutonomRemoteGUI" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -73,19 +74,38 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Unnamed" type="CMakeRunConfiguration" factoryName="Application" nameIsGenerated="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" RUN_PATH="$PROJECT_DIR$/../smds-uniautonom/scripts/start_remoteGUI.sh" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
+    <configuration name="Unnamed" type="ShConfigurationType" nameIsGenerated="true">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/../smds-uniautonom/scripts/start_remoteGUI.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/../smds-uniautonom/scripts/start_remoteGUI.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="CMake Application.UNIAutonomRemoteGUI" />
       <item itemvalue="CMake Application.UNIAutonomRemoteGUI_autogen" />
+      <item itemvalue="CMake Application.Unnamed" />
+      <item itemvalue="Shell Script.Unnamed" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -100,7 +120,11 @@
       <workItem from="1596476606101" duration="9669000" />
       <workItem from="1596550295715" duration="3320000" />
       <workItem from="1596564733824" duration="11634000" />
-      <workItem from="1596576916125" duration="1288000" />
+      <workItem from="1596576916125" duration="1987000" />
+      <workItem from="1596579610538" duration="116000" />
+      <workItem from="1596579743194" duration="44000" />
+      <workItem from="1596579798184" duration="1269000" />
+      <workItem from="1596581080669" duration="89000" />
     </task>
     <servers />
   </component>
@@ -120,54 +144,54 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596552830181">
+    <state x="454" y="162" width="1084" height="918" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596580996462">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596552830181" />
+    <state x="454" y="162" width="1084" height="918" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596580996462" />
     <state x="159" y="27" width="1648" height="853" maximized="true" key="DiffContextDialog" timestamp="1596467897038">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="159" y="27" width="1648" height="853" maximized="true" key="DiffContextDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596467897038" />
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1596463212080">
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1596580917279">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1596463212080" />
-    <state width="1802" height="179" key="GridCell.Tab.0.bottom" timestamp="1596578004239">
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1596580917279" />
+    <state width="1802" height="179" key="GridCell.Tab.0.bottom" timestamp="1596579576099">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004239" />
-    <state width="1802" height="179" key="GridCell.Tab.0.center" timestamp="1596578004238">
+    <state width="1802" height="179" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576099" />
+    <state width="1802" height="179" key="GridCell.Tab.0.center" timestamp="1596579576098">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004238" />
-    <state width="1802" height="179" key="GridCell.Tab.0.left" timestamp="1596578004237">
+    <state width="1802" height="179" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576098" />
+    <state width="1802" height="179" key="GridCell.Tab.0.left" timestamp="1596579576098">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004237" />
-    <state width="1802" height="179" key="GridCell.Tab.0.right" timestamp="1596578004238">
+    <state width="1802" height="179" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576098" />
+    <state width="1802" height="179" key="GridCell.Tab.0.right" timestamp="1596579576098">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004238" />
-    <state width="1802" height="179" key="GridCell.Tab.1.bottom" timestamp="1596578004240">
+    <state width="1802" height="179" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576098" />
+    <state width="1802" height="179" key="GridCell.Tab.1.bottom" timestamp="1596579576099">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004240" />
-    <state width="1802" height="179" key="GridCell.Tab.1.center" timestamp="1596578004240">
+    <state width="1802" height="179" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576099" />
+    <state width="1802" height="179" key="GridCell.Tab.1.center" timestamp="1596579576099">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004240" />
-    <state width="1802" height="179" key="GridCell.Tab.1.left" timestamp="1596578004239">
+    <state width="1802" height="179" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576099" />
+    <state width="1802" height="179" key="GridCell.Tab.1.left" timestamp="1596579576099">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004239" />
-    <state width="1802" height="179" key="GridCell.Tab.1.right" timestamp="1596578004240">
+    <state width="1802" height="179" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576099" />
+    <state width="1802" height="179" key="GridCell.Tab.1.right" timestamp="1596579576099">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1802" height="179" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1596578004240" />
-    <state x="485" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1596552812189">
+    <state width="1802" height="179" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1596579576099" />
+    <state x="485" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1596581038709">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="485" y="188" width="1022" height="737" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1596552812189" />
+    <state x="485" y="188" width="1022" height="737" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1596581038709" />
     <state x="172" y="127" width="1648" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1596485743614">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -182,8 +206,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/mainwindow.cpp</url>
-          <line>1228</line>
-          <option name="timeStamp" value="2" />
+          <line>240</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

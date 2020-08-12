@@ -46,6 +46,7 @@ public:
 
 public slots:
     void openPreferences();
+    void openLogAnalyser();
     void connectNetwork();
     void disconnectNetwork();
     void networkConnected();

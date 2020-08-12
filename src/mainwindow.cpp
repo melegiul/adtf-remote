@@ -10,6 +10,7 @@
 
 #include "mainwindow.h"
 #include "dialog_preferences.h"
+#include "log_analyser.h"
 #include "networkclient.h"
 #include "adtf_converters/carodometry.h"
 #include "adtf_converters/trapezoid.h"
@@ -33,6 +34,7 @@
 #include "CustomGraphicsItems/InvisibleLineItem.h"
 #include "GUIHelper/GraphicsViewZoom.h"
 
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
     QSettings settings;
@@ -47,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
+    connect(ui->actionLogAnalyser, &QAction::triggered, this, &MainWindow::openLogAnalyser);
 
     connect(this->networkClient, &NetworkClient::connected, this, &MainWindow::networkConnected);
     connect(this->networkClient, &NetworkClient::disconnected, this, &MainWindow::networkDisconnected);
@@ -120,6 +123,12 @@ MainWindow::~MainWindow()
 void MainWindow::openPreferences() {
     PreferencesDialog prefDialog(this);
     prefDialog.exec();
+}
+
+void MainWindow::openLogAnalyser() {
+    LogAnalyser analyser;
+    analyser.setModal(true);
+    analyser.exec();
 }
 
 void MainWindow::connectNetwork()

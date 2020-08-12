@@ -968,6 +968,7 @@
      <string>General</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionLogAnalyser"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuConnection">
@@ -1049,6 +1050,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionLogAnalyser">
+   <property name="text">
+    <string>LogAnalyser</string>
    </property>
   </action>
  </widget>

@@ -46,6 +46,7 @@ public:
 
 public slots:
     void openPreferences();
+    void openLogAnalyzer();
     void connectNetwork();
     void disconnectNetwork();
     void networkConnected();
@@ -208,11 +209,11 @@ private:
     QGraphicsPolygonItem *trapezoid_filter = nullptr;
     QGraphicsItem *detected_line_filter = nullptr;
     QGraphicsItem *nearfield_map_filter = nullptr;
-
     Lane *selected_lane = nullptr;
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
+    QStringList *list = new QStringList();
 
 
 };

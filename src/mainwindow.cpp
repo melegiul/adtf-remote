@@ -4,12 +4,15 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QSettings>
+#include <QStringListModel>
+#include <ctime>
 
 #include <QGraphicsItem>
 #include <adtf_converters/mediaDesciptionSingleton.h>
 
 #include "mainwindow.h"
 #include "dialog_preferences.h"
+#include "dialog_log_analyzer.h"
 #include "networkclient.h"
 #include "adtf_converters/carodometry.h"
 #include "adtf_converters/trapezoid.h"
@@ -48,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::connectNetwork);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectNetwork);
 
+    connect(ui->actionLogAnalyzer, &QAction::triggered, this, &MainWindow::openLogAnalyzer);
+
     connect(this->networkClient, &NetworkClient::connected, this, &MainWindow::networkConnected);
     connect(this->networkClient, &NetworkClient::disconnected, this, &MainWindow::networkDisconnected);
     connect(this->networkClient, &NetworkClient::received, this, &MainWindow::networkReceived);
@@ -74,6 +79,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->map_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->map_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
+
+    //ui->tableWidget->setColumnCount(1);
+
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);
 
@@ -120,6 +128,11 @@ MainWindow::~MainWindow()
 void MainWindow::openPreferences() {
     PreferencesDialog prefDialog(this);
     prefDialog.exec();
+}
+
+void MainWindow::openLogAnalyzer() {
+    LogAnalyzerDialog logDialog(this);
+    logDialog.exec();
 }
 
 void MainWindow::connectNetwork()
@@ -239,7 +252,23 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
         }
     }
     qDebug() << "[" << logMsg.timestamp << "] [" << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+
     //TODO handle log in general
+    std::time_t result = (time_t) logMsg.timestamp / 1000;
+    string dt = std::asctime(std::gmtime(&result));
+    dt.pop_back();
+
+    QString s = "[" + QString::fromStdString(dt)
+            + "] [" + QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)
+            + "] [" + QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)
+            + "] [" + QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)
+            + "] Payload -> " + QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+
+    list->append(s);
+
+    QStringListModel *model = new QStringListModel(*list, NULL);
+    ui->listView->setModel(model);
+    emit(guiUpdated());
 }
 
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>1042</width>
     <height>830</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
+    <item row="3" column="0">
      <layout class="QHBoxLayout" name="hl_odometry">
       <item>
        <widget class="QLabel" name="lbs_mouse_x">
@@ -83,7 +83,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="1" rowspan="2">
+    <item row="1" column="1" rowspan="3">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -952,6 +952,13 @@
       </widget>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QListView" name="listView">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOn</enum>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -959,7 +966,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1042</width>
      <height>22</height>
     </rect>
    </property>
@@ -983,9 +990,16 @@
     </property>
     <addaction name="actionExportMap"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionLogAnalyzer"/>
+   </widget>
    <addaction name="menuGeneral"/>
    <addaction name="menuConnection"/>
    <addaction name="menuMap"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
@@ -1049,6 +1063,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionLogAnalyzer">
+   <property name="text">
+    <string>Log Analyzer</string>
    </property>
   </action>
  </widget>

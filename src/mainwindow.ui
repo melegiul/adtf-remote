@@ -975,6 +975,7 @@
      <string>General</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionLogAnalyser"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuConnection">

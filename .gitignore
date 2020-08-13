@@ -11,6 +11,7 @@ src/cmake-build-debug
 
 # ide related
 src/.idea
+.idea
 
 *~
 *.autosave

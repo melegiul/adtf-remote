@@ -1,0 +1,30 @@
+[
+    {
+        "context": "[None]",
+        "level": "[Ack]",
+        "payload": "[test]",
+        "source": "[Statemachine]",
+        "time": "[2020-08-14-11:32:04]"
+    },
+    {
+        "context": "[None]",
+        "level": "[Ack]",
+        "payload": "[test]",
+        "source": "[Statemachine]",
+        "time": "[2020-08-14-11:32:04]"
+    },
+    {
+        "context": "[Map]",
+        "level": "[Ack]",
+        "payload": "[test]",
+        "source": "[Statemachine]",
+        "time": "[2020-08-14-11:32:08]"
+    },
+    {
+        "context": "[AC]",
+        "level": "[Ack]",
+        "payload": "[test]",
+        "source": "[Statemachine]",
+        "time": "[2020-08-14-11:32:11]"
+    }
+]

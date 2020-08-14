@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStringListModel>
 #include <QJsonObject>
+#include <QDir>
 
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
@@ -105,6 +106,7 @@ private:
     void buildNavigationMarkerItemsFromXmlList();
     void processLogMsg(tLogMsg &logMsg);
     void saveLog();
+    void delimitFileNumber(QDir &jsonDir);
     void writeJson(QStringList logList, QJsonArray &json);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();

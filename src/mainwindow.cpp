@@ -266,8 +266,7 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
     //TODO handle log in general
     std::time_t result = (time_t) logMsg.timestamp / 1000;
 //    tm *gmtm = std::gmtime(&result);
-//    string dt = std::asctime();
-//    string dt = 1900+gmtm->tm_year
+//    string dt = std::asctime(gmtm);
     char buffer[26];
     tm *tm_info = localtime(&result);
     strftime(buffer, 26, "%Y-%m-%d-%H:%M:%S", tm_info);
@@ -289,7 +288,14 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
 
 void MainWindow::saveLog(){
     QStringList logList = model->stringList();
-    QFile saveFile("/home/uniautonom/save.json");
+    time_t now = time(0);
+    string cmakeBuildPath = QDir::currentPath().toStdString();
+    char fileName[40];
+    tm *tm_info = localtime(&now);
+    strftime(fileName, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
+    cmakeBuildPath += "/../../json";
+    string filePath = cmakeBuildPath + fileName;
+    QFile saveFile(filePath.data());
     if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
         qWarning("Could not open save file.");
         return;
@@ -298,11 +304,22 @@ void MainWindow::saveLog(){
     writeJson(logList, json);
     saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
     saveFile.close();
+    QDir jsonDir = QDir(cmakeBuildPath.data());
+    if(jsonDir.count() > 10){
+        string str = jsonDir.absolutePath().toStdString();
+        delimitFileNumber(jsonDir);
+    }
+}
+
+void MainWindow::delimitFileNumber(QDir &json){
+    QStringList fileList = json.entryList(QDir::Files, QDir::Name);
+    QString oldestFile = fileList.first();
+    json.remove(oldestFile);
 }
 
 void MainWindow::writeJson(QStringList logList, QJsonArray &json){
     for(QString logEntry: logList){
-        std::cout << logEntry.toStdString() << endl;
+//        std::cout << logEntry.toStdString() << endl;
         QStringList logColumns = logEntry.split(" ");
         QJsonObject logObject;
         logObject["time"] = logColumns.value(0);

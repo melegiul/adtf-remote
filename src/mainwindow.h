@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QStandardItemModel>
 
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
@@ -213,7 +214,8 @@ private:
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
-    QStringList *list = new QStringList();
+    //QStringList *list = new QStringList();
+    QStandardItemModel *logDataModel = nullptr;
 
 
 };

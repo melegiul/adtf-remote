@@ -79,6 +79,9 @@ CMakeLists.txt.user*
 # Python byte code
 *.pyc
 
+# serialization
+json/
+
 # Binaries
 # --------
 *.dll

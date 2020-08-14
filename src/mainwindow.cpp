@@ -6,9 +6,11 @@
 #include <QSettings>
 #include <QStringListModel>
 #include <ctime>
+#include <QJsonDocument>
 
 #include <QGraphicsItem>
 #include <adtf_converters/mediaDesciptionSingleton.h>
+#include <QtCore/QJsonArray>
 
 #include "mainwindow.h"
 #include "dialog_preferences.h"
@@ -119,6 +121,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
     connect(&cont, SIGNAL(markerUpdateRequired()), this, SLOT(updateMarkerTypesInMarkerList()));
     connect(&cont, SIGNAL(deleteMarker()), this, SLOT(deleteNavigationMarker()));
+
+    model = new QStringListModel(this);
+    ui->listView->setModel(model);
 }
 
 MainWindow::~MainWindow()
@@ -252,24 +257,61 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
             }
         }
     }
-    qDebug() << "[" << logMsg.timestamp << "] [" << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+    qDebug() << "[" << logMsg.timestamp << "] [" \
+    << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" \
+    << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" \
+    << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " \
+    << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
 
     //TODO handle log in general
     std::time_t result = (time_t) logMsg.timestamp / 1000;
-    string dt = std::asctime(std::gmtime(&result));
-    dt.pop_back();
+//    tm *gmtm = std::gmtime(&result);
+//    string dt = std::asctime();
+//    string dt = 1900+gmtm->tm_year
+    char buffer[26];
+    tm *tm_info = localtime(&result);
+    strftime(buffer, 26, "%Y-%m-%d-%H:%M:%S", tm_info);
+//    dt.pop_back();
 
-    QString s = "[" + QString::fromStdString(dt)
+    QString s = "[" + QString::fromStdString(buffer)
             + "] [" + QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)
             + "] [" + QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)
             + "] [" + QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)
-            + "] Payload -> " + QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+            + "] [" + QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength))
+            + "]";
 
     list->append(s);
-
-    QStringListModel *model = new QStringListModel(*list, NULL);
-    ui->listView->setModel(model);
+    model->setStringList(*list);
+//    QStringListModel *model = new QStringListModel(*list, NULL);
+//    ui->listView->setModel(model);
     emit(guiUpdated());
+}
+
+void MainWindow::saveLog(){
+    QStringList logList = model->stringList();
+    QFile saveFile("/home/uniautonom/save.json");
+    if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning("Could not open save file.");
+        return;
+    }
+    QJsonArray json;
+    writeJson(logList, json);
+    saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
+    saveFile.close();
+}
+
+void MainWindow::writeJson(QStringList logList, QJsonArray &json){
+    for(QString logEntry: logList){
+        std::cout << logEntry.toStdString() << endl;
+        QStringList logColumns = logEntry.split(" ");
+        QJsonObject logObject;
+        logObject["time"] = logColumns.value(0);
+        logObject["level"] = logColumns.value(1);
+        logObject["source"] = logColumns.value(2);
+        logObject["context"] = logColumns.value(3);
+        logObject["payload"] = logColumns.value(4);
+        json.append(logObject);
+    }
 }
 
 
@@ -1244,6 +1286,7 @@ void MainWindow::handleStopClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+    saveLog();
 }
 
 void MainWindow::handleStopACK() {

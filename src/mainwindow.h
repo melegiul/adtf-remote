@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QStringListModel>
+#include <QJsonObject>
 
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
@@ -102,6 +104,8 @@ private:
     void clearAllNavMarkerItems();
     void buildNavigationMarkerItemsFromXmlList();
     void processLogMsg(tLogMsg &logMsg);
+    void saveLog();
+    void writeJson(QStringList logList, QJsonArray &json);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();
     void resetMemberVariables();
@@ -214,7 +218,7 @@ private:
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
     QStringList *list = new QStringList();
-
+    QStringListModel *model;
 
 };
 

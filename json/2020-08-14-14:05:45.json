@@ -4,27 +4,27 @@
         "level": "[Ack]",
         "payload": "[test]",
         "source": "[Statemachine]",
-        "time": "[2020-08-14-10:56:49]"
+        "time": "[2020-08-14-14:05:39]"
     },
     {
         "context": "[None]",
         "level": "[Ack]",
         "payload": "[test]",
         "source": "[Statemachine]",
-        "time": "[2020-08-14-10:56:49]"
+        "time": "[2020-08-14-14:05:39]"
     },
     {
         "context": "[Map]",
         "level": "[Ack]",
         "payload": "[test]",
         "source": "[Statemachine]",
-        "time": "[2020-08-14-10:56:52]"
+        "time": "[2020-08-14-14:05:42]"
     },
     {
         "context": "[AC]",
         "level": "[Ack]",
         "payload": "[test]",
         "source": "[Statemachine]",
-        "time": "[2020-08-14-10:56:55]"
+        "time": "[2020-08-14-14:05:43]"
     }
 ]

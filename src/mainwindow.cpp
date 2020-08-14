@@ -288,24 +288,28 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
 
 void MainWindow::saveLog(){
     QStringList logList = model->stringList();
+    QSettings settings;
+    QString qLogPath = settings.value("logview/logPath").toString();
+    string logPath = qLogPath.toStdString();
     time_t now = time(0);
-    string cmakeBuildPath = QDir::currentPath().toStdString();
+//    string cmakeBuildPath = QDir::currentPath().toStdString();
     char fileName[40];
     tm *tm_info = localtime(&now);
     strftime(fileName, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
-    cmakeBuildPath += "/../../json";
-    string filePath = cmakeBuildPath + fileName;
+//    logPath += "/../../json";
+    string filePath = logPath + fileName;
     QFile saveFile(filePath.data());
     if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qWarning("Could not open save file.");
+        qWarning("mainwindow.cpp-saveLog(): Could not open save file.");
         return;
     }
     QJsonArray json;
     writeJson(logList, json);
     saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
     saveFile.close();
-    QDir jsonDir = QDir(cmakeBuildPath.data());
-    if(jsonDir.count() > 10){
+    QDir jsonDir = QDir(logPath.data());
+    int x = jsonDir.entryList(QDir::Files,QDir::NoSort).count();
+    if(jsonDir.entryList(QDir::Files,QDir::NoSort).count() > 10){
         string str = jsonDir.absolutePath().toStdString();
         delimitFileNumber(jsonDir);
     }
@@ -319,7 +323,6 @@ void MainWindow::delimitFileNumber(QDir &json){
 
 void MainWindow::writeJson(QStringList logList, QJsonArray &json){
     for(QString logEntry: logList){
-//        std::cout << logEntry.toStdString() << endl;
         QStringList logColumns = logEntry.split(" ");
         QJsonObject logObject;
         logObject["time"] = logColumns.value(0);

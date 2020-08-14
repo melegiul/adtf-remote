@@ -12,6 +12,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
     this->tabWidget->setCurrentIndex(0);
     connect(this, &PreferencesDialog::accepted, this, &PreferencesDialog::savePreferences);
     connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
+    connect(this->pathApplyButton, SIGNAL(clicked()), this, SLOT(handleApplyPathButton()));
+    connect(this->choosePathButton, SIGNAL(clicked()), this, SLOT(handleChoosePathButton()));
 
     savePreferences();
     showPreferences();
@@ -60,6 +62,10 @@ void PreferencesDialog::savePreferences() {
     settings.setValue("ui/background", this->sb_background->value());
     settings.setValue("car/settings", this->car_config_edit_label->text() == "" ? "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini" : this->car_config_edit_label->text());
 
+    settings.setValue("logview/logPath", this->logPathLineEdit->text());
+    settings.setValue("logview/automaticSave", this->stopButton->isChecked() ? \
+    QString("stop"): QString("abort"));
+
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     carSettings.setValue("odoinit/posx", this->sb_car_init_pos_x->value());
     carSettings.setValue("odoinit/posy", this->sb_car_init_pos_y->value());
@@ -74,4 +80,26 @@ void PreferencesDialog::savePreferences() {
     carSettings.setValue("carview/leftfary", this->sb_left_far_y->value());
     carSettings.setValue("carview/rightfarx", this->sb_right_far_x->value());
     carSettings.setValue("carview/rightfary", this->sb_right_far_y->value());
+}
+
+void PreferencesDialog::handleApplyPathButton() {
+    QString logPath = this->logPathLineEdit->text();
+    QDir directory(logPath);
+    if (!directory.exists() || logPath.isEmpty()){
+        QMessageBox::warning(this, "Warning", "Entered text is not a valid directory!");
+    } else {
+        QMessageBox::information(this, "Confirmed", "Directory confirmed");
+    }
+}
+
+void PreferencesDialog::handleChoosePathButton(){
+    QStringList dirNames;
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setDirectory(QDir::homePath());
+    if (dialog.exec()){
+        dirNames = dialog.selectedFiles();
+    }
+    QString directory = dirNames.first();
+    this->logPathLineEdit->setText(directory);
 }

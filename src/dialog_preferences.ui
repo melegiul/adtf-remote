@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
+    <width>655</width>
     <height>460</height>
    </rect>
   </property>
@@ -132,7 +132,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>572</width>
+            <width>599</width>
             <height>560</height>
            </rect>
           </property>
@@ -460,9 +460,37 @@
        <string>Log</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_6">
+       <item row="1" column="0">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Automatic save log file after clicking button:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QRadioButton" name="stopButton">
+           <property name="text">
+            <string>Stop</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QRadioButton" name="abortButton">
+           <property name="text">
+            <string>Abort</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="0" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
           <widget class="QLabel" name="logPathLabel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -475,7 +503,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="1">
           <widget class="QLineEdit" name="logPathLineEdit">
            <property name="minimumSize">
             <size>
@@ -489,37 +517,64 @@
              <height>0</height>
             </size>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Automatic save log file after clicking button:</string>
+            <string>/home/uniautonom/smds-uniautonom-remotecontrol-src/json</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="choosePathButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Choose</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pathApplyButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Apply</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
-       </item>
-       <item row="1" column="1">
-        <widget class="QRadioButton" name="radioButton_2">
-         <property name="text">
-          <string>Stop</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QRadioButton" name="radioButton">
-         <property name="text">
-          <string>Abort</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

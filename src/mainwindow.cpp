@@ -1306,7 +1306,11 @@ void MainWindow::handleStopClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
-    saveLog();
+    QSettings settings;
+    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    if (saveGranularity == QString("stop")) {
+        saveLog();
+    }
 }
 
 void MainWindow::handleStopACK() {
@@ -1332,6 +1336,11 @@ void MainWindow::handleAbortClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+    QSettings settings;
+    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    if (saveGranularity == QString("abort")) {
+        saveLog();
+    }
 }
 
 void MainWindow::handleAbortACK() {

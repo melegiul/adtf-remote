@@ -35,7 +35,7 @@ void LogAnalyzerDialog::on_loadButton_clicked(){
     QStringList fileNames;
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::ExistingFile);
-//    dialog.setNameFilter(tr("Images (*.png *.jpg)"));
+    dialog.setNameFilter(tr("Json (*.json)"));
     dialog.setDirectory(QDir::homePath());
     if (dialog.exec()){
         fileNames = dialog.selectedFiles();

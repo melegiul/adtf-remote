@@ -124,6 +124,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     model = new QStringListModel(this);
     ui->listView->setModel(model);
+
 }
 
 MainWindow::~MainWindow()
@@ -285,55 +286,6 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
 //    ui->listView->setModel(model);
     emit(guiUpdated());
 }
-
-void MainWindow::saveLog(){
-    QStringList logList = model->stringList();
-    QSettings settings;
-    QString qLogPath = settings.value("logview/logPath").toString();
-    string logPath = qLogPath.toStdString();
-    time_t now = time(0);
-//    string cmakeBuildPath = QDir::currentPath().toStdString();
-    char fileName[40];
-    tm *tm_info = localtime(&now);
-    strftime(fileName, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
-//    logPath += "/../../json";
-    string filePath = logPath + fileName;
-    QFile saveFile(filePath.data());
-    if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qWarning("mainwindow.cpp-saveLog(): Could not open save file.");
-        return;
-    }
-    QJsonArray json;
-    writeJson(logList, json);
-    saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
-    saveFile.close();
-    QDir jsonDir = QDir(logPath.data());
-    int x = jsonDir.entryList(QDir::Files,QDir::NoSort).count();
-    if(jsonDir.entryList(QDir::Files,QDir::NoSort).count() > 10){
-        string str = jsonDir.absolutePath().toStdString();
-        delimitFileNumber(jsonDir);
-    }
-}
-
-void MainWindow::delimitFileNumber(QDir &json){
-    QStringList fileList = json.entryList(QDir::Files, QDir::Name);
-    QString oldestFile = fileList.first();
-    json.remove(oldestFile);
-}
-
-void MainWindow::writeJson(QStringList logList, QJsonArray &json){
-    for(QString logEntry: logList){
-        QStringList logColumns = logEntry.split(" ");
-        QJsonObject logObject;
-        logObject["time"] = logColumns.value(0);
-        logObject["level"] = logColumns.value(1);
-        logObject["source"] = logColumns.value(2);
-        logObject["context"] = logColumns.value(3);
-        logObject["payload"] = logColumns.value(4);
-        json.append(logObject);
-    }
-}
-
 
 // import from old widget code
 void MainWindow::updateStaticFilters(QTreeWidgetItem *item, int column) {
@@ -1309,7 +1261,7 @@ void MainWindow::handleStopClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("stop")) {
-        saveLog();
+        log.saveLog(model->stringList());
     }
 }
 
@@ -1339,7 +1291,7 @@ void MainWindow::handleAbortClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("abort")) {
-        saveLog();
+        log.saveLog(model->stringList());
     }
 }
 

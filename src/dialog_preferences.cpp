@@ -77,7 +77,6 @@ void PreferencesDialog::savePreferences() {
     }
     settings.setValue("logview/automaticSave", this->stopButton->isChecked() ? \
     QString("stop"): QString("abort"));
-    std::string str = settings.value("logview/automaticSave").toString().toStdString();
 
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     carSettings.setValue("odoinit/posx", this->sb_car_init_pos_x->value());
@@ -96,6 +95,10 @@ void PreferencesDialog::savePreferences() {
     reject();
 }
 
+/**
+ * checks validity of user input in line edit and reports to user
+ * does not save the setting
+ */
 void PreferencesDialog::handleApplyPathButton() {
     QString logPath = this->logPathLineEdit->text();
     QDir directory(logPath);
@@ -106,6 +109,10 @@ void PreferencesDialog::handleApplyPathButton() {
     }
 }
 
+/**
+ * opens file dialog to guide the user through memory location selection
+ * for log serialization
+ */
 void PreferencesDialog::handleChoosePathButton(){
     QStringList dirNames;
     QFileDialog dialog(this);

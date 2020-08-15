@@ -10,6 +10,7 @@
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
+#include "log.h"
 
 class NetworkClient;
 
@@ -105,9 +106,6 @@ private:
     void clearAllNavMarkerItems();
     void buildNavigationMarkerItemsFromXmlList();
     void processLogMsg(tLogMsg &logMsg);
-    void saveLog();
-    void delimitFileNumber(QDir &jsonDir);
-    void writeJson(QStringList logList, QJsonArray &json);
     void processRemoteStateMsg(tRemoteStateMsg &rmtStateMsg);
     void resetControlTabVals();
     void resetMemberVariables();
@@ -221,7 +219,8 @@ private:
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
     QStringList *list = new QStringList();
     QStringListModel *model;
-
+    Log log;
 };
+
 
 #endif // __MAINWINDOW_H

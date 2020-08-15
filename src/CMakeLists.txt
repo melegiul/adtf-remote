@@ -27,6 +27,7 @@ adtf_add_executable(UNIAutonomRemoteGUI
     dialog_preferences.ui
     dialog_log_analyzer.cpp
     dialog_log_analyzer.ui
+    log.cpp
 
     adtfmediasample.h
     networkclient.cpp

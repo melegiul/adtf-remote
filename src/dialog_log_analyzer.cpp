@@ -19,18 +19,12 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent) : QDialog(parent) {
 //    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
     //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
     model = new LogModel(this);
-//    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
-//    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Level"));
-//    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Source"));
-//    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Context"));
-//    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Payload"));
-    model->headerData(0, Qt::Horizontal, Qt::DisplayRole);
-    model->headerData(1, Qt::Horizontal, Qt::DisplayRole);
-    model->headerData(2, Qt::Horizontal, Qt::DisplayRole);
-    model->headerData(3, Qt::Horizontal, Qt::DisplayRole);
-    model->headerData(4, Qt::Horizontal, Qt::DisplayRole);
     this->tableView->setModel(model);
-//    this->tableView->horizontalHeader()
+    this->tableView->setColumnWidth(0,160);
+    this->tableView->setColumnWidth(1,40);
+    this->tableView->setColumnWidth(2,120);
+    this->tableView->setColumnWidth(3,80);
+    this->tableView->horizontalHeader()->setStretchLastSection(true);
 }
 
 void LogAnalyzerDialog::loadLog() {
@@ -54,7 +48,7 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
         fileNames = dialog.selectedFiles();
     }
     QString string = fileNames.first();
-//    model->populateData(log.loadLog(string));
+    removeEntries();
     addEntries(log.loadLog(string));
     QStringList history = dialog.history();
     history.append(string);
@@ -70,6 +64,10 @@ void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
             model->setData(index, logValues.value(i), Qt::DisplayRole);
         }
     }
+}
+
+void LogAnalyzerDialog::removeEntries() {
+    model->removeRows(0, model->rowCount(), QModelIndex());
 }
 
 //void LogAnalyzerDialog::on_clearButton_clicked(){

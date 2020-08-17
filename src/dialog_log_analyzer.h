@@ -23,6 +23,7 @@ private:
     LogModel *model;
     QStringList *modelList = new QStringList();
     void addEntries(QList<QStringList> logList);
+    void removeEntries();
 
 //    QFileDialog dialog;
 public slots:

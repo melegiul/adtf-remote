@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QStringListModel>
 #include <ctime>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 #include <QGraphicsItem>
 #include <adtf_converters/mediaDesciptionSingleton.h>
@@ -80,7 +82,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->map_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
 
-    //ui->tableWidget->setColumnCount(1);
+    //ui->logTableView->setColumnCount(5);
+    logDataModel = new QStandardItemModel(this);
+    logDataModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Timestamp")));
+    logDataModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Loglevel")));
+    logDataModel->setHorizontalHeaderItem(2, new QStandardItem(QString("Source")));
+    logDataModel->setHorizontalHeaderItem(3, new QStandardItem(QString("Context")));
+    logDataModel->setHorizontalHeaderItem(4, new QStandardItem(QString("Payload")));
+
+    ui->logTableView->setModel(logDataModel);
+    ui->logTableView->setColumnWidth(0, 200);
+
+    logDataModel->setRowCount(0);
 
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);
@@ -253,21 +266,28 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
     }
     qDebug() << "[" << logMsg.timestamp << "] [" << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
 
-    //TODO handle log in general
+    // Conert Timestamp to human readable format
     std::time_t result = (time_t) logMsg.timestamp / 1000;
-    string dt = std::asctime(std::gmtime(&result));
-    dt.pop_back();
+    auto millis = (time_t) logMsg.timestamp % 1000;
+    //string dt = std::asctime(std::gmtime(&result));
+    //dt.pop_back();
 
-    QString s = "[" + QString::fromStdString(dt)
-            + "] [" + QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)
-            + "] [" + QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)
-            + "] [" + QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)
-            + "] Payload -> " + QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+    char buffer[80];
+    auto timeinfo = localtime(&result);
+    strftime(buffer, sizeof(buffer), "%d.%m.%Y %H:%M:%S", timeinfo);
+    sprintf(buffer,  "%s:%03d", buffer, (int)millis);
 
-    list->append(s);
+    // Append a new row to the LogModel
+    QList<QStandardItem *> items;
+    items = {new QStandardItem(QString::fromStdString(buffer)),
+             new QStandardItem(QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)),
+             new QStandardItem(QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)),
+             new QStandardItem(QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)),
+             new QStandardItem(QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength)))};
 
-    QStringListModel *model = new QStringListModel(*list, NULL);
-    ui->listView->setModel(model);
+    logDataModel->appendRow(items);
+
+    // Update GUI
     emit(guiUpdated());
 }
 

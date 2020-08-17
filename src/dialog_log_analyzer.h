@@ -3,8 +3,12 @@
 
 #include <QDialog>
 #include <QFileDialog>
+#include <QStringListModel>
+#include <QList>
 
 #include "ui_dialog_log_analyzer.h"
+#include "log_serialization.h"
+#include "log_model.h"
 
 class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
     Q_OBJECT
@@ -12,13 +16,20 @@ class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
 public:
     QString fileNameLog = nullptr;
     LogAnalyzerDialog(QWidget *parent = nullptr);
+//    void on_loadButton_clicked();
+
+private:
+    LogSerialization log;
+    LogModel *model;
+    QStringList *modelList = new QStringList();
+    void addEntries(QList<QStringList> logList);
 
 //    QFileDialog dialog;
 public slots:
     void loadLog();
     void saveLog();
 
-    void on_loadButton_clicked();
+    void handleLoadButtonClicked();
 //    void on_clearButton_clicked();
 };
 

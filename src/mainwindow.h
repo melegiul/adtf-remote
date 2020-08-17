@@ -10,7 +10,7 @@
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
-#include "log.h"
+#include "log_serialization.h"
 
 class NetworkClient;
 
@@ -219,7 +219,7 @@ private:
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
     QStringList *list = new QStringList();
     QStringListModel *model;
-    Log log;
+    LogSerialization log;
 };
 
 

@@ -2,14 +2,14 @@
 // Created by uniautonom on 15.08.20.
 //
 
-#include "log.h"
+#include "log_serialization.h"
 
 /**
  * first retrieves settings for predefined memory location
  * then writes to json file and ensures the max file number limitation
  * @param logList list of current log entries in the mainwindow model
  */
-void Log::saveLog(QStringList logList){
+void LogSerialization::saveLog(QStringList logList){
     QSettings settings;
     QString qLogPath = settings.value("logview/logPath").toString();
     std::string logPath = qLogPath.toStdString();
@@ -38,7 +38,7 @@ void Log::saveLog(QStringList logList){
  * removes file according to fifo
  * @param json folder to delimit the file number
  */
-void Log::delimitFileNumber(QDir &json){
+void LogSerialization::delimitFileNumber(QDir &json){
     QStringList fileList = json.entryList(QDir::Files, QDir::Name);
     QString oldestFile = fileList.first();
     json.remove(oldestFile);
@@ -49,7 +49,7 @@ void Log::delimitFileNumber(QDir &json){
  * @param logList log entries from the mainwindow model
  * @param json resulting json Objects are placed in array
  */
-void Log::writeJson(QStringList logList, QJsonArray &json){
+void LogSerialization::writeJson(QStringList logList, QJsonArray &json){
     for(QString logEntry: logList){
         QStringList logColumns = logEntry.split(" ");
         QJsonObject logObject;
@@ -62,6 +62,33 @@ void Log::writeJson(QStringList logList, QJsonArray &json){
     }
 }
 
-void Log::readJson() {
-    
+QList<QStringList> LogSerialization::loadLog(QString fileName){
+    QFile jsonFile(fileName);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning("log.cpp-loadLog(): Could not open file");
+    }
+    QByteArray data = jsonFile.readAll();
+    jsonFile.close();
+    QJsonDocument loadedDoc(QJsonDocument::fromJson(data));
+    return readJson(loadedDoc.array());
+}
+
+QList<QStringList> LogSerialization::readJson(const QJsonArray &json) {
+    QList<QStringList> logList;
+    for (int i=0; i<json.size(); i++) {
+        QStringList logString;
+        QJsonObject logEntry = json[i].toObject();
+        if (logEntry.contains("time") && logEntry["time"].isString())
+            logString.append(logEntry["time"].toString());
+        if (logEntry.contains("level") && logEntry["level"].isString())
+            logString.append(logEntry["level"].toString());
+        if (logEntry.contains("source") && logEntry["source"].isString())
+            logString.append(logEntry["source"].toString());
+        if (logEntry.contains("context") && logEntry["context"].isString())
+            logString.append(logEntry["context"].toString());
+        if (logEntry.contains("payload") && logEntry["payload"].isString())
+            logString.append(logEntry["payload"].toString());
+        logList.append(logString);
+    }
+    return logList;
 }

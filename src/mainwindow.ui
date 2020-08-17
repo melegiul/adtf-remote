@@ -1068,7 +1068,7 @@
   </action>
   <action name="actionLogAnalyzer">
    <property name="text">
-    <string>Log Analyzer</string>
+    <string>LogSerialization Analyzer</string>
    </property>
   </action>
  </widget>

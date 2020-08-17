@@ -978,6 +978,7 @@
      <string>General</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionLogAnalyser"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuConnection">
@@ -1070,7 +1071,7 @@
   </action>
   <action name="actionLogAnalyzer">
    <property name="text">
-    <string>Log Analyzer</string>
+    <string>LogSerialization Analyzer</string>
    </property>
   </action>
  </widget>

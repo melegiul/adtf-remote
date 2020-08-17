@@ -8,6 +8,7 @@
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
+#include "log_serialization.h"
 
 class NetworkClient;
 
@@ -219,5 +220,6 @@ private:
 
 
 };
+
 
 #endif // __MAINWINDOW_H

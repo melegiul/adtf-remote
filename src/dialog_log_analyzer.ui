@@ -30,6 +30,11 @@
           <height>321</height>
          </rect>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QTableView" name="tableView"/>
+         </item>
+        </layout>
        </widget>
       </widget>
      </item>
@@ -75,7 +80,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox"/>
+              <widget class="QComboBox" name="historyBox"/>
              </item>
             </layout>
            </item>
@@ -104,7 +109,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="loadButton">
              <property name="text">
               <string>Load</string>
              </property>

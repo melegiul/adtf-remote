@@ -11,6 +11,7 @@
 
 #include <QGraphicsItem>
 #include <adtf_converters/mediaDesciptionSingleton.h>
+#include <QtCore/QJsonArray>
 
 #include "mainwindow.h"
 #include "dialog_preferences.h"
@@ -37,6 +38,7 @@
 #include "CustomGraphicsItems/VisibleLineItem.h"
 #include "CustomGraphicsItems/InvisibleLineItem.h"
 #include "GUIHelper/GraphicsViewZoom.h"
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), networkClient(new NetworkClient(this))
 {
@@ -131,6 +133,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
     connect(&cont, SIGNAL(markerUpdateRequired()), this, SLOT(updateMarkerTypesInMarkerList()));
     connect(&cont, SIGNAL(deleteMarker()), this, SLOT(deleteNavigationMarker()));
+
+    model = new QStringListModel(this);
+    ui->listView->setModel(model);
+
 }
 
 MainWindow::~MainWindow()
@@ -264,7 +270,11 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
             }
         }
     }
-    qDebug() << "[" << logMsg.timestamp << "] [" << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
+    qDebug() << "[" << logMsg.timestamp << "] [" \
+    << QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second) << "] [" \
+    << QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second) << "] [" \
+    << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " \
+    << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
 
     // Conert Timestamp to human readable format
     std::time_t result = (time_t) logMsg.timestamp / 1000;
@@ -290,7 +300,6 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
     // Update GUI
     emit(guiUpdated());
 }
-
 
 // import from old widget code
 void MainWindow::updateStaticFilters(QTreeWidgetItem *item, int column) {
@@ -1263,6 +1272,11 @@ void MainWindow::handleStopClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+    QSettings settings;
+    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    if (saveGranularity == QString("stop")) {
+        log.saveLog(model->stringList());
+    }
 }
 
 void MainWindow::handleStopACK() {
@@ -1288,6 +1302,11 @@ void MainWindow::handleAbortClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+    QSettings settings;
+    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    if (saveGranularity == QString("abort")) {
+        log.saveLog(model->stringList());
+    }
 }
 
 void MainWindow::handleAbortACK() {

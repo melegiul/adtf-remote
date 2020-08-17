@@ -2,6 +2,7 @@
 #define DIALOG_PREFERENCES_H
 
 #include <QDialog>
+#include <QMessageBox>
 
 #include "ui_dialog_preferences.h"
 
@@ -16,6 +17,8 @@ public:
 public slots:
     void loadPreferences();
     void savePreferences();
+    void handleApplyPathButton();
+    void handleChoosePathButton();
 };
 
 #endif // DIALOG_PREFERENCES_H

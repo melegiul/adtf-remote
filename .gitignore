@@ -11,6 +11,7 @@ src/cmake-build-debug
 
 # ide related
 src/.idea
+.idea
 
 *~
 *.autosave
@@ -77,6 +78,9 @@ CMakeLists.txt.user*
 
 # Python byte code
 *.pyc
+
+# serialization
+json/
 
 # Binaries
 # --------

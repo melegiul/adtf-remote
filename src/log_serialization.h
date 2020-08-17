@@ -13,15 +13,16 @@
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QStandardItemModel>
 
 class LogSerialization {
 public:
-    void saveLog(QStringList logList);
+    void saveLog(QList<QStringList> &logList);
     QList<QStringList> loadLog(QString fileName);
 
 private:
     void delimitFileNumber(QDir &jsonDir);
-    void writeJson(QStringList logList, QJsonArray &json);
+    void writeJson(QList<QStringList> &logList, QJsonArray &json);
     QList<QStringList> readJson(const QJsonArray &json);
 };
 

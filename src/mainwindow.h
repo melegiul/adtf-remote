@@ -9,6 +9,7 @@
 #include "ui_mainwindow.h"
 #include "Map/ContentManager.hpp"
 #include "log_serialization.h"
+#include "log_model.h"
 
 class NetworkClient;
 
@@ -88,6 +89,7 @@ public:
     void stop();
     void resume();
     void setCurrentMapName(const char *currentMapName);
+    void addLogEntry(QStringList logEntryList);
 
 private:
     void addSceneBuffer();
@@ -215,10 +217,8 @@ private:
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
-    //QStringList *list = new QStringList();
-    QStandardItemModel *logDataModel = nullptr;
-
-
+    LogModel *logModel;
+    LogSerialization log;
 };
 
 

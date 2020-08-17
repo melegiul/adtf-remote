@@ -84,18 +84,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->map_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
 
-    //ui->logTableView->setColumnCount(5);
-    logDataModel = new QStandardItemModel(this);
-    logDataModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Timestamp")));
-    logDataModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Loglevel")));
-    logDataModel->setHorizontalHeaderItem(2, new QStandardItem(QString("Source")));
-    logDataModel->setHorizontalHeaderItem(3, new QStandardItem(QString("Context")));
-    logDataModel->setHorizontalHeaderItem(4, new QStandardItem(QString("Payload")));
+    logModel = new LogModel(this);
 
-    ui->logTableView->setModel(logDataModel);
+    ui->logTableView->setModel(logModel);
     ui->logTableView->setColumnWidth(0, 200);
-
-    logDataModel->setRowCount(0);
+    ui->logTableView->horizontalHeader()->setStretchLastSection(true);
 
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);
@@ -133,10 +126,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(&cont, SIGNAL(markerMoved(NavigationMarkerItem *)), this, SLOT(updateNavigationMarker(NavigationMarkerItem *)));
     connect(&cont, SIGNAL(markerUpdateRequired()), this, SLOT(updateMarkerTypesInMarkerList()));
     connect(&cont, SIGNAL(deleteMarker()), this, SLOT(deleteNavigationMarker()));
-
-    model = new QStringListModel(this);
-    ui->listView->setModel(model);
-
 }
 
 MainWindow::~MainWindow()
@@ -276,11 +265,9 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
     << QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second) << "] Payload -> " \
     << QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength));
 
-    // Conert Timestamp to human readable format
+    // Convert Timestamp to human readable format
     std::time_t result = (time_t) logMsg.timestamp / 1000;
     auto millis = (time_t) logMsg.timestamp % 1000;
-    //string dt = std::asctime(std::gmtime(&result));
-    //dt.pop_back();
 
     char buffer[80];
     auto timeinfo = localtime(&result);
@@ -288,17 +275,26 @@ void MainWindow::processLogMsg(tLogMsg &logMsg){
     sprintf(buffer,  "%s:%03d", buffer, (int)millis);
 
     // Append a new row to the LogModel
-    QList<QStandardItem *> items;
-    items = {new QStandardItem(QString::fromStdString(buffer)),
-             new QStandardItem(QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)),
-             new QStandardItem(QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)),
-             new QStandardItem(QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)),
-             new QStandardItem(QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength)))};
+    QStringList items = {QString(QString::fromStdString(buffer)),
+             QString(QString::fromStdString(tFilterLogTypeMap.find(logMsg.filterLogType)->second)),
+             QString(QString::fromStdString(tUniaFilterMap.find(logMsg.uniaFilter)->second)),
+             QString(QString::fromStdString(tLogContextMap.find(logMsg.logContext)->second)),
+             QString(QString::fromStdString(std::string(reinterpret_cast<char const *>(logMsg.ui8Data), logMsg.payloadLength)))};
 
-    logDataModel->appendRow(items);
+    // Append new Row/Entry to currentLog
+    addLogEntry(items);
 
     // Update GUI
     emit(guiUpdated());
+}
+
+void MainWindow::addLogEntry(QStringList logEntryList) {
+
+    logModel->insertRows(0, 1, QModelIndex());
+    for (int i = 0; i < logEntryList.size(); ++i) {
+        QModelIndex index = logModel->index(0, i, QModelIndex());
+        logModel->setData(index, logEntryList.value(i), Qt::DisplayRole);
+    }
 }
 
 // import from old widget code
@@ -1275,7 +1271,7 @@ void MainWindow::handleStopClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("stop")) {
-        log.saveLog(model->stringList());
+        log.saveLog(logModel->getCurrentLog());
     }
 }
 
@@ -1305,7 +1301,7 @@ void MainWindow::handleAbortClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("abort")) {
-        log.saveLog(model->stringList());
+        log.saveLog(logModel->getCurrentLog());
     }
 }
 

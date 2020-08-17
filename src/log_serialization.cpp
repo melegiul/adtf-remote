@@ -9,7 +9,8 @@
  * then writes to json file and ensures the max file number limitation
  * @param logList list of current log entries in the mainwindow model
  */
-void LogSerialization::saveLog(QStringList logList){
+void LogSerialization::saveLog(QList<QStringList> &logList){
+
     QSettings settings;
     QString qLogPath = settings.value("logview/logPath").toString();
     std::string logPath = qLogPath.toStdString();
@@ -25,6 +26,8 @@ void LogSerialization::saveLog(QStringList logList){
     }
     QJsonArray json;
     writeJson(logList, json);
+
+
     saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
     saveFile.close();
     QDir jsonDir = QDir(logPath.data());
@@ -49,16 +52,15 @@ void LogSerialization::delimitFileNumber(QDir &json){
  * @param logList log entries from the mainwindow model
  * @param json resulting json Objects are placed in array
  */
-void LogSerialization::writeJson(QStringList logList, QJsonArray &json){
-    for(QString logEntry: logList){
-        QStringList logColumns = logEntry.split(" ");
-        QJsonObject logObject;
-        logObject["time"] = logColumns.value(0);
-        logObject["level"] = logColumns.value(1);
-        logObject["source"] = logColumns.value(2);
-        logObject["context"] = logColumns.value(3);
-        logObject["payload"] = logColumns.value(4);
-        json.append(logObject);
+void LogSerialization::writeJson(QList<QStringList> &logList, QJsonArray &json){
+    for (QStringList list : logList) {
+            QJsonObject logObject;
+            logObject["time"] = list.value(0);
+            logObject["level"] = list.value(1);
+            logObject["source"] = list.value(2);
+            logObject["context"] = list.value(3);
+            logObject["payload"] = list.value(4);
+            json.append(logObject);
     }
 }
 

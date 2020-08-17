@@ -135,3 +135,7 @@ bool LogModel::setData(const QModelIndex &index, const QVariant &value, int role
     }
     return false;
 }
+
+QList<QStringList> &LogModel::getCurrentLog() {
+    return currentLog;
+}

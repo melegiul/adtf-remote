@@ -3,9 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
-#include <QStringListModel>
-#include <QJsonObject>
-#include <QDir>
+#include <QStandardItemModel>
 
 #include "adtfmediasample.h"
 #include "ui_mainwindow.h"
@@ -217,9 +215,10 @@ private:
     std::shared_ptr<NavigationMarker> navigationMarker;
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
-    QStringList *list = new QStringList();
-    QStringListModel *model;
-    LogSerialization log;
+    //QStringList *list = new QStringList();
+    QStandardItemModel *logDataModel = nullptr;
+
+
 };
 
 

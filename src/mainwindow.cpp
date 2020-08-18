@@ -14,6 +14,7 @@
 #include <QtCore/QJsonArray>
 
 #include "mainwindow.h"
+#include "qtooltipper.h"
 #include "dialog_preferences.h"
 #include "dialog_log_analyzer.h"
 #include "networkclient.h"
@@ -89,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->logTableView->setModel(logModel);
     ui->logTableView->setColumnWidth(0, 200);
     ui->logTableView->horizontalHeader()->setStretchLastSection(true);
+    ui->logTableView->viewport()->installEventFilter(new QToolTipper(ui->logTableView));
 
     scene = new QGraphicsScene();
     ui->map_view->setScene(scene);

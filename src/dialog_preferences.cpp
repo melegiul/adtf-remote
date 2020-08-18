@@ -41,7 +41,7 @@ void PreferencesDialog::showPreferences() {
     this->car_config_edit_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
     this->sb_background->setValue(settings.value("ui/background", 180).toInt());
     this->logPathLineEdit->setText(settings.value("logview/logPath").toString());
-    bool b = settings.value("logview/automaticSave") == QString("stop");
+
     settings.value("logview/automaticSave") == QString("stop") ? \
     this->stopButton->setChecked(true): this->abortButton->setChecked(true);
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);

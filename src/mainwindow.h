@@ -90,6 +90,7 @@ public:
     void resume();
     void setCurrentMapName(const char *currentMapName);
     void addLogEntry(QStringList logEntryList);
+    LogModel *getLogModel();
 
 private:
     void addSceneBuffer();

@@ -1,0 +1,23 @@
+[
+    {
+        "context": "AC",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:14:07:697"
+    },
+    {
+        "context": "Map",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:14:06:527"
+    },
+    {
+        "context": "None",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:14:03:192"
+    }
+]

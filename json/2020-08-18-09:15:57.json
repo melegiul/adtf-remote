@@ -1,0 +1,65 @@
+[
+    {
+        "context": "RC_Running",
+        "level": "Info",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:51:812"
+    },
+    {
+        "context": "Ready",
+        "level": "Info",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:39:203"
+    },
+    {
+        "context": "AC",
+        "level": "Info",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:39:203"
+    },
+    {
+        "context": "AC",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:39:203"
+    },
+    {
+        "context": "Map",
+        "level": "Info",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:37:321"
+    },
+    {
+        "context": "Map",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:37:321"
+    },
+    {
+        "context": "None",
+        "level": "Info",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:29:436"
+    },
+    {
+        "context": "None",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:29:436"
+    },
+    {
+        "context": "None",
+        "level": "Ack",
+        "payload": "test",
+        "source": "Statemachine",
+        "time": "18.08.2020 09:15:25:611"
+    }
+]

@@ -139,7 +139,7 @@ void MainWindow::openPreferences() {
 }
 
 void MainWindow::openLogAnalyzer() {
-    LogAnalyzerDialog logDialog(this);
+    LogAnalyzerDialog logDialog(this, logModel);
     logDialog.exec();
 }
 
@@ -295,6 +295,10 @@ void MainWindow::addLogEntry(QStringList logEntryList) {
         QModelIndex index = logModel->index(0, i, QModelIndex());
         logModel->setData(index, logEntryList.value(i), Qt::DisplayRole);
     }
+}
+
+LogModel* MainWindow::getLogModel() {
+    return logModel;
 }
 
 // import from old widget code

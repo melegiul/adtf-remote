@@ -80,7 +80,7 @@ CMakeLists.txt.user*
 *.pyc
 
 # serialization
-json/
+#json/
 
 # Binaries
 # --------

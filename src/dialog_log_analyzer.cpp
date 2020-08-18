@@ -10,21 +10,25 @@
 #include <iostream>
 
 #include "dialog_log_analyzer.h"
+#include "mainwindow.h"
 
-LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent) : QDialog(parent) {
+LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
     this->setupUi(this);
 
 //    QFileDialog dialog(this);
     connect(this->loadButton,SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
+    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(switchSource()));
+    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(switchSource()));
 //    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
     //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
     model = new LogModel(this);
-    this->tableView->setModel(model);
+    this->tableView->setModel(parentModel);
     this->tableView->setColumnWidth(0,160);
     this->tableView->setColumnWidth(1,40);
     this->tableView->setColumnWidth(2,120);
     this->tableView->setColumnWidth(3,80);
     this->tableView->horizontalHeader()->setStretchLastSection(true);
+
 }
 
 void LogAnalyzerDialog::loadLog() {
@@ -48,6 +52,7 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
         fileNames = dialog.selectedFiles();
     }
     QString string = fileNames.first();
+    tableView->setModel(model);
     removeEntries();
     addEntries(log.loadLog(string));
     QStringList history = dialog.history();
@@ -68,6 +73,14 @@ void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
 
 void LogAnalyzerDialog::removeEntries() {
     model->removeRows(0, model->rowCount(), QModelIndex());
+}
+
+void LogAnalyzerDialog::switchSource() {
+    if (this->liveLogButton->isChecked()){
+        tableView->setModel(parentModel);
+    } else {
+        tableView->setModel(model);
+    }
 }
 
 //void LogAnalyzerDialog::on_clearButton_clicked(){

@@ -40,9 +40,9 @@ void PreferencesDialog::showPreferences() {
     this->le_description->setText(settings.value("description/path").toString());
     this->car_config_edit_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
     this->sb_background->setValue(settings.value("ui/background", 180).toInt());
-    this->logPathLineEdit->setText(settings.value("logview/logPath").toString());
+    this->logPathLineEdit->setText(settings.value("logPreferences/logPath").toString());
 
-    settings.value("logview/automaticSave") == QString("stop") ? \
+    settings.value("logPreferences/automaticSave") == QString("stop") ? \
     this->stopButton->setChecked(true): this->abortButton->setChecked(true);
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200.0f).toFloat());
@@ -73,9 +73,9 @@ void PreferencesDialog::savePreferences() {
     if (!directory.exists() || logPath.isEmpty()) {
         QMessageBox::warning(this, "Warning", "Entered log path is not a valid directory!\nChanges were not applied");
     }else {
-        settings.setValue("logview/logPath", this->logPathLineEdit->text());
+        settings.setValue("logPreferences/logPath", this->logPathLineEdit->text());
     }
-    settings.setValue("logview/automaticSave", this->stopButton->isChecked() ? \
+    settings.setValue("logPreferences/automaticSave", this->stopButton->isChecked() ? \
     QString("stop"): QString("abort"));
 
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);

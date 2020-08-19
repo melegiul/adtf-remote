@@ -14,26 +14,21 @@ class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
     Q_OBJECT
 
 public:
-    QString fileNameLog = nullptr;
-    LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
-//    void on_loadButton_clicked();
+    LogAnalyzerDialog(QWidget *parent = nullptr, QAbstractTableModel* parentModel = nullptr);
+    void loadSettings();
 
 private:
     LogSerialization log;
-    LogModel *model;
-    LogModel *parentModel;
-    QStringList *modelList = new QStringList();
+    QAbstractTableModel *model;
+    QAbstractTableModel *parentModel;
+    QSettings settings;
     void addEntries(QList<QStringList> logList);
     void removeEntries();
 
-//    QFileDialog dialog;
 public slots:
-    void loadLog();
-    void saveLog();
-
     void handleLoadButtonClicked();
-//    void on_clearButton_clicked();
     void switchSource();
+    void saveSettings();
 };
 
 

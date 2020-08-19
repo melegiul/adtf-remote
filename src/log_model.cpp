@@ -32,7 +32,7 @@ int LogModel::columnCount(const QModelIndex &parent) const {
  * retrieves a distinct value specified by the index (row, column)
  * @param index refers to item in table
  * @param role associated role for data elements of the items
- * @return QString, when value has DisplayRole
+ * @return QString, when value has DisplayRole (read only)
  */
 QVariant LogModel::data(const QModelIndex &index, int role) const {
     if(!index.isValid())
@@ -48,10 +48,10 @@ QVariant LogModel::data(const QModelIndex &index, int role) const {
 
 /**
  * returns header data of the model
- * @param section for selecting the column
+ * @param section for selecting the column (horizontal) and row number (vertical)
  * @param orientation can be horizontal or vertical
- * @param role associated role for data elements of the items
- * @return name of specified column header
+ * @param role associated role for data elements of the items, in this case DisplayRole (read only)
+ * @return name of specified column header or index of row
  */
 QVariant LogModel:: headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
@@ -136,6 +136,10 @@ bool LogModel::setData(const QModelIndex &index, const QVariant &value, int role
     return false;
 }
 
+/**
+ * retrieves data of the model
+ * @return the current displayed log file
+ */
 QList<QStringList> &LogModel::getCurrentLog() {
     return currentLog;
 }

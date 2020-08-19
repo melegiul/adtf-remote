@@ -143,3 +143,45 @@ bool LogModel::setData(const QModelIndex &index, const QVariant &value, int role
 QList<QStringList> &LogModel::getCurrentLog() {
     return currentLog;
 }
+
+/**
+ * first retrieves settings for predefined memory location
+ * then writes to json file and ensures the max file number limitation
+ * @param logList list of current log entries in the mainwindow model
+ */
+void LogModel::saveLog(QList<QStringList> &logList){
+
+    QSettings settings;
+    QString qLogPath = settings.value("logview/logPath").toString();
+    std::string logPath = qLogPath.toStdString();
+    time_t now = time(0);
+    char fileName[40];
+    tm *tm_info = localtime(&now);
+    strftime(fileName, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
+    std::string filePath = logPath + fileName;
+    QFile saveFile(filePath.data());
+    if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning("log_model.cpp-saveLog(): Could not open save file.");
+        return;
+    }
+    QJsonArray json;
+    LogSerialization::writeJson(logList, json);
+
+
+    saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
+    saveFile.close();
+    QDir jsonDir = QDir(logPath.data());
+    if(jsonDir.entryList(QDir::Files,QDir::NoSort).count() > 10){
+        LogSerialization::delimitFileNumber(jsonDir);
+    }
+}
+
+QList<QStringList> LogModel::loadLog(QString fileName){
+    QFile jsonFile(fileName);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning("log_model.cpp-loadLog(): Could not open file");
+    }
+    QByteArray data = jsonFile.readAll();
+    jsonFile.close();
+    return LogSerialization::readJson(data);
+}

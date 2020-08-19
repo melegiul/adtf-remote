@@ -1275,7 +1275,7 @@ void MainWindow::handleStopClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("stop")) {
-        log.saveLog(logModel->getCurrentLog());
+        logModel->saveLog(logModel->getCurrentLog());
     }
 }
 
@@ -1305,7 +1305,7 @@ void MainWindow::handleAbortClick(){
     QSettings settings;
     QString saveGranularity = settings.value("logview/automaticSave").toString();
     if (saveGranularity == QString("abort")) {
-        log.saveLog(logModel->getCurrentLog());
+        logModel->saveLog(logModel->getCurrentLog());
     }
 }
 

@@ -38,7 +38,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *paren
 }
 
 /**
- * open customized file dialog for json file selection starting in home directory
+ * open customized file dialog for json file selection starting in specified serialization folder
  * if user selection is not empty, the file is loaded in the model and added to file selection history
  */
 void LogAnalyzerDialog::handleLoadButtonClicked(){
@@ -52,12 +52,17 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
             fileNames = dialog.selectedFiles();
         }
     } else {
-        fileNames.append(historyBox->currentText());
+        if (QFile::exists(historyBox->currentText())) {
+            fileNames.append(historyBox->currentText());
+        } else {
+            QMessageBox::warning(this, "File does not exist", historyBox->currentText() + " will now be removed from history");
+            historyBox->removeItem(historyBox->currentIndex());
+        }
     }
     if (!fileNames.isEmpty()) {
         QString string = fileNames.first();
         removeEntries();
-        addEntries(log.loadLog(string));
+        addEntries(((LogModel*)model)->loadLog(string));
         if (historyBox->findText(string) == -1) {
             if (historyBox->count() >= historyBox->maxCount())
                 historyBox->removeItem(historyBox->count() - 1);

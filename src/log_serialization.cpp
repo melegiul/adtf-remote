@@ -8,7 +8,7 @@
  * first retrieves settings for predefined memory location
  * then writes to json file and ensures the max file number limitation
  * @param logList list of current log entries in the mainwindow model
- */
+ *//*
 void LogSerialization::saveLog(QList<QStringList> &logList){
 
     QSettings settings;
@@ -34,7 +34,7 @@ void LogSerialization::saveLog(QList<QStringList> &logList){
     if(jsonDir.entryList(QDir::Files,QDir::NoSort).count() > 10){
         delimitFileNumber(jsonDir);
     }
-}
+}*/
 
 /**
  * called when the number of files in the folder exceeds maximum
@@ -64,7 +64,7 @@ void LogSerialization::writeJson(QList<QStringList> &logList, QJsonArray &json){
     }
 }
 
-QList<QStringList> LogSerialization::loadLog(QString fileName){
+/*QList<QStringList> LogSerialization::loadLog(QString fileName){
     QFile jsonFile(fileName);
     if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
         qWarning("log.cpp-loadLog(): Could not open file");
@@ -73,9 +73,11 @@ QList<QStringList> LogSerialization::loadLog(QString fileName){
     jsonFile.close();
     QJsonDocument loadedDoc(QJsonDocument::fromJson(data));
     return readJson(loadedDoc.array());
-}
+}*/
 
-QList<QStringList> LogSerialization::readJson(const QJsonArray &json) {
+QList<QStringList> LogSerialization::readJson(const QByteArray &data) {
+    QJsonDocument loadedDoc(QJsonDocument::fromJson(data));
+    QJsonArray json = loadedDoc.array();
     QList<QStringList> logList;
     for (int i=0; i<json.size(); i++) {
         QStringList logString;

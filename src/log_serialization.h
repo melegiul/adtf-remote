@@ -6,24 +6,19 @@
 #define UNIAUTONOM_REMOTEGUI_LOG_SERIALIZATION_H
 
 #include <QDir>
-#include <QSettings>
-#include <QStringListModel>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QStandardItemModel>
 
 class LogSerialization {
-public:
-    void saveLog(QList<QStringList> &logList);
-    QList<QStringList> loadLog(QString fileName);
+//public:
+    /*void saveLog(QList<QStringList> &logList);
+    QList<QStringList> loadLog(QString fileName);*/
 
-private:
-    void delimitFileNumber(QDir &jsonDir);
-    void writeJson(QList<QStringList> &logList, QJsonArray &json);
-    QList<QStringList> readJson(const QJsonArray &json);
+public:
+    static void delimitFileNumber(QDir &jsonDir);
+    static void writeJson(QList<QStringList> &logList, QJsonArray &json);
+    static QList<QStringList> readJson(const QByteArray &data);
 };
 
 #endif //UNIAUTONOM_REMOTEGUI_LOG_SERIALIZATION_H

@@ -9,6 +9,13 @@
 #include <QFile>
 #include <iostream>
 
+#include <QtCharts/QChartView>
+#include <QtCharts/QStackedBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QLegend>
+#include <QtCharts/QBarCategoryAxis>
+using namespace QtCharts;
+//QT_CHARTS_USE_NAMESPACE
 #include "dialog_log_analyzer.h"
 #include "mainwindow.h"
 
@@ -29,6 +36,47 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     this->tableView->setColumnWidth(3,80);
     this->tableView->horizontalHeader()->setStretchLastSection(true);
 
+
+    QBarSet *set0 = new QBarSet("ACK");
+    QBarSet *set1 = new QBarSet("CRITICAL");
+    QBarSet *set2 = new QBarSet("ERROR");
+    QBarSet *set3 = new QBarSet("WARNING");
+    QBarSet *set4 = new QBarSet("INFO");
+    QBarSet *set5 = new QBarSet("DEBUG");
+
+    *set0 << 1 << 2 << 3 << 4 << 5 << 6;
+    *set1 << 5 << 0 << 0 << 4 << 0 << 7;
+    *set2 << 3 << 5 << 8 << 13 << 8 << 5;
+    *set3 << 5 << 6 << 7 << 3 << 4 << 5;
+    *set4 << 9 << 7 << 5 << 3 << 1 << 2;
+    *set5 << 9 << 7 << 5 << 3 << 1 << 2;
+
+    QStackedBarSeries *series = new QStackedBarSeries();
+    series->append(set0);
+    series->append(set1);
+    series->append(set2);
+    series->append(set3);
+    series->append(set4);
+    series->append(set5);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QStringList categories;
+    categories << "0.1" << "0.2" << "0.3" << "0.4" << "0.5" << "0.6";
+    QBarCategoryAxis *axis = new QBarCategoryAxis();
+    axis->append(categories);
+    chart->createDefaultAxes();
+    chart->setAxisX(axis, series);
+
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignTop);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setParent(this->horizontalFrame);
+    chartView->setMinimumSize(600,300);
+    chartView->setRenderHint(QPainter::Antialiasing);
 }
 
 void LogAnalyzerDialog::loadLog() {

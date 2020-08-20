@@ -11,13 +11,13 @@
 #include <QJsonObject>
 
 class LogSerialization {
-//public:
+private:
+    static void delimitFileNumber(QDir &jsonDir);
     /*void saveLog(QList<QStringList> &logList);
     QList<QStringList> loadLog(QString fileName);*/
 
 public:
-    static void delimitFileNumber(QDir &jsonDir);
-    static void writeJson(QList<QStringList> &logList, QJsonArray &json);
+    static void writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber);
     static QList<QStringList> readJson(const QByteArray &data);
 };
 

@@ -1273,9 +1273,10 @@ void MainWindow::handleStopClick(){
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
     QSettings settings;
-    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
+    int maxFileNumber = settings.value("logPreferences/fileNumber",INT_MAX).toInt();
     if (saveGranularity == QString("stop")) {
-        logModel->saveLog(logModel->getCurrentLog());
+        logModel->saveLog(logModel->getCurrentLog(), maxFileNumber, QString());
     }
 }
 
@@ -1303,9 +1304,10 @@ void MainWindow::handleAbortClick(){
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
     QSettings settings;
-    QString saveGranularity = settings.value("logview/automaticSave").toString();
+    QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
+    int maxFileNumber = settings.value("logPreferences/fileNumber", INT_MAX).toInt();
     if (saveGranularity == QString("abort")) {
-        logModel->saveLog(logModel->getCurrentLog());
+        logModel->saveLog(logModel->getCurrentLog(), maxFileNumber, QString());
     }
 }
 

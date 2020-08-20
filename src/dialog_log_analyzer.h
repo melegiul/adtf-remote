@@ -7,7 +7,7 @@
 #include <QList>
 
 #include "ui_dialog_log_analyzer.h"
-#include "log_serialization.h"
+//#include "log_serialization.h"
 #include "log_model.h"
 
 class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
@@ -18,17 +18,21 @@ public:
     void loadSettings();
 
 private:
-    LogSerialization log;
     QAbstractTableModel *model;
     QAbstractTableModel *parentModel;
     QSettings settings;
+    const QString fileDialogLabel = "File Dialog Selection";
+    int maxFileNumber;
     void addEntries(QList<QStringList> logList);
-    void removeEntries();
+    void clearModel();
 
 public slots:
     void handleLoadButtonClicked();
+    void handleSaveButtonClicked();
+    void handleSaveAsButtonClicked();
     void switchSource();
     void saveSettings();
+    void checkIndex();
 };
 
 

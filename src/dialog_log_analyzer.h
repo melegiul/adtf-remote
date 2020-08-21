@@ -6,6 +6,11 @@
 #include <QStringListModel>
 #include <QList>
 
+#include <QtCharts/QStackedBarSeries>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QChart>
+using namespace QtCharts;
+
 #include "ui_dialog_log_analyzer.h"
 #include "log_serialization.h"
 #include "log_model.h"
@@ -26,6 +31,11 @@ private:
     void addEntries(QList<QStringList> logList);
     void removeEntries();
 
+    QStackedBarSeries *series;
+    QStringList categories;
+    QBarCategoryAxis *axis;
+    QChart *chart;
+
 //    QFileDialog dialog;
 public slots:
     void loadLog();
@@ -34,6 +44,7 @@ public slots:
     void handleLoadButtonClicked();
 //    void on_clearButton_clicked();
     void switchSource();
+    void update_graph();
 };
 
 

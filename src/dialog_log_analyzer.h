@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QStringListModel>
 #include <QList>
+#include <stdexcept>
 
 #include "ui_dialog_log_analyzer.h"
 //#include "log_serialization.h"
@@ -25,6 +26,7 @@ private:
     int maxFileNumber;
     void addEntries(QList<QStringList> logList);
     void clearModel();
+    void updateFileHistory(QString fileName);
 
 public slots:
     void handleLoadButtonClicked();

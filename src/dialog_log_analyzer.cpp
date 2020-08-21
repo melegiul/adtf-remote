@@ -62,33 +62,48 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
         // enters only if user made selection in file dialog and the file exists
         QString string = fileNames.first();
         clearModel();
-        addEntries(((LogModel*)model)->loadLog(string));
-        historyBox->setCurrentText(string);
-        if (historyBox->findText(string) == -1) {
-            // if the loaded file does not exist in combo box, insert new entry
-            if (historyBox->count() >= historyBox->maxCount())
-                // if the maximum number of combobox entries is reached, remove oldest entry
-                historyBox->removeItem(historyBox->count() - 1);
-        } else {
-            // if loaded file already exists, update call order
-            historyBox->removeItem(historyBox->currentIndex());
+        try {
+            addEntries(((LogModel *) model)->loadLog(string));
+            updateFileHistory(string);
+        } catch (runtime_error &e) {
+            QMessageBox::critical(this, "Json format error", e.what());
         }
-        // pop file dialog label
-        historyBox->removeItem(0);
-        // push recent file
-        historyBox->insertItem(0, string);
-        // push file dialog label
-        historyBox->insertItem(0, fileDialogLabel);
-        historyBox->setCurrentText(string);
-        loadButton->setDisabled(true);
-        saveButton->setDisabled(false);
-        saveAsButton->setDisabled(false);
     }
+}
+
+/**
+ * history combo box is managed to show recent file calls on top,
+ * while removing oldest entry, if max size exceeds
+ * @param fileName most recent file call
+ */
+void LogAnalyzerDialog::updateFileHistory(QString fileName) {
+    if (historyBox->findText(fileName) == -1) {
+        // if the loaded file does not exist in combo box, insert new entry
+        if (historyBox->count() >= historyBox->maxCount())
+            // if the maximum number of combobox entries is reached, remove oldest entry
+            historyBox->removeItem(historyBox->count() - 1);
+    } else {
+        // if loaded file already exists, update call order
+        historyBox->removeItem(historyBox->currentIndex());
+    }
+    // pop file dialog label
+    historyBox->removeItem(0);
+    // push recent file
+    historyBox->insertItem(0, fileName);
+    // push file dialog label
+    historyBox->insertItem(0, fileDialogLabel);
+    historyBox->setCurrentText(fileName);
+    loadButton->setDisabled(true);
+    saveButton->setDisabled(false);
+    saveAsButton->setDisabled(false);
 }
 
 void LogAnalyzerDialog::handleSaveButtonClicked() {
     LogModel *currentModel = ((LogModel*)model);
-    currentModel->saveLog(currentModel->getCurrentLog(), maxFileNumber, historyBox->currentText());
+    currentModel->saveLog(currentModel->getCurrentLog(), \
+                            maxFileNumber,\
+                            settings.value("logPreferences/logPath", "").toString(), \
+                            historyBox->currentText());
 }
 
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
@@ -106,7 +121,10 @@ void LogAnalyzerDialog::handleSaveAsButtonClicked() {
         fileNames = saveAsDialog.selectedFiles();
     }*/
     if (!fileName.isEmpty())
-        currentModel->saveLog(currentModel->getCurrentLog(), maxFileNumber, fileName);
+        currentModel->saveLog(currentModel->getCurrentLog(), \
+                            maxFileNumber,\
+                            settings.value("logPreferences/logPath", "").toString(), \
+                            fileName);
 }
 
 /**

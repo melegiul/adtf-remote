@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <stdexcept>
 
 class LogSerialization {
 private:
@@ -17,7 +18,7 @@ private:
     QList<QStringList> loadLog(QString fileName);*/
 
 public:
-    static void writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber);
+    static void writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber, QString defaultPath);
     static QList<QStringList> readJson(const QByteArray &data);
 };
 

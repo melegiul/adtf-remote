@@ -149,7 +149,7 @@ QList<QStringList> &LogModel::getCurrentLog() {
  * then writes to json file and ensures the max file number limitation
  * @param logList list of current log entries in the mainwindow model
  */
-void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString fileName) {
+void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString defaultPath, QString fileName) {
     std::string  filePath;
     if (fileName.isEmpty()) {
         QSettings settings;
@@ -168,7 +168,7 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString f
         qWarning("log_model.cpp-saveLog(): Could not open save file.");
         return;
     }
-    LogSerialization::writeJson(logList, saveFile, maxFileNumber);
+    LogSerialization::writeJson(logList, saveFile, maxFileNumber, defaultPath);
     saveFile.close();
 }
 
@@ -177,7 +177,7 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString f
  * @param fileName absolute file name
  * @return entries of log file
  */
-QList<QStringList> LogModel::loadLog(QString fileName){
+QList<QStringList> LogModel::loadLog(QString fileName) {
     QFile jsonFile(fileName);
     if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
         qWarning("log_model.cpp-loadLog(): Could not open file");

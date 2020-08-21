@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QTextStream>
+#include <stdexcept>
 #include "log_serialization.h"
 
 /**
@@ -23,7 +24,7 @@ private:
 public:
     LogModel(QObject *parent);
     QList<QStringList> &getCurrentLog();
-    void saveLog(QList<QStringList> &logList, int maxFileNumber, QString fileName = QString());
+    void saveLog(QList<QStringList> &logList, int maxFileNumber, QString defaultPath, QString fileName = QString());
     QList<QStringList> loadLog(QString fileName);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;

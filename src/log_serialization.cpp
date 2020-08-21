@@ -5,8 +5,8 @@
 #include "log_serialization.h"
 
 /**
- * called when the number of files in the folder exceeds maximum
- * removes file according to fifo
+ * called when the number of files in the user defined folder for automatic save exceeds maximum
+ * removes file according to fifo, e.g. oldest entry removed first
  * @param json folder to delimit the file number
  */
 void LogSerialization::delimitFileNumber(QDir &json){
@@ -20,7 +20,7 @@ void LogSerialization::delimitFileNumber(QDir &json){
  * @param logList log entries from the mainwindow model
  * @param saveFile file, to be written
  */
-void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber) {
+void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber, QString defaultPath) {
     QJsonArray json;
     for (QStringList list : logList) {
             QJsonObject logObject;
@@ -32,11 +32,11 @@ void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, i
             json.append(logObject);
     }
     saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
-    QDir jsonDir = QDir(saveFile.fileName().toStdString().data());
-    jsonDir.cdUp();
-    std::string str = jsonDir.path().toStdString();
-    if(jsonDir.entryList(QDir::Files,QDir::NoSort).count() > maxFileNumber){
-        delimitFileNumber(jsonDir);
+    if (!defaultPath.isEmpty()) {
+        QDir jsonDir = QDir(defaultPath);
+        if (jsonDir.entryList(QDir::Files, QDir::NoSort).count() > maxFileNumber) {
+            delimitFileNumber(jsonDir);
+        }
     }
 }
 
@@ -46,22 +46,41 @@ void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, i
  * @return list of log entries
  */
 QList<QStringList> LogSerialization::readJson(const QByteArray &data) {
-    QJsonDocument loadedDoc(QJsonDocument::fromJson(data));
+    QJsonDocument loadedDoc;
+    QJsonParseError * error = nullptr;
+    if (!QJsonDocument::fromJson(data, error).isNull()) {
+        loadedDoc = QJsonDocument::fromJson(data);
+    } else {
+        throw std::runtime_error(error->errorString().toStdString());
+    }
     QJsonArray json = loadedDoc.array();
+    if (json.isEmpty()) {
+        throw std::runtime_error("Json document contains an object, but an array was expected");
+    }
     QList<QStringList> logList;
     for (int i=0; i<json.size(); i++) {
         QStringList logString;
         QJsonObject logEntry = json[i].toObject();
         if (logEntry.contains("time") && logEntry["time"].isString())
             logString.append(logEntry["time"].toString());
+        else
+            throw std::runtime_error("Json objects do not contain key time with string value");
         if (logEntry.contains("level") && logEntry["level"].isString())
             logString.append(logEntry["level"].toString());
+        else
+            throw std::runtime_error("Json objects do not contain key level with string value");
         if (logEntry.contains("source") && logEntry["source"].isString())
             logString.append(logEntry["source"].toString());
+        else
+            throw std::runtime_error("Json objects do not contain key source with string value");
         if (logEntry.contains("context") && logEntry["context"].isString())
             logString.append(logEntry["context"].toString());
+        else
+            throw std::runtime_error("Json objects do not contain key context with string value");
         if (logEntry.contains("payload") && logEntry["payload"].isString())
             logString.append(logEntry["payload"].toString());
+        else
+            throw std::runtime_error("Json objects do not contain key payload with string value");
         logList.append(logString);
     }
     return logList;

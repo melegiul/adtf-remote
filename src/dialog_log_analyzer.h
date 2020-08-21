@@ -30,6 +30,7 @@ private:
     QStringList *modelList = new QStringList();
     void addEntries(QList<QStringList> logList);
     void removeEntries();
+    void get_timestep(int &timestep, int &unit_ind);
 
     QStackedBarSeries *series;
     QStringList categories;

@@ -36,6 +36,8 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(update_graph()));
     connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(update_graph()));
     connect(this->pushButton_4,SIGNAL(clicked()),this,SLOT(update_graph()));
+    connect(this->spinBox,SIGNAL(valueChanged(int)),this,SLOT(update_graph()));
+    connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)),this, SLOT(update_graph()));
 
 //    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
     //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
@@ -72,7 +74,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
 
     chart = new QChart();
     chart->addSeries(series);
-    chart->setAnimationOptions(QChart::AllAnimations);
+    chart->setAnimationOptions(QChart::SeriesAnimations);
 
 
     categories<<"0.1";
@@ -161,19 +163,23 @@ void LogAnalyzerDialog::update_graph(){
         QBarSet *set4 = new QBarSet("INFO");
         QBarSet *set5 = new QBarSet("DEBUG");
 
-        qint64 timestep = 1; //in s
-        QModelIndex ind_time = tableView->model()->index(0, 0, QModelIndex());
+        int timestep;
+        int isMilliseconds;
+        get_timestep(timestep,isMilliseconds);
+        int row = this->liveLogButton->isChecked()?num_total-1:0;
+        QModelIndex ind_time = tableView->model()->index(row, 0, QModelIndex());
         QString text_time = tableView->model()->data(ind_time, Qt::DisplayRole).toString();
         QDateTime starttime = QDateTime::fromString(text_time, "dd.MM.yyyy hh:mm:ss:zzz");
         QDateTime time = QDateTime(starttime);
-        time = time.addSecs(timestep);
-
+        time = isMilliseconds==0?time.addMSecs(timestep):time.addSecs(timestep);
+        qDebug() <<"isMilliseconds" <<isMilliseconds;
         categories.clear();
         axis->clear();
 
         auto step = 0.0;
 
-        for (int row = 0; row < num_total; ++row) {
+        for (int r = 0; r < num_total; ++r) {
+            row = this->liveLogButton->isChecked()?num_total-1-r:r;
             ind_time = tableView->model()->index(row, 0, QModelIndex());
             text_time = tableView->model()->data(ind_time, Qt::DisplayRole).toString();
             QModelIndex ind = tableView->model()->index(row, 1, QModelIndex());
@@ -189,12 +195,13 @@ void LogAnalyzerDialog::update_graph(){
                 *set5 << loglevel_count[5];
 
                 loglevel_count = {0, 0, 0, 0, 0, 0};
-                categories.append(QVariant(step).toString());
+                categories.append(QVariant(isMilliseconds !=2?step:ceil(step/60.0)).toString());
                 qDebug() << step;
 
                 auto diff_in_ms = time.msecsTo(new_time);
-                auto diff_in_steps = ceil(diff_in_ms/1000.0);
-                time = time.addSecs(diff_in_steps);
+                auto diff_in_steps = isMilliseconds==0?diff_in_ms:ceil(diff_in_ms/1000.0);
+                diff_in_steps = ceil(diff_in_steps/(1.0*timestep))*timestep;
+                time = isMilliseconds==0?time.addMSecs(diff_in_steps):time.addSecs(diff_in_steps);
                 step += diff_in_steps;
 
 
@@ -227,7 +234,7 @@ void LogAnalyzerDialog::update_graph(){
         chart->removeAxis(axis);
         chart->createDefaultAxes();
         chart->setAxisX(axis, series);
-        
+
     }
 }
 
@@ -235,3 +242,23 @@ void LogAnalyzerDialog::update_graph(){
 //void LogAnalyzerDialog::on_clearButton_clicked(){
 //    this->tableWidget->setPlainText(nullptr);
 //}
+
+void LogAnalyzerDialog::get_timestep(int &timestep, int &unit_ind){
+    int step = this->spinBox->value();
+    int unit =  1;
+
+    unit_ind = this->comboBox_3->currentIndex();
+    switch(unit_ind){
+        case 0:     //ms in ms
+            break;
+        case 1:     //s in s
+            unit = 1;
+            break;
+        case 2:     //min in s
+            unit = 60;
+            break;
+        default:
+            break;
+    }
+    timestep = step*unit;
+}

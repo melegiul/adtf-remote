@@ -14,6 +14,7 @@
 #include <QtCharts/QBarSet>
 #include <QtCharts/QLegend>
 #include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
 using namespace QtCharts;
 //QT_CHARTS_USE_NAMESPACE
 
@@ -78,18 +79,26 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
 
 
     categories<<"0.1";
-    categories.append("Banane");
-    axis = new QBarCategoryAxis();
-    axis->append(categories);
-    chart->createDefaultAxes();
-    chart->setAxisX(axis, series);
+
+    axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+    axisY = new QValueAxis();
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+    axisY->setTitleText("Occurrence");
+    axisX->setTitleText("t in ms");
+
 
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
 
+
     QChartView *chartView = new QChartView(chart);
     chartView->setParent(this->horizontalFrame);
     chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setRubberBand(QChartView::RectangleRubberBand);
 
     update_graph();
 
@@ -163,6 +172,7 @@ void LogAnalyzerDialog::update_graph(){
         QBarSet *set4 = new QBarSet("INFO");
         QBarSet *set5 = new QBarSet("DEBUG");
 
+        int yMax = 0;
         int timestep;
         int isMilliseconds;
         get_timestep(timestep,isMilliseconds);
@@ -174,7 +184,7 @@ void LogAnalyzerDialog::update_graph(){
         time = isMilliseconds==0?time.addMSecs(timestep):time.addSecs(timestep);
         qDebug() <<"isMilliseconds" <<isMilliseconds;
         categories.clear();
-        axis->clear();
+        axisX->clear();
 
         auto step = 0.0;
 
@@ -194,6 +204,8 @@ void LogAnalyzerDialog::update_graph(){
                 *set4 << loglevel_count[4];
                 *set5 << loglevel_count[5];
 
+                int tmp = std::accumulate(loglevel_count.begin(), loglevel_count.end(),0);
+                yMax = yMax>tmp?yMax:tmp;
                 loglevel_count = {0, 0, 0, 0, 0, 0};
                 categories.append(QVariant(isMilliseconds !=2?step:ceil(step/60.0)).toString());
                 qDebug() << step;
@@ -202,7 +214,7 @@ void LogAnalyzerDialog::update_graph(){
                 auto diff_in_steps = isMilliseconds==0?diff_in_ms:ceil(diff_in_ms/1000.0);
                 diff_in_steps = ceil(diff_in_steps/(1.0*timestep))*timestep;
                 time = isMilliseconds==0?time.addMSecs(diff_in_steps):time.addSecs(diff_in_steps);
-                step += diff_in_steps;
+                step += diff_in_steps/timestep;  // remove /timestep to only display unit not steps.
 
 
             }
@@ -219,6 +231,8 @@ void LogAnalyzerDialog::update_graph(){
         *set3 << loglevel_count[3];
         *set4 << loglevel_count[4];
         *set5 << loglevel_count[5];
+        int tmp = std::accumulate(loglevel_count.begin(), loglevel_count.end(),0);
+        yMax = yMax>tmp?yMax:tmp;
         categories.append(QVariant(step).toString());
 
 
@@ -230,11 +244,24 @@ void LogAnalyzerDialog::update_graph(){
         series->append(set4);
         series->append(set5);
 
-        axis->append(categories);
-        chart->removeAxis(axis);
-        chart->createDefaultAxes();
-        chart->setAxisX(axis, series);
+        chart->removeAxis(axisX);
+        chart->removeAxis(axisY);
+        axisX->append(categories);
+        chart->addAxis(axisX, Qt::AlignBottom);
+        series->attachAxis(axisX);
+        chart->addAxis(axisY, Qt::AlignLeft);
+        series->attachAxis(axisY);
 
+        QString unit = "ms";
+        int time_step = timestep;
+        if(isMilliseconds == 1){
+            unit = "s";
+        }else if(isMilliseconds ==2){
+            unit ="min";
+            time_step = timestep/60;
+        }
+        axisX->setTitleText(QString("t in %1 %2").arg(QVariant(time_step).toString(), unit));
+        axisY->setRange(0,yMax);
     }
 }
 

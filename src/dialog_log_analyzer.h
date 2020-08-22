@@ -8,6 +8,7 @@
 
 #include <QtCharts/QStackedBarSeries>
 #include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
 using namespace QtCharts;
 
@@ -34,7 +35,8 @@ private:
 
     QStackedBarSeries *series;
     QStringList categories;
-    QBarCategoryAxis *axis;
+    QBarCategoryAxis *axisX;
+    QValueAxis *axisY;
     QChart *chart;
 
 //    QFileDialog dialog;

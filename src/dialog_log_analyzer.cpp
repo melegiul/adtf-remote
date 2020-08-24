@@ -98,6 +98,9 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
     saveAsButton->setDisabled(false);
 }
 
+/**
+ * saves current model in file (selected by combo box)
+ */
 void LogAnalyzerDialog::handleSaveButtonClicked() {
     LogModel *currentModel = ((LogModel*)model);
     currentModel->saveLog(currentModel->getCurrentLog(), \
@@ -106,6 +109,9 @@ void LogAnalyzerDialog::handleSaveButtonClicked() {
                             historyBox->currentText());
 }
 
+/**
+ * saves current model in new file selected by file dialog
+ */
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
 //    QStringList fileNames;
     LogModel *currentModel = ((LogModel*)model);
@@ -120,11 +126,13 @@ void LogAnalyzerDialog::handleSaveAsButtonClicked() {
     if (saveAsDialog.exec()) {
         fileNames = saveAsDialog.selectedFiles();
     }*/
-    if (!fileName.isEmpty())
+    if (!fileName.isEmpty()) {
         currentModel->saveLog(currentModel->getCurrentLog(), \
-                            maxFileNumber,\
+                            maxFileNumber, \
                             settings.value("logPreferences/logPath", "").toString(), \
                             fileName);
+        updateFileHistory(fileName);
+    }
 }
 
 /**
@@ -169,13 +177,18 @@ void LogAnalyzerDialog::switchSource() {
     }
 }
 
+/**
+ * invoked, when file history combo box selection changes
+ */
 void LogAnalyzerDialog::checkIndex() {
     if (historyBox->currentText() == fileDialogLabel){
+        // only loading possible, table view is blank
         loadButton->setDisabled(false);
         saveButton->setDisabled(true);
         saveAsButton->setDisabled(true);
         clearModel();
     } else {
+        // loads automatic selected file and enables save buttons
         loadButton->setDisabled(true);
         saveButton->setDisabled(false);
         saveAsButton->setDisabled(false);
@@ -188,6 +201,10 @@ void LogAnalyzerDialog::checkIndex() {
 //    currentModel->removeRows(0,currentModel->rowCount());
 //}
 
+/**
+ * executes, when dialog quits
+ * save the entries in combo box
+ */
 void LogAnalyzerDialog::saveSettings() {
     settings.setValue("logAnalyzer/liveButton", liveLogButton->isChecked());
     QStringList filePaths;
@@ -197,6 +214,9 @@ void LogAnalyzerDialog::saveSettings() {
     settings.setValue("logAnalyzer/historyFiles", filePaths);
 }
 
+/**
+ * loads state of radio button and combo box entries, when log analyzer dialog starts
+ */
 void LogAnalyzerDialog::loadSettings(){
     liveLogButton->setChecked(settings.value("logAnalyzer/liveButton", true).toBool());
     QStringList pathList = settings.value("logAnalyzer/historyFiles").toStringList();

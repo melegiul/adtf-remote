@@ -32,7 +32,7 @@ int LogModel::columnCount(const QModelIndex &parent) const {
  * retrieves a distinct value specified by the index (row, column)
  * @param index refers to item in table
  * @param role associated role for data elements of the items
- * @return QString, when value has DisplayRole
+ * @return QString, when value has DisplayRole (read only)
  */
 QVariant LogModel::data(const QModelIndex &index, int role) const {
     int row = index.row();
@@ -62,10 +62,10 @@ QVariant LogModel::data(const QModelIndex &index, int role) const {
 
 /**
  * returns header data of the model
- * @param section for selecting the column
+ * @param section for selecting the column (horizontal) and row number (vertical)
  * @param orientation can be horizontal or vertical
- * @param role associated role for data elements of the items
- * @return name of specified column header
+ * @param role associated role for data elements of the items, in this case DisplayRole (read only)
+ * @return name of specified column header or index of row
  */
 QVariant LogModel:: headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
@@ -150,6 +150,53 @@ bool LogModel::setData(const QModelIndex &index, const QVariant &value, int role
     return false;
 }
 
+/**
+ * retrieves data of the model
+ * @return the current displayed log file
+ */
 QList<QStringList> &LogModel::getCurrentLog() {
     return currentLog;
+}
+
+/**
+ * first retrieves settings for predefined memory location
+ * then writes to json file and ensures the max file number limitation
+ * @param logList list of current log entries in the mainwindow model
+ */
+void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString defaultPath, QString fileName) {
+    std::string  filePath;
+    if (fileName.isEmpty()) {
+        QSettings settings;
+        QString qLogPath = settings.value("logPreferences/logPath", QDir::homePath()).toString();
+        std::string logPath = qLogPath.toStdString();
+        time_t now = time(0);
+        char fileNameGen[40];
+        tm *tm_info = localtime(&now);
+        strftime(fileNameGen, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
+        filePath = logPath + fileNameGen;
+    } else {
+        filePath = fileName.toStdString();
+    }
+    QFile saveFile(filePath.data());
+    if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning("log_model.cpp-saveLog(): Could not open save file.");
+        return;
+    }
+    LogSerialization::writeJson(logList, saveFile, maxFileNumber, defaultPath);
+    saveFile.close();
+}
+
+/**
+ * opens specified file and reads content
+ * @param fileName absolute file name
+ * @return entries of log file
+ */
+QList<QStringList> LogModel::loadLog(QString fileName) {
+    QFile jsonFile(fileName);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning("log_model.cpp-loadLog(): Could not open file");
+    }
+    QByteArray data = jsonFile.readAll();
+    jsonFile.close();
+    return LogSerialization::readJson(data);
 }

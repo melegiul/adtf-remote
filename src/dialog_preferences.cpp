@@ -10,15 +10,21 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
     this->setupUi(this);
 
     this->tabWidget->setCurrentIndex(0);
+    QIntValidator *fileNumValidator = new QIntValidator(this);
+    fileNumValidator->setBottom(1);
+    fileNumber->setValidator(fileNumValidator);
     connect(this, &PreferencesDialog::accepted, this, &PreferencesDialog::savePreferences);
     connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
     connect(this->pathApplyButton, SIGNAL(clicked()), this, SLOT(handleApplyPathButton()));
     connect(this->choosePathButton, SIGNAL(clicked()), this, SLOT(handleChoosePathButton()));
     connect(this->saveButton, SIGNAL(clicked()), this, SLOT(savePreferences()));
     connect(this->cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(this->fileDelimiter,SIGNAL(stateChanged(int)),this,SLOT(checkDelimiter()));
+    connect(this->fileNumber,SIGNAL(editingFinished()),this,SLOT(checkEditor()));
 
 //    savePreferences();
     showPreferences();
+    loadLogPreferences();
 }
 
 void PreferencesDialog::loadPreferences() {
@@ -37,13 +43,10 @@ void PreferencesDialog::showPreferences() {
     QSettings settings;
     this->le_ipaddress->setText(settings.value("network/ipaddress").toString());
     this->sb_port->setValue(settings.value("network/port", 9536).toInt());
-    this->le_description->setText(settings.value("description/path").toString());
+    this->le_description->setText(settings.value("description/path", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/description/uni_autonom.description").toString());
     this->car_config_edit_label->setText(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString());
     this->sb_background->setValue(settings.value("ui/background", 180).toInt());
-    this->logPathLineEdit->setText(settings.value("logview/logPath").toString());
 
-    settings.value("logview/automaticSave") == QString("stop") ? \
-    this->stopButton->setChecked(true): this->abortButton->setChecked(true);
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     this->sb_car_init_pos_x->setValue(carSettings.value("odoinit/posx", 200.0f).toFloat());
     this->sb_car_init_pos_y->setValue(carSettings.value("odoinit/posy", 200.0f).toFloat());
@@ -68,16 +71,6 @@ void PreferencesDialog::savePreferences() {
     settings.setValue("ui/background", this->sb_background->value());
     settings.setValue("car/settings", this->car_config_edit_label->text() == "" ? "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini" : this->car_config_edit_label->text());
 
-    QString logPath = this->logPathLineEdit->text();
-    QDir directory(logPath);
-    if (!directory.exists() || logPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "Entered log path is not a valid directory!\nChanges were not applied");
-    }else {
-        settings.setValue("logview/logPath", this->logPathLineEdit->text());
-    }
-    settings.setValue("logview/automaticSave", this->stopButton->isChecked() ? \
-    QString("stop"): QString("abort"));
-
     QSettings carSettings(settings.value("car/settings", "/home/uniautonom/smds-uniautonom-remotecontrol-src/global/carconfig/default.ini").toString(), QSettings::IniFormat);
     carSettings.setValue("odoinit/posx", this->sb_car_init_pos_x->value());
     carSettings.setValue("odoinit/posy", this->sb_car_init_pos_y->value());
@@ -92,6 +85,7 @@ void PreferencesDialog::savePreferences() {
     carSettings.setValue("carview/leftfary", this->sb_left_far_y->value());
     carSettings.setValue("carview/rightfarx", this->sb_right_far_x->value());
     carSettings.setValue("carview/rightfary", this->sb_right_far_y->value());
+    saveLogPreferences();
     reject();
 }
 
@@ -123,4 +117,57 @@ void PreferencesDialog::handleChoosePathButton(){
     }
     QString directory = dirNames.first();
     this->logPathLineEdit->setText(directory);
+}
+
+/**
+ * enabling/disabling line editor for max file number
+ */
+void PreferencesDialog::checkDelimiter(){
+    if (fileDelimiter->isChecked())
+        fileNumber->setEnabled(true);
+    else
+        fileNumber->setEnabled(false);
+}
+
+/**
+ * prints warning and sets default value for file number delimiter,
+ * if file delimiter is enabled but no value specified
+ */
+void PreferencesDialog::checkEditor() {
+    if (fileNumber->text().isEmpty()){
+        QMessageBox::warning(this,"Line edit empty", "Reset max file number to default");
+        fileNumber->setText("100");
+    }
+}
+
+/**
+ * loads settings in gui
+ */
+void PreferencesDialog::loadLogPreferences() {
+    this->logPathLineEdit->setText(settings.value("logPreferences/logPath").toString());
+    settings.value("logPreferences/automaticSave") == QString("stop") ? \
+                    this->stopButton->setChecked(true): this->abortButton->setChecked(true);
+    this->fileDelimiter->setChecked(settings.value("logPreferences/fileDelimiter", true).toBool() ? true: false);
+    this->fileNumber->setText(fileDelimiter->isChecked() ? \
+                    settings.value("logPreferences/fileNumber").toString(): "");
+}
+
+/**
+ * saves settings
+ */
+void PreferencesDialog::saveLogPreferences() {
+    QString logPath = this->logPathLineEdit->text();
+    QDir directory(logPath);
+    if (!directory.exists() || logPath.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Entered log path is not a valid directory!\nChanges were not applied");
+    }else {
+        settings.setValue("logPreferences/logPath", this->logPathLineEdit->text());
+    }
+    settings.setValue("logPreferences/automaticSave", this->stopButton->isChecked() ? \
+                    QString("stop"): QString("abort"));
+    settings.setValue("logPreferences/fileDelimiter", this->fileDelimiter->isChecked());
+    if (fileDelimiter->isChecked())
+        checkEditor();
+    settings.setValue("logPreferences/fileNumber", this->fileDelimiter->isChecked() ? \
+                    this->fileNumber->text(): QString(std::to_string(INT_MAX).data()));
 }

@@ -7,6 +7,12 @@
 
 #include <QAbstractTableModel>
 #include <QStringList>
+#include <QDir>
+#include <QSettings>
+#include <QMessageBox>
+#include <QTextStream>
+#include <stdexcept>
+#include "log_serialization.h"
 
 /**
  * standard interface for models with two dimensional array of items
@@ -18,6 +24,8 @@ private:
 public:
     LogModel(QObject *parent);
     QList<QStringList> &getCurrentLog();
+    void saveLog(QList<QStringList> &logList, int maxFileNumber, QString defaultPath, QString fileName = QString());
+    QList<QStringList> loadLog(QString fileName);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

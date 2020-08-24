@@ -5,35 +5,36 @@
 #include <QFileDialog>
 #include <QStringListModel>
 #include <QList>
+#include <stdexcept>
 
 #include "ui_dialog_log_analyzer.h"
-#include "log_serialization.h"
+//#include "log_serialization.h"
 #include "log_model.h"
 
 class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
     Q_OBJECT
 
 public:
-    QString fileNameLog = nullptr;
-    LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
-//    void on_loadButton_clicked();
+    LogAnalyzerDialog(QWidget *parent = nullptr, QAbstractTableModel* parentModel = nullptr);
+    void loadSettings();
 
 private:
-    LogSerialization log;
-    LogModel *model;
-    LogModel *parentModel;
-    QStringList *modelList = new QStringList();
+    QAbstractTableModel *model;
+    QAbstractTableModel *parentModel;
+    QSettings settings;
+    const QString fileDialogLabel = "File Dialog Selection";
+    int maxFileNumber;
     void addEntries(QList<QStringList> logList);
-    void removeEntries();
+    void clearModel();
+    void updateFileHistory(QString fileName);
 
-//    QFileDialog dialog;
 public slots:
-    void loadLog();
-    void saveLog();
-
     void handleLoadButtonClicked();
-//    void on_clearButton_clicked();
+    void handleSaveButtonClicked();
+    void handleSaveAsButtonClicked();
     void switchSource();
+    void saveSettings();
+    void checkIndex();
 };
 
 

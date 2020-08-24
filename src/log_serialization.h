@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonParseError>
 #include <stdexcept>
 
 class LogSerialization {

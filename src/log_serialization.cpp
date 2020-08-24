@@ -47,11 +47,12 @@ void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, i
  */
 QList<QStringList> LogSerialization::readJson(const QByteArray &data) {
     QJsonDocument loadedDoc;
-    QJsonParseError * error = nullptr;
-    if (!QJsonDocument::fromJson(data, error).isNull()) {
+    QJsonParseError error;
+    if (!QJsonDocument::fromJson(data, &error).isNull()) {
         loadedDoc = QJsonDocument::fromJson(data);
     } else {
-        throw std::runtime_error(error->errorString().toStdString());
+        std::string message = error.errorString().toStdString();
+        throw std::runtime_error("Error parsing json file: " + message);
     }
     QJsonArray json = loadedDoc.array();
     if (json.isEmpty()) {

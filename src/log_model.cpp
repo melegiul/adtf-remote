@@ -35,6 +35,9 @@ int LogModel::columnCount(const QModelIndex &parent) const {
  * @return QString, when value has DisplayRole (read only)
  */
 QVariant LogModel::data(const QModelIndex &index, int role) const {
+    int row = index.row();
+    int col = index.column();
+
     if(!index.isValid())
         return QVariant();
     if(index.row() >= currentLog.size() || index.row() < 0)
@@ -42,6 +45,17 @@ QVariant LogModel::data(const QModelIndex &index, int role) const {
     if (role == Qt::DisplayRole){
         QStringList logEntry = currentLog.value(index.row());
         return logEntry.value(index.column());
+    }
+    if (role  == Qt::DisplayRole || role == Qt::ToolTipRole)
+    {
+        if (row == 1 && col == 1)
+        {
+            return QString("");
+        }
+        else
+        {
+            return QString(currentLog.value(row).value(col));
+        }
     }
     return QVariant();
 }

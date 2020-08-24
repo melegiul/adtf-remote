@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "dialog_log_analyzer.h"
+#include "qtooltipper.h"
 #include "mainwindow.h"
 
 LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *parentModel) : QDialog(parent), parentModel(parentModel) {
@@ -30,6 +31,8 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *paren
     this->tableView->setColumnWidth(2,120);
     this->tableView->setColumnWidth(3,100);
     this->tableView->horizontalHeader()->setStretchLastSection(true);
+    this->tableView->viewport()->installEventFilter(new QToolTipper(this->tableView));
+
 }
 
 /**

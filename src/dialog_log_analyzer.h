@@ -25,6 +25,7 @@ private:
     QStringList *modelList = new QStringList();
     void addEntries(QList<QStringList> logList);
     void removeEntries();
+    QStringList getFilterList(QListWidget* filterList);
 
 //    QFileDialog dialog;
 public slots:
@@ -33,6 +34,7 @@ public slots:
 
     void handleLoadButtonClicked();
 //    void on_clearButton_clicked();
+    void handleApplyButtonClicked();
     void switchSource();
 };
 

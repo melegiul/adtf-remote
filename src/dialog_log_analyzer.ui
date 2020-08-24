@@ -139,7 +139,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="listWidget">
+            <widget class="QListWidget" name="logLevelListWidget">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -214,7 +214,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="listWidget_2">
+            <widget class="QListWidget" name="sourceListWidget">
              <property name="maximumSize">
               <size>
                <width>175</width>
@@ -267,7 +267,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="listWidget_3">
+            <widget class="QListWidget" name="contextListWidget">
              <property name="maximumSize">
               <size>
                <width>175</width>
@@ -358,7 +358,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="applyButton">
              <property name="text">
               <string>Apply</string>
              </property>

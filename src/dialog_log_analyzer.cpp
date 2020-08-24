@@ -19,6 +19,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->loadButton,SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
     connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(switchSource()));
     connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(switchSource()));
+    connect(this->applyButton,SIGNAL(clicked()),this,SLOT(handleApplyButtonClicked()));
 //    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
     //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
     model = new LogModel(this);
@@ -59,6 +60,15 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
     history.append(string);
     dialog.setHistory(history);
     this->historyBox->addItems(history);
+
+}
+
+void LogAnalyzerDialog::handleApplyButtonClicked() {
+    QStringList logLevel, source, context;
+    logLevel = getFilterList(logLevelListWidget);
+    source = getFilterList(sourceListWidget);
+    context = getFilterList(contextListWidget);
+
 }
 
 void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
@@ -86,3 +96,14 @@ void LogAnalyzerDialog::switchSource() {
 //void LogAnalyzerDialog::on_clearButton_clicked(){
 //    this->tableWidget->setPlainText(nullptr);
 //}
+
+QStringList LogAnalyzerDialog::getFilterList(QListWidget* filterList) {
+    QStringList entries;
+    for(int i = 0; i<filterList->count(); i++){
+        if(filterList->item(i)->checkState()== Qt::Checked) {
+            entries.append(filterList->item(i)->text());
+        }
+    }
+    return entries;
+
+}

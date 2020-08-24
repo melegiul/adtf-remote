@@ -10,6 +10,7 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
+#include <QtCharts/QBarSet>
 using namespace QtCharts;
 
 #include "ui_dialog_log_analyzer.h"
@@ -23,6 +24,7 @@ public:
     QString fileNameLog = nullptr;
     LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
 //    void on_loadButton_clicked();
+    bool eventFilter(QObject *watched, QEvent *event);
 
 private:
     LogSerialization log;
@@ -38,6 +40,13 @@ private:
     QBarCategoryAxis *axisX;
     QValueAxis *axisY;
     QChart *chart;
+
+    QBarSet *set0;
+    QBarSet *set1;
+    QBarSet *set2;
+    QBarSet *set3;
+    QBarSet *set4;
+    QBarSet *set5;
 
 //    QFileDialog dialog;
 public slots:

@@ -15,6 +15,7 @@
 #include <QtCharts/QLegend>
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
+#include <QGraphicsScene>
 using namespace QtCharts;
 //QT_CHARTS_USE_NAMESPACE
 
@@ -40,8 +41,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->spinBox,SIGNAL(valueChanged(int)),this,SLOT(update_graph()));
     connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)),this, SLOT(update_graph()));
 
-//    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
-    //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
+
     model = new LogModel(this);
     this->tableView->setModel(parentModel);
     this->tableView->setColumnWidth(0,160);
@@ -50,55 +50,37 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     this->tableView->setColumnWidth(3,80);
     this->tableView->horizontalHeader()->setStretchLastSection(true);
 
-
-    QBarSet *set0 = new QBarSet("ACK");
-    QBarSet *set1 = new QBarSet("CRITICAL");
-    QBarSet *set2 = new QBarSet("ERROR");
-    QBarSet *set3 = new QBarSet("WARNING");
-    QBarSet *set4 = new QBarSet("INFO");
-    QBarSet *set5 = new QBarSet("DEBUG");
-
-    *set0 << 2;
-    *set1 << 2;
-    *set2 << 0;
-    *set3 << 0;
-    *set4 << 0;
-    *set5 << 2;
-
     series = new QStackedBarSeries();
-    series->append(set0);
-    series->append(set1);
-    series->append(set2);
-    series->append(set3);
-    series->append(set4);
-    series->append(set5);
+    set0 = new QBarSet("ACK");
+    set1 = new QBarSet("CRITICAL");
+    set2 = new QBarSet("ERROR");
+    set3 = new QBarSet("WARNING");
+    set4 = new QBarSet("INFO");
+    set5 = new QBarSet("DEBUG");
 
     chart = new QChart();
     chart->addSeries(series);
     chart->setAnimationOptions(QChart::SeriesAnimations);
 
 
-    categories<<"0.1";
-
     axisX = new QBarCategoryAxis();
-    axisX->append(categories);
     chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
+    axisX->setTitleText("t in ms");
     axisY = new QValueAxis();
     chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
     axisY->setTitleText("Occurrence");
-    axisX->setTitleText("t in ms");
+
 
 
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
 
 
-    QChartView *chartView = new QChartView(chart);
-    chartView->setParent(this->horizontalFrame);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setRubberBand(QChartView::RectangleRubberBand);
+    QGraphicsScene *scene = new QGraphicsScene();
+    scene->addItem(chart);
+    this->graphicsView->setScene(scene);
+    this->graphicsView->viewport()->installEventFilter(this);
+
 
     update_graph();
 
@@ -159,34 +141,34 @@ void LogAnalyzerDialog::switchSource() {
 
 void LogAnalyzerDialog::update_graph(){
     int num_total = tableView->model()->rowCount();
-    if (num_total > 1) {
+    if (num_total > 0) {
         std::array<int, 6> loglevel_count = {0, 0, 0, 0, 0, 0};
 
         QStringList loglevel;
         loglevel << "Ack" << "Critical" << "Error" << "Warning" << "Info" << "Debug";
 
-        QBarSet *set0 = new QBarSet("ACK");
-        QBarSet *set1 = new QBarSet("CRITICAL");
-        QBarSet *set2 = new QBarSet("ERROR");
-        QBarSet *set3 = new QBarSet("WARNING");
-        QBarSet *set4 = new QBarSet("INFO");
-        QBarSet *set5 = new QBarSet("DEBUG");
+        set0 = new QBarSet("ACK");
+        set1 = new QBarSet("CRITICAL");
+        set2 = new QBarSet("ERROR");
+        set3 = new QBarSet("WARNING");
+        set4 = new QBarSet("INFO");
+        set5 = new QBarSet("DEBUG");
 
-        int yMax = 0;
-        int timestep;
-        int isMilliseconds;
-        get_timestep(timestep,isMilliseconds);
-        int row = this->liveLogButton->isChecked()?num_total-1:0;
-        QModelIndex ind_time = tableView->model()->index(row, 0, QModelIndex());
-        QString text_time = tableView->model()->data(ind_time, Qt::DisplayRole).toString();
-        QDateTime starttime = QDateTime::fromString(text_time, "dd.MM.yyyy hh:mm:ss:zzz");
-        QDateTime time = QDateTime(starttime);
-        time = isMilliseconds==0?time.addMSecs(timestep):time.addSecs(timestep);
-        qDebug() <<"isMilliseconds" <<isMilliseconds;
         categories.clear();
         axisX->clear();
 
-        auto step = 0.0;
+        int yMax = 0;
+        int timestep;
+        int unit;
+        get_timestep(timestep,unit);
+        int step = 0;
+        int row = this->liveLogButton->isChecked()?num_total-1:0;
+        QModelIndex ind_time = tableView->model()->index(row, 0, QModelIndex());
+        QString text_time = tableView->model()->data(ind_time, Qt::DisplayRole).toString();
+        QDateTime time = QDateTime::fromString(text_time, "dd.MM.yyyy hh:mm:ss:zzz");
+        time = unit==0?time.addMSecs(timestep):time.addSecs(timestep);
+
+
 
         for (int r = 0; r < num_total; ++r) {
             row = this->liveLogButton->isChecked()?num_total-1-r:r;
@@ -207,14 +189,13 @@ void LogAnalyzerDialog::update_graph(){
                 int tmp = std::accumulate(loglevel_count.begin(), loglevel_count.end(),0);
                 yMax = yMax>tmp?yMax:tmp;
                 loglevel_count = {0, 0, 0, 0, 0, 0};
-                categories.append(QVariant(isMilliseconds !=2?step:ceil(step/60.0)).toString());
-                qDebug() << step;
+                categories.append(QVariant(unit !=2?step:ceil(step/60.0)).toString());
 
                 auto diff_in_ms = time.msecsTo(new_time);
-                auto diff_in_steps = isMilliseconds==0?diff_in_ms:ceil(diff_in_ms/1000.0);
+                auto diff_in_steps = unit==0?diff_in_ms:ceil(diff_in_ms/1000.0);
                 diff_in_steps = ceil(diff_in_steps/(1.0*timestep))*timestep;
-                time = isMilliseconds==0?time.addMSecs(diff_in_steps):time.addSecs(diff_in_steps);
-                step += diff_in_steps/timestep;  // remove /timestep to only display unit not steps.
+                time = unit==0?time.addMSecs(diff_in_steps):time.addSecs(diff_in_steps);
+                step += diff_in_steps;//unit==2?diff_in_steps/timestep*60:diff_in_steps/timestep;  // remove /timestep to only display unit not steps.
 
 
             }
@@ -233,7 +214,7 @@ void LogAnalyzerDialog::update_graph(){
         *set5 << loglevel_count[5];
         int tmp = std::accumulate(loglevel_count.begin(), loglevel_count.end(),0);
         yMax = yMax>tmp?yMax:tmp;
-        categories.append(QVariant(step).toString());
+        categories.append(QVariant(unit !=2?step:ceil(step/60.0)).toString());
 
 
         series->clear();
@@ -252,23 +233,20 @@ void LogAnalyzerDialog::update_graph(){
         chart->addAxis(axisY, Qt::AlignLeft);
         series->attachAxis(axisY);
 
-        QString unit = "ms";
+        QString unit_txt = "ms";
         int time_step = timestep;
-        if(isMilliseconds == 1){
-            unit = "s";
-        }else if(isMilliseconds ==2){
-            unit ="min";
+        if(unit== 1){
+            unit_txt = "s";
+        }else if(unit ==2){
+            unit_txt ="min";
             time_step = timestep/60;
         }
-        axisX->setTitleText(QString("t in %1 %2").arg(QVariant(time_step).toString(), unit));
+        axisX->setTitleText(QString("t in %1").arg(unit_txt));
+        // axisX->setTitleText(QString("t in %1 %2").arg(QVariant(time_step).toString(), unit_txt));
         axisY->setRange(0,yMax);
     }
 }
 
-
-//void LogAnalyzerDialog::on_clearButton_clicked(){
-//    this->tableWidget->setPlainText(nullptr);
-//}
 
 void LogAnalyzerDialog::get_timestep(int &timestep, int &unit_ind){
     int step = this->spinBox->value();
@@ -288,4 +266,13 @@ void LogAnalyzerDialog::get_timestep(int &timestep, int &unit_ind){
             break;
     }
     timestep = step*unit;
+}
+
+bool LogAnalyzerDialog::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == this->graphicsView->viewport() && event->type() == QEvent::Resize){
+        if(chart)
+            chart->resize(this->graphicsView->viewport()->size());
+    }
+    return QDialog::eventFilter(watched, event);
 }

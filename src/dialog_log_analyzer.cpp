@@ -12,23 +12,28 @@
 #include "dialog_log_analyzer.h"
 #include "mainwindow.h"
 
-LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
+LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent),
+                                                                               parentModel(parentModel) {
     this->setupUi(this);
 
 //    QFileDialog dialog(this);
-    connect(this->loadButton,SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
-    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(switchSource()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(switchSource()));
-    connect(this->applyButton,SIGNAL(clicked()),this,SLOT(handleApplyButtonClicked()));
+    connect(this->loadButton, SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
+    connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(switchSource()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(switchSource()));
+    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
 //    connect(this->clearLog,SIGNAL(clicked()),this,SLOT(on_clearButton_clicked()));
     //connect(this->load_car_config_button, SIGNAL(clicked()), this, SLOT(loadPreferences()));
-    model = new LogModel(this);
-    this->tableView->setModel(parentModel);
-    this->tableView->setColumnWidth(0,160);
-    this->tableView->setColumnWidth(1,40);
-    this->tableView->setColumnWidth(2,120);
-    this->tableView->setColumnWidth(3,80);
+    sourceModel = new LogModel(this);
+    proxyModel = new ProxyModel(this);
+    proxyModel->setSourceModel(parentModel);
+    proxyModel->setDynamicSortFilter(true);
+    this->tableView->setModel(proxyModel);
+    this->tableView->setColumnWidth(0, 160);
+    this->tableView->setColumnWidth(1, 40);
+    this->tableView->setColumnWidth(2, 120);
+    this->tableView->setColumnWidth(3, 80);
     this->tableView->horizontalHeader()->setStretchLastSection(true);
+
 
 }
 
@@ -43,17 +48,16 @@ void LogAnalyzerDialog::saveLog() {
 
 }
 
-void LogAnalyzerDialog::handleLoadButtonClicked(){
+void LogAnalyzerDialog::handleLoadButtonClicked() {
     QStringList fileNames;
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::ExistingFile);
     dialog.setNameFilter(tr("Json (*.json)"));
     dialog.setDirectory(QDir::homePath());
-    if (dialog.exec()){
+    if (dialog.exec()) {
         fileNames = dialog.selectedFiles();
     }
     QString string = fileNames.first();
-    tableView->setModel(model);
     removeEntries();
     addEntries(log.loadLog(string));
     QStringList history = dialog.history();
@@ -61,35 +65,34 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
     dialog.setHistory(history);
     this->historyBox->addItems(history);
 
+
 }
 
 void LogAnalyzerDialog::handleApplyButtonClicked() {
-    QStringList logLevel, source, context;
-    logLevel = getFilterList(logLevelListWidget);
-    source = getFilterList(sourceListWidget);
-    context = getFilterList(contextListWidget);
+    proxyModel->setFilter(getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
+                          getFilterList(contextListWidget));
 
 }
 
 void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
-    for (QStringList logValues: logList){
-        model->insertRows(0, 1, QModelIndex());
-        for(int i=0; i<logValues.size(); i++){
-            QModelIndex index = model->index(0,i,QModelIndex());
-            model->setData(index, logValues.value(i), Qt::DisplayRole);
+    for (QStringList logValues: logList) {
+        sourceModel->insertRows(0, 1, QModelIndex());
+        for (int i = 0; i < logValues.size(); i++) {
+            QModelIndex index = sourceModel->index(0, i, QModelIndex());
+            sourceModel->setData(index, logValues.value(i), Qt::DisplayRole);
         }
     }
 }
 
 void LogAnalyzerDialog::removeEntries() {
-    model->removeRows(0, model->rowCount(), QModelIndex());
+    sourceModel->removeRows(0, sourceModel->rowCount(), QModelIndex());
 }
 
 void LogAnalyzerDialog::switchSource() {
-    if (this->liveLogButton->isChecked()){
-        tableView->setModel(parentModel);
+    if (this->liveLogButton->isChecked()) {
+        proxyModel->setSourceModel(parentModel);
     } else {
-        tableView->setModel(model);
+        proxyModel->setSourceModel(sourceModel);
     }
 }
 
@@ -97,13 +100,14 @@ void LogAnalyzerDialog::switchSource() {
 //    this->tableWidget->setPlainText(nullptr);
 //}
 
-QStringList LogAnalyzerDialog::getFilterList(QListWidget* filterList) {
+QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {
     QStringList entries;
-    for(int i = 0; i<filterList->count(); i++){
-        if(filterList->item(i)->checkState()== Qt::Checked) {
+    for (int i = 0; i < filterList->count(); i++) {
+        if (filterList->item(i)->checkState() == Qt::Checked) {
             entries.append(filterList->item(i)->text());
         }
     }
     return entries;
 
 }
+

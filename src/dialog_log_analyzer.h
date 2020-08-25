@@ -5,10 +5,12 @@
 #include <QFileDialog>
 #include <QStringListModel>
 #include <QList>
+#include <QSortFilterProxyModel>
 
 #include "ui_dialog_log_analyzer.h"
 #include "log_serialization.h"
 #include "log_model.h"
+#include "proxy_model.h"
 
 class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
     Q_OBJECT
@@ -20,8 +22,9 @@ public:
 
 private:
     LogSerialization log;
-    LogModel *model;
+    LogModel *sourceModel;
     LogModel *parentModel;
+    ProxyModel *proxyModel;
     QStringList *modelList = new QStringList();
     void addEntries(QList<QStringList> logList);
     void removeEntries();
@@ -36,6 +39,7 @@ public slots:
 //    void on_clearButton_clicked();
     void handleApplyButtonClicked();
     void switchSource();
+
 };
 
 

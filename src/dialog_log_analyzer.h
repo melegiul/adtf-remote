@@ -24,10 +24,6 @@ public:
     QString fileNameLog = nullptr;
     LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
 //    void on_loadButton_clicked();
-    bool eventFilter(QObject *watched, QEvent *event);
-
-protected:
-    void wheelEvent(QWheelEvent* event);
 
 private:
     LogSerialization log;

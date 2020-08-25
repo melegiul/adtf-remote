@@ -77,13 +77,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
 
-
-//    QGraphicsScene *scene = new QGraphicsScene();
-//    scene->addItem(chart);
-//    this->graphicsView->setScene(scene);
-//    this->graphicsView->viewport()->installEventFilter(this);
-
-
     graphicsView->setChart(chart);
     graphicsView->setRenderHint(QPainter::Antialiasing);
     graphicsView->setRubberBand(QChartView::RectangleRubberBand);
@@ -282,22 +275,3 @@ void LogAnalyzerDialog::fillGraph(int unit, int yMax){
     rect = chart->plotArea();
 }
 
-bool LogAnalyzerDialog::eventFilter(QObject *watched, QEvent *event)
-{
-    if(watched == this->graphicsView->viewport() && event->type() == QEvent::Resize){
-        if(chart)
-            chart->resize(this->graphicsView->viewport()->size());
-    }
-    return QDialog::eventFilter(watched, event);
-}
-
-void LogAnalyzerDialog::wheelEvent(QWheelEvent* event){
-    this->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    double scaleFactor = 1.15;
-    if(event->delta() >0){
-        this->graphicsView->scale(scaleFactor, scaleFactor);
-
-    }else {
-        this->graphicsView->scale(1.0/scaleFactor, 1.0/scaleFactor);
-    }
-}

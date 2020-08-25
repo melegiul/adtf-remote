@@ -17,7 +17,7 @@ using namespace QtCharts;
 #include "log_serialization.h"
 #include "log_model.h"
 
-class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer {
+class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer{
     Q_OBJECT
 
 public:
@@ -26,6 +26,9 @@ public:
 //    void on_loadButton_clicked();
     bool eventFilter(QObject *watched, QEvent *event);
 
+protected:
+    void wheelEvent(QWheelEvent* event);
+
 private:
     LogSerialization log;
     LogModel *model;
@@ -33,13 +36,19 @@ private:
     QStringList *modelList = new QStringList();
     void addEntries(QList<QStringList> logList);
     void removeEntries();
-    void get_timestep(int &timestep, int &unit_ind);
+
+    void getStepSize(int &stepSize, int &unit_ind);
+    void getTimeAndText(int row, int numTotal, QDateTime &time, QString &text);
+    void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
+    void clearGraph();
+    void fillGraph(int unit, int yMax);
 
     QStackedBarSeries *series;
     QStringList categories;
     QBarCategoryAxis *axisX;
     QValueAxis *axisY;
     QChart *chart;
+    QRectF rect;
 
     QBarSet *set0;
     QBarSet *set1;
@@ -56,7 +65,7 @@ public slots:
     void handleLoadButtonClicked();
 //    void on_clearButton_clicked();
     void switchSource();
-    void update_graph();
+    void updateGraph();
 };
 
 

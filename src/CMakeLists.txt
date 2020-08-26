@@ -10,7 +10,7 @@ set(CMAKE_AUTOUIC ON)
 
 set(ADTF_DIR /opt/adtf/2.14.3)
 
-find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Network Charts REQUIRED)
 find_package(ADTF REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -27,11 +27,13 @@ adtf_add_executable(UNIAutonomRemoteGUI
     dialog_preferences.ui
     dialog_log_analyzer.cpp
     dialog_log_analyzer.ui
-        log_serialization.cpp
+    log_serialization.cpp
     log_model.cpp
-        qtooltipper.h
-        qtooltipper.cpp
 
+    qtooltipper.h
+    qtooltipper.cpp
+
+    proxy_model.cpp
 
     adtfmediasample.h
     networkclient.cpp
@@ -88,4 +90,4 @@ adtf_add_executable(UNIAutonomRemoteGUI
     src/NearfieldGrid/MapTreeNode.cpp
 )
 
-target_link_libraries(UNIAutonomRemoteGUI Qt5::Widgets Qt5::Network ${OpenCV_LIBS})
+target_link_libraries(UNIAutonomRemoteGUI Qt5::Widgets Qt5::Network Qt5::Charts ${OpenCV_LIBS})

@@ -397,8 +397,8 @@ void LogAnalyzerDialog::clearGraph(){
 
 
     set0->setColor(QColor::fromRgb(35,103,151));
-    set1->setColor(QColor::fromRgb(151,35,35));
-    set2->setColor(QColor::fromRgb(210,109,35));
+    set1->setColor(QColor::fromRgb(210,109,35));
+    set2->setColor(QColor::fromRgb(151,35,35));
     set3->setColor(QColor::fromRgb(220,171,52));
     set4->setColor(QColor::fromRgb(95,165,52));
     set5->setColor(QColor::fromRgb(47,182,198));

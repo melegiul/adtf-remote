@@ -25,36 +25,44 @@ using namespace QtCharts;
 #include "qtooltipper.h"
 #include "mainwindow.h"
 
-LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *parentModel) : QDialog(parent), parentModel(parentModel) {
+LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
     this->setupUi(this);
-    connect(this->loadButton,SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
-    connect(this->saveButton,SIGNAL(clicked()),this,SLOT(handleSaveButtonClicked()));
-    connect(this->saveAsButton,SIGNAL(clicked()),this,SLOT(handleSaveAsButtonClicked()));
-    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(switchSource()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(switchSource()));
-    connect(this->historyBox,SIGNAL(activated(int)),this,SLOT(checkIndex()));
-    connect(this,SIGNAL(rejected()),this,SLOT(saveSettings()));
+
+    connect(this->loadButton, SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
+    connect(this->saveButton, SIGNAL(clicked()), this, SLOT(handleSaveButtonClicked()));
+    connect(this->saveAsButton, SIGNAL(clicked()), this, SLOT(handleSaveAsButtonClicked()));
+    connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(switchSource()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(switchSource()));
+    connect(this->historyBox, SIGNAL(activated(int)), this, SLOT(checkIndex()));
+    connect(this, SIGNAL(rejected()), this, SLOT(saveSettings()));
+    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
+
+    connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->spinBox, SIGNAL(valueChanged(int)), this, SLOT(updateGraph()));
+    connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGraph()));
+
     historyBox->setMaxCount(10);
     loadSettings();
 
-    connect(this->loadButton,SIGNAL(clicked()), this, SLOT(updateGraph()));
-    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(updateGraph()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateGraph()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateGraph()));
-    connect(this->pushButton_4,SIGNAL(clicked()),this,SLOT(updateGraph()));
-    connect(this->spinBox,SIGNAL(valueChanged(int)),this,SLOT(updateGraph()));
-    connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)),this, SLOT(updateGraph()));
-
-
-
-    model = new LogModel(this);
+    sourceModel = new LogModel(this);
+    proxyModel = new ProxyModel(this);
+    proxyModel->setSourceModel(parentModel);
+    proxyModel->setDynamicSortFilter(true);
     switchSource();
-    this->tableView->setColumnWidth(0,180);
-    this->tableView->setColumnWidth(1,40);
-    this->tableView->setColumnWidth(2,120);
-    this->tableView->setColumnWidth(3,100);
+
+    this->tableView->setModel(proxyModel);
+    this->tableView->setColumnWidth(0, 160);
+    this->tableView->setColumnWidth(1, 40);
+    this->tableView->setColumnWidth(2, 120);
+    this->tableView->setColumnWidth(3, 80);
+
     this->tableView->horizontalHeader()->setStretchLastSection(true);
     this->tableView->viewport()->installEventFilter(new QToolTipper(this->tableView));
+
 
     series = new QStackedBarSeries();
     set0 = new QBarSet("ACK");
@@ -63,6 +71,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *paren
     set3 = new QBarSet("WARNING");
     set4 = new QBarSet("INFO");
     set5 = new QBarSet("DEBUG");
+
 
     chart = new QChart();
     chart->addSeries(series);
@@ -92,7 +101,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, QAbstractTableModel *paren
  * open customized file dialog for json file selection starting in specified serialization folder
  * if user selection is not empty, the file is loaded in the model and added to file selection history
  */
-void LogAnalyzerDialog::handleLoadButtonClicked(){
+void LogAnalyzerDialog::handleLoadButtonClicked() {
     QStringList fileNames;
     if (historyBox->currentText() == fileDialogLabel) {
         // log file selection from file dialog
@@ -110,7 +119,8 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
             fileNames.append(historyBox->currentText());
         } else {
             // fileNames remains empty
-            QMessageBox::warning(this, "File does not exist", historyBox->currentText() + " will now be removed from history");
+            QMessageBox::warning(this, "File does not exist",
+                                 historyBox->currentText() + " will now be removed from history");
             historyBox->removeItem(historyBox->currentIndex());
         }
     }
@@ -119,12 +129,18 @@ void LogAnalyzerDialog::handleLoadButtonClicked(){
         QString string = fileNames.first();
         clearModel();
         try {
-            addEntries(((LogModel *) model)->loadLog(string));
+            addEntries(((LogModel *) sourceModel)->loadLog(string));
             updateFileHistory(string);
         } catch (runtime_error &e) {
             QMessageBox::critical(this, "Json format error", e.what());
         }
     }
+}
+
+void LogAnalyzerDialog::handleApplyButtonClicked() {
+    proxyModel->setFilter(getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
+                          getFilterList(contextListWidget));
+
 }
 
 /**
@@ -158,7 +174,7 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
  * saves current model in file (selected by combo box)
  */
 void LogAnalyzerDialog::handleSaveButtonClicked() {
-    LogModel *currentModel = ((LogModel*)model);
+    LogModel *currentModel = ((LogModel*)proxyModel);
     currentModel->saveLog(currentModel->getCurrentLog(), \
                             maxFileNumber,\
                             settings.value("logPreferences/logPath", "").toString(), \
@@ -169,19 +185,12 @@ void LogAnalyzerDialog::handleSaveButtonClicked() {
  * saves current model in new file selected by file dialog
  */
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
-//    QStringList fileNames;
-    LogModel *currentModel = ((LogModel*)model);
+    LogModel *currentModel = ((LogModel*)proxyModel);
     QString fileName = QFileDialog::getSaveFileName(this,\
                                 tr("Save current log"),\
                                     settings.value("logPreferences/logPath", QDir::homePath()).toString(),\
                                     tr("Log File (*.json);;All files (*)"));
-    /*QFileDialog saveAsDialog(this);
-    saveAsDialog.setFileMode(QFileDialog::AnyFile);
-    saveAsDialog.setNameFilter(tr("Json (*.json)"));
-    saveAsDialog.setDirectory(QDir(settings.value("logPreferences/logPath", QDir::homePath()).toString()));
-    if (saveAsDialog.exec()) {
-        fileNames = saveAsDialog.selectedFiles();
-    }*/
+
     if (!fileName.isEmpty()) {
         currentModel->saveLog(currentModel->getCurrentLog(), \
                             maxFileNumber, \
@@ -196,20 +205,26 @@ void LogAnalyzerDialog::handleSaveAsButtonClicked() {
  * @param logList each qlist element represents a log entry containing time, source, context, etc.
  */
 void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
-    for (QStringList logValues: logList){
-        model->insertRows(0, 1, QModelIndex());
-        for(int i=0; i<logValues.size(); i++){
-            QModelIndex index = model->index(0,i,QModelIndex());
-            model->setData(index, logValues.value(i), Qt::DisplayRole);
+    for (QStringList logValues: logList) {
+        sourceModel->insertRows(0, 1, QModelIndex());
+        for (int i = 0; i < logValues.size(); i++) {
+            QModelIndex index = sourceModel->index(0, i, QModelIndex());
+            sourceModel->setData(index, logValues.value(i), Qt::DisplayRole);
         }
     }
 }
+
 
 /**
  * removes the current displayed log file from the table view
  */
 void LogAnalyzerDialog::clearModel() {
-    model->removeRows(0, model->rowCount(), QModelIndex());
+    sourceModel->removeRows(0, sourceModel->rowCount(), QModelIndex());
+}
+
+void LogAnalyzerDialog::removeEntries() {
+    sourceModel->removeRows(0, sourceModel->rowCount(), QModelIndex());
+
 }
 
 /**
@@ -218,7 +233,7 @@ void LogAnalyzerDialog::clearModel() {
  */
 void LogAnalyzerDialog::switchSource() {
     if (this->liveLogButton->isChecked()){
-        tableView->setModel(parentModel);
+        proxyModel->setSourceModel(parentModel);
         historyBox->setDisabled(true);
         loadButton->setDisabled(true);
         saveButton->setDisabled(true);
@@ -227,7 +242,7 @@ void LogAnalyzerDialog::switchSource() {
         else
             saveAsButton->setDisabled(false);
     } else {
-        tableView->setModel(model);
+        proxyModel->setSourceModel(sourceModel);
         historyBox->setDisabled(false);
         checkIndex();
     }
@@ -251,11 +266,6 @@ void LogAnalyzerDialog::checkIndex() {
         handleLoadButtonClicked();
     }
 }
-
-//void LogAnalyzerDialog::clearModel(){
-//    LogModel* currentModel = ((LogModel*)model);
-//    currentModel->removeRows(0,currentModel->rowCount());
-//}
 
 /**
  * executes, when dialog quits
@@ -394,14 +404,13 @@ void LogAnalyzerDialog::clearGraph(){
     series->detachAxis(axisY);
 }
 
-void LogAnalyzerDialog::fillGraph(int unit, int yMax){
+void LogAnalyzerDialog::fillGraph(int unit, int yMax) {
     series->append(set0);
     series->append(set1);
     series->append(set2);
     series->append(set3);
     series->append(set4);
     series->append(set5);
-
 
     axisX->append(categories);
     series->attachAxis(axisX);
@@ -417,4 +426,15 @@ void LogAnalyzerDialog::fillGraph(int unit, int yMax){
     axisY->setRange(0,yMax);
     rect = chart->plotArea();
 }
+
+QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {
+    QStringList entries;
+    for (int i = 0; i < filterList->count(); i++) {
+        if (filterList->item(i)->checkState() == Qt::Checked) {
+            entries.append(filterList->item(i)->text());
+        }
+    }
+    return entries;
+}
+
 

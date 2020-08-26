@@ -27,11 +27,13 @@ adtf_add_executable(UNIAutonomRemoteGUI
     dialog_preferences.ui
     dialog_log_analyzer.cpp
     dialog_log_analyzer.ui
-        log_serialization.cpp
+    log_serialization.cpp
     log_model.cpp
-        qtooltipper.h
-        qtooltipper.cpp
 
+    qtooltipper.h
+    qtooltipper.cpp
+
+    proxy_model.cpp
 
     adtfmediasample.h
     networkclient.cpp

@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_7">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
       <widget class="QScrollArea" name="scrollArea">
@@ -26,7 +26,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>614</width>
+          <width>714</width>
           <height>321</height>
          </rect>
         </property>
@@ -43,7 +43,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -180,50 +180,68 @@
             </widget>
            </item>
            <item>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkBox">
-               <property name="text">
-                <string>DEBUG</string>
-               </property>
-              </widget>
+            <widget class="QListWidget" name="logLevelListWidget">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>175</width>
+               <height>75</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>DEBUG</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="checkBox_3">
-               <property name="text">
-                <string>WARNING</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>INFO</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="0" column="2">
-              <widget class="QCheckBox" name="checkBox_5">
-               <property name="text">
-                <string>CRITICAL</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>WARNING</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBox_2">
-               <property name="text">
-                <string>INFO</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>ERROR</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="checkBox_4">
-               <property name="text">
-                <string>ERROR</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>CRITICAL</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="1" column="2">
-              <widget class="QCheckBox" name="checkBox_6">
-               <property name="text">
-                <string>ACK</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>ACK</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-            </layout>
+            </widget>
            </item>
           </layout>
          </item>
@@ -237,36 +255,46 @@
             </widget>
            </item>
            <item>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="2" column="1">
-              <widget class="QCheckBox" name="checkBox_10">
-               <property name="text">
-                <string>CARSIMULATOR</string>
-               </property>
-              </widget>
+            <widget class="QListWidget" name="sourceListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>175</width>
+               <height>75</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>STATEMACHINE</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="checkBox_8">
-               <property name="text">
-                <string>LANEDETECTION</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>TRAJECTORY</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBox_7">
-               <property name="text">
-                <string>STATEMACHINE</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>LANEDETECTION</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="checkBox_9">
-               <property name="text">
-                <string>TRAJECTORY</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>CARSIMULATOR</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
-            </layout>
+            </widget>
            </item>
           </layout>
          </item>
@@ -280,45 +308,75 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_2">
+            <widget class="QListWidget" name="contextListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>175</width>
+               <height>75</height>
+              </size>
+             </property>
              <item>
               <property name="text">
                <string>MAP</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
               </property>
              </item>
              <item>
               <property name="text">
                <string>AC</string>
               </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
              <item>
               <property name="text">
                <string>RI</string>
               </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
              <item>
               <property name="text">
-               <string>INITIALIZATION</string>
+               <string>INITZIALIZATION</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
               </property>
              </item>
              <item>
               <property name="text">
                <string>READY</string>
               </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
              <item>
               <property name="text">
                <string>AD_RUNNING</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
               </property>
              </item>
              <item>
               <property name="text">
                <string>RC_RUNNING</string>
               </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
              </item>
              <item>
               <property name="text">
                <string>EMERGENCY</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
               </property>
              </item>
             </widget>
@@ -341,7 +399,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="applyButton">
              <property name="text">
               <string>Apply</string>
              </property>

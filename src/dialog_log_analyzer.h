@@ -12,28 +12,39 @@
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
 #include <QtCharts/QBarSet>
+
 using namespace QtCharts;
+#include <QSortFilterProxyModel>
+
 
 #include "ui_dialog_log_analyzer.h"
 //#include "log_serialization.h"
 #include "log_model.h"
+#include "proxy_model.h"
 
 class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer{
     Q_OBJECT
 
 public:
-    LogAnalyzerDialog(QWidget *parent = nullptr, QAbstractTableModel* parentModel = nullptr);
+    LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
     void loadSettings();
 
 private:
-    QAbstractTableModel *model;
-    QAbstractTableModel *parentModel;
     QSettings settings;
     const QString fileDialogLabel = "File Dialog Selection";
     int maxFileNumber;
     void addEntries(QList<QStringList> logList);
     void clearModel();
     void updateFileHistory(QString fileName);
+
+    LogSerialization log;
+    LogModel *sourceModel;
+    LogModel *parentModel;
+    ProxyModel *proxyModel;
+    QStringList *modelList = new QStringList();
+    void removeEntries();
+    QStringList getFilterList(QListWidget* filterList);
+
 
     void getStepSize(int &stepSize, int &unit_ind);
     void getTimeAndText(int row, int numTotal, QDateTime &time, QString &text);
@@ -55,7 +66,6 @@ private:
     QBarSet *set4;
     QBarSet *set5;
 
-// QFileDialog dialog
 public slots:
     void handleLoadButtonClicked();
     void handleSaveButtonClicked();
@@ -64,6 +74,7 @@ public slots:
     void saveSettings();
     void checkIndex();
     void updateGraph();
+    void handleApplyButtonClicked();
 };
 
 

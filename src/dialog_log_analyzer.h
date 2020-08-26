@@ -34,7 +34,7 @@ public slots:
     void handleLoadButtonClicked();
 //    void on_clearButton_clicked();
     void switchSource();
-    void update_metadata();
+    void updateMetadata();
 };
 
 

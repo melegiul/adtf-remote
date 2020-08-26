@@ -75,6 +75,7 @@ public slots:
     void checkIndex();
     void updateGraph();
     void handleApplyButtonClicked();
+    void updateMetadata();
 };
 
 

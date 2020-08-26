@@ -21,6 +21,8 @@ using namespace QtCharts;
 
 #include <array>
 #include <QtCore/QDateTime>
+#include <array>
+
 #include "dialog_log_analyzer.h"
 #include "qtooltipper.h"
 #include "mainwindow.h"
@@ -45,6 +47,12 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->spinBox, SIGNAL(valueChanged(int)), this, SLOT(updateGraph()));
     connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGraph()));
 
+    connect(this->loadButton,SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+    connect(this->applyButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+
     historyBox->setMaxCount(10);
     loadSettings();
 
@@ -63,7 +71,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     this->tableView->horizontalHeader()->setStretchLastSection(true);
     this->tableView->viewport()->installEventFilter(new QToolTipper(this->tableView));
 
-
     series = new QStackedBarSeries();
     set0 = new QBarSet("ACK");
     set1 = new QBarSet("CRITICAL");
@@ -72,11 +79,9 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     set4 = new QBarSet("INFO");
     set5 = new QBarSet("DEBUG");
 
-
     chart = new QChart();
     chart->addSeries(series);
     chart->setAnimationOptions(QChart::SeriesAnimations);
-
 
     axisX = new QBarCategoryAxis();
     chart->addAxis(axisX, Qt::AlignBottom);
@@ -95,6 +100,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     graphicsView->setRubberBand(QChartView::RectangleRubberBand);
 
     updateGraph();
+    updateMetadata();
 }
 
 /**
@@ -437,4 +443,25 @@ QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {
     return entries;
 }
 
+void LogAnalyzerDialog::updateMetadata(){
+    int numTotal = tableView->model()->rowCount();
+    std::array <int, 6> loglevelCount = {0,0,0,0,0,0};
 
+    QStringList loglevel = { "Ack", "Critical" , "Error" , "Warning" , "Info" ,"Debug"};
+
+    for (int row = 0; row < numTotal; ++row){
+        QModelIndex ind = tableView->model()->index(row,1, QModelIndex());
+        QString text = tableView->model()->data(ind,Qt::DisplayRole).toString();
+           int  loglevelInd = loglevel.indexOf(text);
+           if(loglevelInd >=0 && loglevelInd<loglevelCount.size()){
+               loglevelCount[loglevelInd] ++;
+        }
+    }
+    this->label_total->setText(QVariant(numTotal).toString());
+    this->label_ack->setText(QVariant(loglevelCount[0]).toString());
+    this->label_critical->setText(QVariant(loglevelCount[1]).toString());
+    this->label_error->setText(QVariant(loglevelCount[2]).toString());
+    this->label_warning->setText(QVariant(loglevelCount[3]).toString());
+    this->label_info->setText(QVariant(loglevelCount[4]).toString());
+    this->label_debug->setText(QVariant(loglevelCount[5]).toString());
+}

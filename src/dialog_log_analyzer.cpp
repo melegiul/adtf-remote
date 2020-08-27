@@ -16,6 +16,8 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
 
+
+
 using namespace QtCharts;
 //QT_CHARTS_USE_NAMESPACE
 
@@ -145,7 +147,7 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
 
 void LogAnalyzerDialog::handleApplyButtonClicked() {
     proxyModel->setFilter(getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
-                          getFilterList(contextListWidget));
+                          getFilterList(contextListWidget), payloadLineEdit->text());
 
 }
 

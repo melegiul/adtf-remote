@@ -35,6 +35,9 @@ adtf_add_executable(UNIAutonomRemoteGUI
 
     proxy_model.cpp
 
+    log_chart_view.cpp
+        log_chart_view.h
+
     adtfmediasample.h
     networkclient.cpp
 

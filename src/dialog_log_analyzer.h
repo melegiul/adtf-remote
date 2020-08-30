@@ -57,7 +57,7 @@ private:
     QBarCategoryAxis *axisX;
     QValueAxis *axisY;
     QChart *chart;
-    QRectF rect;
+
 
     QBarSet *set0;
     QBarSet *set1;

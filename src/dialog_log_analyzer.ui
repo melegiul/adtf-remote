@@ -38,7 +38,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
-          <widget class="QChartView" name="graphicsView"/>
+          <widget class="LogChartView" name="graphicsView"/>
          </item>
          <item>
           <widget class="QGroupBox" name="groupBox_4">
@@ -600,9 +600,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QChartView</class>
+   <class>LogChartView</class>
    <extends>QGraphicsView</extends>
-   <header>QtCharts</header>
+   <header>log_chart_view.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

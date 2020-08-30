@@ -26,6 +26,7 @@ using namespace QtCharts;
 #include "dialog_log_analyzer.h"
 #include "qtooltipper.h"
 #include "mainwindow.h"
+#include "log_chart_view.h"
 
 LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
     this->setupUi(this);
@@ -85,7 +86,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
 
     axisX = new QBarCategoryAxis();
     chart->addAxis(axisX, Qt::AlignBottom);
-    axisX->setTitleText("t in ms");
     axisY = new QValueAxis();
     chart->addAxis(axisY, Qt::AlignLeft);
     axisY->setTitleText("Occurrence");
@@ -430,7 +430,7 @@ void LogAnalyzerDialog::fillGraph(int unit, int yMax) {
     }
     axisX->setTitleText(QString("t in %1").arg(unitTxt));
     axisY->setRange(0,yMax);
-    rect = chart->plotArea();
+
 }
 
 QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {

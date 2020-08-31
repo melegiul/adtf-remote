@@ -8,14 +8,17 @@ Q_OBJECT
 public:
     ProxyModel(QObject *parent);
 
+
+
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
-    void setFilter(QStringList logLevelList, QStringList sourceList, QStringList contextList);
+    void setFilter(QStringList logLevelList, QStringList sourceList, QStringList contextList, QString payloadString);
 
 private:
     QStringList logLevelFilter;
     QStringList sourceFilter;
     QStringList contextFilter;
+    QRegExp payloadFilter;
 
 };
 

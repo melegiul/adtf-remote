@@ -17,12 +17,12 @@ void LogSerialization::delimitFileNumber(QDir &json){
 
 /**
  * creates for each log entry a json object and appends it to array
- * @param logList log entries from the mainwindow model
+ * @param logVector log entries from the mainwindow model
  * @param saveFile file, to be written
  */
-void LogSerialization::writeJson(QList<QStringList> &logList, QFile &saveFile, int maxFileNumber, QString defaultPath) {
+void LogSerialization::writeJson(QVector<QStringList> &logVector, QFile &saveFile, int maxFileNumber, QString defaultPath) {
     QJsonArray json;
-    for (QStringList list : logList) {
+    for (QStringList list : logVector) {
             QJsonObject logObject;
             logObject["time"] = list.value(0);
             logObject["level"] = list.value(1);
@@ -82,7 +82,7 @@ QList<QStringList> LogSerialization::readJson(const QByteArray &data) {
             logString.append(logEntry["payload"].toString());
         else
             throw std::runtime_error("Json objects do not contain key payload with string value");
-        logList.append(logString);
+        logList.prepend(logString);
     }
     return logList;
 }

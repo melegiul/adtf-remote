@@ -38,7 +38,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
-          <widget class="QChartView" name="graphicsView"/>
+          <widget class="LogChartView" name="graphicsView"/>
          </item>
          <item>
           <widget class="QGroupBox" name="groupBox_4">
@@ -507,6 +507,20 @@
           </layout>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Payload:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="payloadLineEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
             <spacer name="horizontalSpacer">
@@ -554,6 +568,16 @@
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QSpinBox" name="spinBox">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>999</number>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="1">
             <widget class="QComboBox" name="comboBox_3">
              <item>
@@ -578,16 +602,6 @@
              </item>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QSpinBox" name="spinBox">
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>999</number>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
         </layout>
@@ -600,9 +614,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QChartView</class>
+   <class>LogChartView</class>
    <extends>QGraphicsView</extends>
-   <header>QtCharts</header>
+   <header>log_chart_view.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

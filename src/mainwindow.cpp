@@ -1278,10 +1278,13 @@ void MainWindow::handleStopClick(){
     QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
     int maxFileNumber = settings.value("logPreferences/fileNumber",INT_MAX).toInt();
     if (saveGranularity == QString("stop")) {
+        int currentLogSize = logModel->getCurrentLog().size();
         logModel->saveLog(logModel->getCurrentLog(), \
-                            maxFileNumber,\
-                            settings.value("logPreferences/logPath", "").toString(), \
-                            QString());
+                          maxFileNumber, \
+                          settings.value("logPreferences/logPath", "").toString(), \
+                          QString(), \
+                          offset);
+        offset = currentLogSize;
     }
 }
 
@@ -1312,10 +1315,13 @@ void MainWindow::handleAbortClick(){
     QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
     int maxFileNumber = settings.value("logPreferences/fileNumber", INT_MAX).toInt();
     if (saveGranularity == QString("abort")) {
+        int currentLogSize = logModel->getCurrentLog().size();
         logModel->saveLog(logModel->getCurrentLog(), \
-                            maxFileNumber,\
-                            settings.value("logPreferences/logPath", "").toString(), \
-                            QString());
+                          maxFileNumber, \
+                          settings.value("logPreferences/logPath", "").toString(), \
+                          QString(), \
+                          offset);
+        offset = currentLogSize;
     }
 }
 

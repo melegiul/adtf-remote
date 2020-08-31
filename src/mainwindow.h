@@ -219,7 +219,7 @@ private:
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
     LogModel *logModel;
-//    LogSerialization log;
+    int offset = 0;
 };
 
 

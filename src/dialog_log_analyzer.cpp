@@ -147,9 +147,9 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
 void LogAnalyzerDialog::handleSaveButtonClicked() {
     LogModel *currentModel = ((LogModel*)proxyModel);
     currentModel->saveLog(currentModel->getCurrentLog(), \
-                            maxFileNumber,\
-                            settings.value("logPreferences/logPath", "").toString(), \
-                            historyBox->currentText());
+                          maxFileNumber, \
+                          settings.value("logPreferences/logPath", "").toString(), \
+                          historyBox->currentText());
 }
 
 /**
@@ -164,9 +164,9 @@ void LogAnalyzerDialog::handleSaveAsButtonClicked() {
 
     if (!fileName.isEmpty()) {
         currentModel->saveLog(currentModel->getCurrentLog(), \
-                            maxFileNumber, \
-                            settings.value("logPreferences/logPath", "").toString(), \
-                            fileName);
+                              maxFileNumber, \
+                              settings.value("logPreferences/logPath", "").toString(), \
+                              fileName);
         updateFileHistory(fileName);
     }
 }

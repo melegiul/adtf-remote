@@ -110,7 +110,7 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
 
 void LogAnalyzerDialog::handleApplyButtonClicked() {
     proxyModel->setFilter(getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
-                          getFilterList(contextListWidget));
+                          getFilterList(contextListWidget), payloadLineEdit->text());
 
 }
 

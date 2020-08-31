@@ -7,13 +7,6 @@
 #include <QList>
 #include <stdexcept>
 
-#include <QtCharts/QStackedBarSeries>
-#include <QtCharts/QBarCategoryAxis>
-#include <QtCharts/QValueAxis>
-#include <QtCharts/QChart>
-#include <QtCharts/QBarSet>
-
-using namespace QtCharts;
 #include <QSortFilterProxyModel>
 
 
@@ -52,19 +45,6 @@ private:
     void clearGraph();
     void fillGraph(int unit, int yMax);
 
-    QStackedBarSeries *series;
-    QStringList categories;
-    QBarCategoryAxis *axisX;
-    QValueAxis *axisY;
-    QChart *chart;
-
-
-    QBarSet *set0;
-    QBarSet *set1;
-    QBarSet *set2;
-    QBarSet *set3;
-    QBarSet *set4;
-    QBarSet *set5;
 
 public slots:
     void handleLoadButtonClicked();

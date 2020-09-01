@@ -1274,18 +1274,7 @@ void MainWindow::handleStopClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
-    QSettings settings;
-    QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
-    int maxFileNumber = settings.value("logPreferences/fileNumber",INT_MAX).toInt();
-    if (saveGranularity == QString("stop")) {
-        int currentLogSize = logModel->getCurrentLog().size();
-        logModel->saveLog(logModel->getCurrentLog(), \
-                          maxFileNumber, \
-                          settings.value("logPreferences/logPath", "").toString(), \
-                          QString(), \
-                          offset);
-        offset = currentLogSize;
-    }
+    automaticSave("stop");
 }
 
 void MainWindow::handleStopACK() {
@@ -1311,18 +1300,7 @@ void MainWindow::handleAbortClick(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
-    QSettings settings;
-    QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
-    int maxFileNumber = settings.value("logPreferences/fileNumber", INT_MAX).toInt();
-    if (saveGranularity == QString("abort")) {
-        int currentLogSize = logModel->getCurrentLog().size();
-        logModel->saveLog(logModel->getCurrentLog(), \
-                          maxFileNumber, \
-                          settings.value("logPreferences/logPath", "").toString(), \
-                          QString(), \
-                          offset);
-        offset = currentLogSize;
-    }
+    automaticSave("abort");
 }
 
 void MainWindow::handleAbortACK() {
@@ -1541,4 +1519,22 @@ void MainWindow::sendtSignalValueSpeed() {
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+}
+
+void MainWindow::automaticSave(string buttonLabel){
+    QSettings settings;
+    QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
+    int maxFileNumber = settings.value("logPreferences/fileNumber", INT_MAX).toInt();
+    if (saveGranularity == QString(buttonLabel.data())) {
+        int currentLogSize = logModel->getCurrentLog().size();
+        // retrieve cmake-build-debug directory path
+        QString appDir = QDir::currentPath();
+        appDir += "/../../json";
+        logModel->saveLog(logModel->getCurrentLog(), \
+                          maxFileNumber, \
+                          settings.value("logPreferences/logPath", appDir).toString(), \
+                          QString(), \
+                          offset);
+        offset = currentLogSize;
+    }
 }

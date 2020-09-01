@@ -170,15 +170,22 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString d
         return;
     std::string  filePath;
     if (fileName.isEmpty()) {
-        QSettings settings;
-        QString qLogPath = settings.value("logPreferences/logPath", QDir::homePath()).toString();
-        std::string logPath = qLogPath.toStdString();
+        // main window: automatic save calls function without file name
+        QDir dir = QDir(defaultPath);
+        if (!dir.exists()) {
+            // creates default directory if no path is set
+            dir.cdUp();
+            dir.mkdir("json");
+        }
+        std::string logPath = defaultPath.toStdString();
         time_t now = time(0);
         char fileNameGen[40];
         tm *tm_info = localtime(&now);
+        // sets auto generated file name to current date
         strftime(fileNameGen, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
         filePath = logPath + fileNameGen;
     } else {
+        // save buttons in log analyzer dialog retrieve a user defined file name containing the absolute path
         filePath = fileName.toStdString();
     }
     QFile saveFile(filePath.data());

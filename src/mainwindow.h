@@ -113,6 +113,7 @@ private:
     tCarConfigStruct prepareCarConfigStruct();
     void sendtSignalValueSteer();
     void sendtSignalValueSpeed();
+    void automaticSave(string buttonLabel);
 
 signals:
     void nearfieldGridMapUpdated();

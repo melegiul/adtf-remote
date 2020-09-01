@@ -144,6 +144,7 @@ void PreferencesDialog::checkEditor() {
  * loads settings in gui
  */
 void PreferencesDialog::loadLogPreferences() {
+    QString stdPath = QDir::currentPath();
     this->logPathLineEdit->setText(settings.value("logPreferences/logPath").toString());
     settings.value("logPreferences/automaticSave") == QString("stop") ? \
                     this->stopButton->setChecked(true): this->abortButton->setChecked(true);

@@ -20,7 +20,7 @@ private:
     QList<QStringList> loadLog(QString fileName);*/
 
 public:
-    static void writeJson(QVector<QStringList> &logVector, QFile &saveFile, int maxFileNumber, QString defaultPath);
+    static void writeJson(QVector<QStringList> &logVector, QFile &saveFile, int maxFileNumber);
     static QList<QStringList> readJson(const QByteArray &data);
 };
 

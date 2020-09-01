@@ -20,8 +20,10 @@ void LogSerialization::delimitFileNumber(QDir &json){
  * @param logVector log entries from the mainwindow model
  * @param saveFile file, to be written
  */
-void LogSerialization::writeJson(QVector<QStringList> &logVector, QFile &saveFile, int maxFileNumber, QString defaultPath) {
+void LogSerialization::writeJson(QVector<QStringList> &logVector, QFile &saveFile, int maxFileNumber) {
     QJsonArray json;
+    QFileInfo fileInfo = QFileInfo(saveFile);
+    QDir fileDir = fileInfo.absoluteDir();
     for (QStringList list : logVector) {
             QJsonObject logObject;
             logObject["time"] = list.value(0);
@@ -32,11 +34,8 @@ void LogSerialization::writeJson(QVector<QStringList> &logVector, QFile &saveFil
             json.append(logObject);
     }
     saveFile.write(QJsonDocument(json).toJson(QJsonDocument::Indented));
-    if (!defaultPath.isEmpty()) {
-        QDir jsonDir = QDir(defaultPath);
-        if (jsonDir.entryList(QDir::Files, QDir::NoSort).count() > maxFileNumber) {
-            delimitFileNumber(jsonDir);
-        }
+    if (fileDir.entryList(QDir::Files, QDir::NoSort).count() > maxFileNumber) {
+        delimitFileNumber(fileDir);
     }
 }
 

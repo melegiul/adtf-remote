@@ -30,7 +30,6 @@ private:
     void clearModel();
     void updateFileHistory(QString fileName);
 
-    LogSerialization log;
     LogModel *sourceModel;
     LogModel *parentModel;
     ProxyModel *proxyModel;

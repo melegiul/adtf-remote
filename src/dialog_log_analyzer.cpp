@@ -76,10 +76,12 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
     QStringList fileNames;
     if (historyBox->currentText() == fileDialogLabel) {
         // log file selection from file dialog
+        QString appDir = QDir::currentPath();
+        appDir += "/../../json";
         QFileDialog dialog(this);
         dialog.setFileMode(QFileDialog::ExistingFile);
         dialog.setNameFilter(tr("Json (*.json)"));
-        dialog.setDirectory(QDir(settings.value("logPreferences/logPath", QDir::homePath()).toString()));
+        dialog.setDirectory(QDir(settings.value("logPreferences/logPath", appDir).toString()));
         if (dialog.exec()) {
             fileNames = dialog.selectedFiles();
         }
@@ -145,10 +147,11 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
  * saves current model in file (selected by combo box)
  */
 void LogAnalyzerDialog::handleSaveButtonClicked() {
-    LogModel *currentModel = ((LogModel*)proxyModel);
+    LogModel *currentModel = ((LogModel*)proxyModel->sourceModel());
+    // retrieve cmake-build-debug directory path
     currentModel->saveLog(currentModel->getCurrentLog(), \
                           maxFileNumber, \
-                          settings.value("logPreferences/logPath", "").toString(), \
+                          "", \
                           historyBox->currentText());
 }
 
@@ -156,16 +159,19 @@ void LogAnalyzerDialog::handleSaveButtonClicked() {
  * saves current model in new file selected by file dialog
  */
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
-    LogModel *currentModel = ((LogModel*)proxyModel);
+    LogModel *currentModel = ((LogModel*)proxyModel->sourceModel());
+    // retrieve cmake-build-debug directory path
+    QString appDir = QDir::currentPath();
+    appDir += "/../../json";
     QString fileName = QFileDialog::getSaveFileName(this,\
                                 tr("Save current log"),\
-                                    settings.value("logPreferences/logPath", QDir::homePath()).toString(),\
+                                    settings.value("logPreferences/logPath", appDir).toString(),\
                                     tr("Log File (*.json);;All files (*)"));
 
     if (!fileName.isEmpty()) {
         currentModel->saveLog(currentModel->getCurrentLog(), \
                               maxFileNumber, \
-                              settings.value("logPreferences/logPath", "").toString(), \
+                              "", \
                               fileName);
         updateFileHistory(fileName);
     }
@@ -235,6 +241,7 @@ void LogAnalyzerDialog::checkIndex() {
         saveButton->setDisabled(false);
         saveAsButton->setDisabled(false);
         handleLoadButtonClicked();
+        updateGraph();
     }
 }
 
@@ -329,7 +336,7 @@ void LogAnalyzerDialog::getStepSize(int &stepSize, int &unitInd){
 }
 
 void LogAnalyzerDialog::getTimeAndText(int row, int numTotal, QDateTime &time, QString &text){
-    int r = this->liveLogButton->isChecked()? numTotal-1-row: row;
+    int r = this->liveLogButton->isChecked()? numTotal-1-row: numTotal-1-row;
     QModelIndex indTime = tableView->model()->index(r, 0, QModelIndex());
     QString textTime = tableView->model()->data(indTime, Qt::DisplayRole).toString();
     QModelIndex ind = tableView->model()->index(r, 1, QModelIndex());

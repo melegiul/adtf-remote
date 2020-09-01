@@ -3,6 +3,7 @@
 //
 
 #include "log_model.h"
+#include <QDebug>
 
 LogModel::LogModel(QObject *parent): QAbstractTableModel(parent) {}
 
@@ -187,13 +188,14 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString d
     } else {
         // save buttons in log analyzer dialog retrieve a user defined file name containing the absolute path
         filePath = fileName.toStdString();
+
     }
     QFile saveFile(filePath.data());
     if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
         qWarning("log_model.cpp-saveLog(): Could not open save file.");
         return;
     }
-    LogSerialization::writeJson(logVector, saveFile, maxFileNumber, defaultPath);
+    LogSerialization::writeJson(logVector, saveFile, maxFileNumber);
     saveFile.close();
 }
 

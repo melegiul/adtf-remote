@@ -111,7 +111,7 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
 }
 
 void LogAnalyzerDialog::handleApplyButtonClicked() {
-    proxyModel->setFilter(getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
+    proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(),getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
                           getFilterList(contextListWidget), payloadLineEdit->text());
 
 }

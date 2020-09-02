@@ -21,8 +21,10 @@ class LogModel : public QAbstractTableModel {
     Q_OBJECT
 private:
     QList<QStringList> currentLog;
+
 public:
     LogModel(QObject *parent);
+    QString logName = NULL;
     QList<QStringList> &getCurrentLog();
     void saveLog(QList<QStringList> &logList, int maxFileNumber, QString defaultPath = QString(), QString fileName = QString(), int offset = 0);
     QList<QStringList> loadLog(QString fileName);

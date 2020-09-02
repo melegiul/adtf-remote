@@ -2,6 +2,7 @@
 #include <QWidget>
 #include <QFileDialog>
 #include <QtDebug>
+#include <QString>
 
 #include <QDir>
 #include <QMessageBox>
@@ -30,6 +31,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->historyBox, SIGNAL(activated(int)), this, SLOT(checkIndex()));
     connect(this, SIGNAL(rejected()), this, SLOT(saveSettings()));
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
+    connect(this->exportGraphButton, SIGNAL(clicked()), this, SLOT(handleExportGraphClicked()));
 
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
@@ -190,7 +192,6 @@ void LogAnalyzerDialog::addEntries(QList<QStringList> logList) {
         }
     }
 }
-
 
 /**
  * removes the current displayed log file from the table view
@@ -376,4 +377,8 @@ void LogAnalyzerDialog::updateMetadata(){
     this->label_warning->setText(QVariant(loglevelCount[3]).toString());
     this->label_info->setText(QVariant(loglevelCount[4]).toString());
     this->label_debug->setText(QVariant(loglevelCount[5]).toString());
+}
+
+void LogAnalyzerDialog::handleExportGraphClicked() {
+    graphicsView->exportGraphAsSvg(parentModel->logName);
 }

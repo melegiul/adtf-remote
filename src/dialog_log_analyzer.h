@@ -6,9 +6,7 @@
 #include <QStringListModel>
 #include <QList>
 #include <stdexcept>
-
 #include <QSortFilterProxyModel>
-
 
 #include "ui_dialog_log_analyzer.h"
 //#include "log_serialization.h"
@@ -44,7 +42,6 @@ private:
     void clearGraph();
     void fillGraph(int unit, int yMax);
 
-
 public slots:
     void handleLoadButtonClicked();
     void handleSaveButtonClicked();
@@ -55,7 +52,7 @@ public slots:
     void updateGraph();
     void handleApplyButtonClicked();
     void updateMetadata();
+    void handleExportGraphClicked();
 };
-
 
 #endif //DIALOG_LOG_ANALYZER_H

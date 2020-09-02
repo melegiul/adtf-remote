@@ -11,20 +11,20 @@ using namespace QtCharts;
 class LogChartView: public QChartView{
 protected:
     void mouseReleaseEvent(QMouseEvent *e);
+
 public:
     LogChartView(QWidget *parent);
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
+    void exportGraphAsSvg(QString fileName);
 
 private:
-
     QStackedBarSeries *series;
     QStringList categories;
     QBarCategoryAxis *axisX;
     QValueAxis *axisY;
     QChart *chart;
-
 
     QBarSet *set0;
     QBarSet *set1;
@@ -32,7 +32,6 @@ private:
     QBarSet *set3;
     QBarSet *set4;
     QBarSet *set5;
-
 };
 
 

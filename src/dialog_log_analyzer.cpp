@@ -29,13 +29,15 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(switchSource()));
     connect(this->historyBox, SIGNAL(activated(int)), this, SLOT(checkIndex()));
     connect(this, SIGNAL(rejected()), this, SLOT(saveSettings()));
-    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
+    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
+    connect(this->resetButton, SIGNAL(clicked()), this, SLOT(resetFilter()));
 
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
+    connect(this->resetButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->spinBox, SIGNAL(valueChanged(int)), this, SLOT(updateGraph()));
     connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGraph()));
 
@@ -44,6 +46,7 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
     connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
     connect(this->applyButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+    connect(this->resetButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
 
     historyBox->setMaxCount(10);
     loadSettings();
@@ -110,11 +113,24 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
     }
 }
 
-void LogAnalyzerDialog::handleApplyButtonClicked() {
+void LogAnalyzerDialog::setFilter() {
     proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(),getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
                           getFilterList(contextListWidget), payloadLineEdit->text());
 
 }
+
+void LogAnalyzerDialog::resetFilter(){
+    minDateTimeEdit->setDateTime(minDateTimeEdit->minimumDateTime());
+    maxDateTimeEdit->setDateTime(maxDateTimeEdit->maximumDateTime());
+    resetFilterList(logLevelListWidget);
+    resetFilterList(sourceListWidget);
+    resetFilterList(contextListWidget);
+    payloadLineEdit->clear();
+    setFilter();
+
+}
+
+
 
 /**
  * history combo box is managed to show recent file calls on top,
@@ -355,6 +371,14 @@ QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {
     return entries;
 }
 
+void LogAnalyzerDialog::resetFilterList(QListWidget *filterList) {
+    for (int i = 0; i < filterList->count(); i++) {
+        filterList->item(i)->setCheckState(Qt::Unchecked);
+
+    }
+
+}
+
 void LogAnalyzerDialog::updateMetadata(){
     int numTotal = tableView->model()->rowCount();
     std::array <int, 6> loglevelCount = {0,0,0,0,0,0};
@@ -377,3 +401,4 @@ void LogAnalyzerDialog::updateMetadata(){
     this->label_info->setText(QVariant(loglevelCount[4]).toString());
     this->label_debug->setText(QVariant(loglevelCount[5]).toString());
 }
+

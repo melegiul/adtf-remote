@@ -74,3 +74,4 @@ ProxyModel::setFilter(QDateTime minTimeEntry, QDateTime maxTimeEntry, QStringLis
 
 
 
+

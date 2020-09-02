@@ -290,11 +290,11 @@ void LogAnalyzerDialog::updateGraph(){
         getTimeAndText(0, numTotal, time, text);
         time = unit==0? time.addMSecs(stepSize): time.addSecs(stepSize);
 
-        for (int row = 0; row < numTotal; ++row) {
+        for (int row = 0; row < numTotal; row++) {
             QDateTime newTime;
             getTimeAndText(row,numTotal, newTime, text);
 
-            if (newTime > time) {
+            if (newTime >= time) {
                 graphicsView->setTick( loglevelCount, yMax, unit, step);
                 loglevelCount = {0, 0, 0, 0, 0, 0};
 
@@ -361,14 +361,34 @@ void LogAnalyzerDialog::updateMetadata(){
 
     QStringList loglevel = { "Ack", "Critical" , "Error" , "Warning" , "Info" ,"Debug"};
 
+    QDateTime old_time;
+    std::vector <int> diffs = {};
     for (int row = 0; row < numTotal; ++row){
-        QModelIndex ind = tableView->model()->index(row,1, QModelIndex());
-        QString text = tableView->model()->data(ind,Qt::DisplayRole).toString();
+
+        QString text;
+        QDateTime time;
+        getTimeAndText(row, numTotal, time, text);
+
+
+        if(row == 0){
+            old_time = QDateTime(time);
+        }else{
+            int diff = old_time.msecsTo(time);
+            diffs.push_back(diff);
+            old_time = QDateTime(time);
+
+        }
            int  loglevelInd = loglevel.indexOf(text);
+
            if(loglevelInd >=0 && loglevelInd<loglevelCount.size()){
                loglevelCount[loglevelInd] ++;
-        }
+           }
     }
+
+    int median;
+    int max;
+    int min;
+    getMedian(median, min, max, diffs);
     this->label_total->setText(QVariant(numTotal).toString());
     this->label_ack->setText(QVariant(loglevelCount[0]).toString());
     this->label_critical->setText(QVariant(loglevelCount[1]).toString());
@@ -376,4 +396,27 @@ void LogAnalyzerDialog::updateMetadata(){
     this->label_warning->setText(QVariant(loglevelCount[3]).toString());
     this->label_info->setText(QVariant(loglevelCount[4]).toString());
     this->label_debug->setText(QVariant(loglevelCount[5]).toString());
+    this->label_min->setText(QVariant(min).toString());
+    this->label_max->setText(QVariant(max).toString());
+    this->label_median->setText(QVariant(median).toString());
+}
+
+
+void LogAnalyzerDialog::getMedian(int &median, int &min, int &max, vector<int> numbers){
+    size_t size = numbers.size();
+    if(size ==0){
+        median =-1;
+        min = -1;
+        max = -1;
+        return;
+    } else {
+        std::sort(numbers.begin(), numbers.end());
+        if (size %2 ==0){
+            median = (numbers[size/2 -1]+numbers[size/2])/2;
+        } else {
+            median = numbers[size/2];
+        }
+        min = numbers.front();
+        max = numbers.back();
+    }
 }

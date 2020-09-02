@@ -30,6 +30,7 @@ private:
     void clearModel();
     void updateFileHistory(QString fileName);
 
+
     LogModel *sourceModel;
     LogModel *parentModel;
     ProxyModel *proxyModel;
@@ -43,6 +44,8 @@ private:
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
+    void getMedian(int &median, int &min, int &max, std::vector <int> numbers);
+
 
 
 public slots:

@@ -27,8 +27,10 @@ bool ProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_pare
 
 
     //checking whether timeEntry is in filtered time range
-    if (QDateTime::fromString(sourceModel()->data(index0).toString(), "dd.MM.yyyy HH:mm:ss:zzz") < minTime or
-        QDateTime::fromString(sourceModel()->data(index0).toString(), "dd.MM.yyyy HH:mm:ss:zzz") > maxTime)
+    if (((QDateTime::fromString(sourceModel()->data(index0).toString(), "dd.MM.yyyy HH:mm:ss:zzz") < minTime) and
+         minTime.isValid()) or
+        ((QDateTime::fromString(sourceModel()->data(index0).toString(), "dd.MM.yyyy HH:mm:ss:zzz") > maxTime) and
+         maxTime.isValid()))
         time = false;
     else
         time = true;

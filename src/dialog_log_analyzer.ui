@@ -664,7 +664,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="helpButton">
              <property name="text">
               <string>Help</string>
              </property>

@@ -19,7 +19,8 @@
 #include "mainwindow.h"
 #include "log_chart_view.h"
 
-LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
+LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent),
+                                                                               parentModel(parentModel) {
     this->setupUi(this);
 
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(handleLoadButtonClicked()));
@@ -41,12 +42,14 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->spinBox, SIGNAL(valueChanged(int)), this, SLOT(updateGraph()));
     connect(this->comboBox_3, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGraph()));
 
-    connect(this->loadButton,SIGNAL(clicked()), this, SLOT(updateMetadata()));
-    connect(this->directoryButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
-    connect(this->liveLogButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
-    connect(this->applyButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
-    connect(this->resetButton,SIGNAL(clicked()),this,SLOT(updateMetadata()));
+    connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+    connect(this->resetButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
+
+    connect(this->helpButton, SIGNAL(clicked()), this, SLOT(handleHelpButtonClicked()));
 
     historyBox->setMaxCount(10);
     loadSettings();
@@ -114,12 +117,13 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
 }
 
 void LogAnalyzerDialog::setFilter() {
-    proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(),getFilterList(logLevelListWidget), getFilterList(sourceListWidget),
+    proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(), getFilterList(logLevelListWidget),
+                          getFilterList(sourceListWidget),
                           getFilterList(contextListWidget), payloadLineEdit->text());
 
 }
 
-void LogAnalyzerDialog::resetFilter(){
+void LogAnalyzerDialog::resetFilter() {
     minDateTimeEdit->setDateTime(minDateTimeEdit->minimumDateTime());
     maxDateTimeEdit->setDateTime(maxDateTimeEdit->maximumDateTime());
     resetFilterList(logLevelListWidget);
@@ -129,7 +133,6 @@ void LogAnalyzerDialog::resetFilter(){
     setFilter();
 
 }
-
 
 
 /**
@@ -163,7 +166,7 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
  * saves current model in file (selected by combo box)
  */
 void LogAnalyzerDialog::handleSaveButtonClicked() {
-    LogModel *currentModel = ((LogModel*)proxyModel->sourceModel());
+    LogModel *currentModel = ((LogModel *) proxyModel->sourceModel());
     // retrieve cmake-build-debug directory path
     currentModel->saveLog(currentModel->getCurrentLog(), \
                           maxFileNumber, \
@@ -175,13 +178,13 @@ void LogAnalyzerDialog::handleSaveButtonClicked() {
  * saves current model in new file selected by file dialog
  */
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
-    LogModel *currentModel = ((LogModel*)proxyModel->sourceModel());
+    LogModel *currentModel = ((LogModel *) proxyModel->sourceModel());
     // retrieve cmake-build-debug directory path
     QString appDir = QDir::currentPath();
     appDir += "/../../json";
-    QString fileName = QFileDialog::getSaveFileName(this,\
-                                tr("Save current log"),\
-                                    settings.value("logPreferences/logPath", appDir).toString(),\
+    QString fileName = QFileDialog::getSaveFileName(this, \
+                                tr("Save current log"), \
+                                    settings.value("logPreferences/logPath", appDir).toString(), \
                                     tr("Log File (*.json);;All files (*)"));
 
     if (!fileName.isEmpty()) {
@@ -225,12 +228,12 @@ void LogAnalyzerDialog::removeEntries() {
  * switches parentModel (live log model) and model (logs loaded from files)
  */
 void LogAnalyzerDialog::switchSource() {
-    if (this->liveLogButton->isChecked()){
+    if (this->liveLogButton->isChecked()) {
         proxyModel->setSourceModel(parentModel);
         historyBox->setDisabled(true);
         loadButton->setDisabled(true);
         saveButton->setDisabled(true);
-        if (((LogModel*)parentModel)->getCurrentLog().isEmpty())
+        if (((LogModel *) parentModel)->getCurrentLog().isEmpty())
             saveAsButton->setDisabled(true);
         else
             saveAsButton->setDisabled(false);
@@ -245,7 +248,7 @@ void LogAnalyzerDialog::switchSource() {
  * invoked, when file history combo box selection changes
  */
 void LogAnalyzerDialog::checkIndex() {
-    if (historyBox->currentText() == fileDialogLabel){
+    if (historyBox->currentText() == fileDialogLabel) {
         // only loading possible, table view is blank
         loadButton->setDisabled(false);
         saveButton->setDisabled(true);
@@ -269,7 +272,7 @@ void LogAnalyzerDialog::saveSettings() {
     settings.setValue("logAnalyzer/liveButton", liveLogButton->isChecked());
     QStringList filePaths;
     historyBox->removeItem(historyBox->findText(fileDialogLabel));
-    for(int i=0; i<historyBox->count(); i++)
+    for (int i = 0; i < historyBox->count(); i++)
         filePaths.append(historyBox->itemText(i));
     settings.setValue("logAnalyzer/historyFiles", filePaths);
 }
@@ -277,47 +280,47 @@ void LogAnalyzerDialog::saveSettings() {
 /**
  * loads state of radio button and combo box entries, when log analyzer dialog starts
  */
-void LogAnalyzerDialog::loadSettings(){
+void LogAnalyzerDialog::loadSettings() {
     liveLogButton->setChecked(settings.value("logAnalyzer/liveButton", true).toBool());
     QStringList pathList = settings.value("logAnalyzer/historyFiles").toStringList();
     historyBox->addItems(pathList);
-    historyBox->insertItem(0,fileDialogLabel);
-    maxFileNumber = settings.value("logPreferences/fileNumber",INT_MAX).toInt();
+    historyBox->insertItem(0, fileDialogLabel);
+    maxFileNumber = settings.value("logPreferences/fileNumber", INT_MAX).toInt();
 }
 
-void LogAnalyzerDialog::updateGraph(){
+void LogAnalyzerDialog::updateGraph() {
     int numTotal = tableView->model()->rowCount();
 
     std::array<int, 6> loglevelCount = {0, 0, 0, 0, 0, 0};
 
-    QStringList loglevel ={ "Ack" , "Critical" , "Error" , "Warning" , "Info" , "Debug"};
+    QStringList loglevel = {"Ack", "Critical", "Error", "Warning", "Info", "Debug"};
 
     graphicsView->clearGraph();
 
     int yMax = 0;
     int stepSize;
     int unit;
-    getStepSize(stepSize,unit);
+    getStepSize(stepSize, unit);
     int step = 0;
 
     if (numTotal > 0) {
         QString text;
         QDateTime time;
         getTimeAndText(0, numTotal, time, text);
-        time = unit==0? time.addMSecs(stepSize): time.addSecs(stepSize);
+        time = unit == 0 ? time.addMSecs(stepSize) : time.addSecs(stepSize);
 
         for (int row = 0; row < numTotal; ++row) {
             QDateTime newTime;
-            getTimeAndText(row,numTotal, newTime, text);
+            getTimeAndText(row, numTotal, newTime, text);
 
             if (newTime > time) {
-                graphicsView->setTick( loglevelCount, yMax, unit, step);
+                graphicsView->setTick(loglevelCount, yMax, unit, step);
                 loglevelCount = {0, 0, 0, 0, 0, 0};
 
                 auto diffInMs = time.msecsTo(newTime);
-                auto diffInSteps = unit==0? diffInMs: ceil(diffInMs/1000.0);
-                diffInSteps = ceil(diffInSteps/(1.0*stepSize))*stepSize;
-                time = unit==0? time.addMSecs(diffInSteps): time.addSecs(diffInSteps);
+                auto diffInSteps = unit == 0 ? diffInMs : ceil(diffInMs / 1000.0);
+                diffInSteps = ceil(diffInSteps / (1.0 * stepSize)) * stepSize;
+                time = unit == 0 ? time.addMSecs(diffInSteps) : time.addSecs(diffInSteps);
                 step += diffInSteps;
             }
             int loglevelInd = loglevel.indexOf(text);
@@ -325,18 +328,18 @@ void LogAnalyzerDialog::updateGraph(){
                 loglevelCount[loglevelInd]++;
             }
         }
-        graphicsView->setTick(  loglevelCount, yMax, unit, step);
+        graphicsView->setTick(loglevelCount, yMax, unit, step);
     }
     graphicsView->fillGraph(unit, yMax);
 }
 
 
-void LogAnalyzerDialog::getStepSize(int &stepSize, int &unitInd){
+void LogAnalyzerDialog::getStepSize(int &stepSize, int &unitInd) {
     int step = this->spinBox->value();
-    int unit =  1;
+    int unit = 1;
 
     unitInd = this->comboBox_3->currentIndex();
-    switch(unitInd){
+    switch (unitInd) {
         case 0:     //ms in ms
             break;
         case 1:     //s in s
@@ -348,11 +351,11 @@ void LogAnalyzerDialog::getStepSize(int &stepSize, int &unitInd){
         default:
             break;
     }
-    stepSize = step*unit;
+    stepSize = step * unit;
 }
 
-void LogAnalyzerDialog::getTimeAndText(int row, int numTotal, QDateTime &time, QString &text){
-    int r = this->liveLogButton->isChecked()? numTotal-1-row: numTotal-1-row;
+void LogAnalyzerDialog::getTimeAndText(int row, int numTotal, QDateTime &time, QString &text) {
+    int r = this->liveLogButton->isChecked() ? numTotal - 1 - row : numTotal - 1 - row;
     QModelIndex indTime = tableView->model()->index(r, 0, QModelIndex());
     QString textTime = tableView->model()->data(indTime, Qt::DisplayRole).toString();
     QModelIndex ind = tableView->model()->index(r, 1, QModelIndex());
@@ -379,18 +382,18 @@ void LogAnalyzerDialog::resetFilterList(QListWidget *filterList) {
 
 }
 
-void LogAnalyzerDialog::updateMetadata(){
+void LogAnalyzerDialog::updateMetadata() {
     int numTotal = tableView->model()->rowCount();
-    std::array <int, 6> loglevelCount = {0,0,0,0,0,0};
+    std::array<int, 6> loglevelCount = {0, 0, 0, 0, 0, 0};
 
-    QStringList loglevel = { "Ack", "Critical" , "Error" , "Warning" , "Info" ,"Debug"};
+    QStringList loglevel = {"Ack", "Critical", "Error", "Warning", "Info", "Debug"};
 
-    for (int row = 0; row < numTotal; ++row){
-        QModelIndex ind = tableView->model()->index(row,1, QModelIndex());
-        QString text = tableView->model()->data(ind,Qt::DisplayRole).toString();
-           int  loglevelInd = loglevel.indexOf(text);
-           if(loglevelInd >=0 && loglevelInd<loglevelCount.size()){
-               loglevelCount[loglevelInd] ++;
+    for (int row = 0; row < numTotal; ++row) {
+        QModelIndex ind = tableView->model()->index(row, 1, QModelIndex());
+        QString text = tableView->model()->data(ind, Qt::DisplayRole).toString();
+        int loglevelInd = loglevel.indexOf(text);
+        if (loglevelInd >= 0 && loglevelInd < loglevelCount.size()) {
+            loglevelCount[loglevelInd]++;
         }
     }
     this->label_total->setText(QVariant(numTotal).toString());
@@ -402,3 +405,10 @@ void LogAnalyzerDialog::updateMetadata(){
     this->label_debug->setText(QVariant(loglevelCount[5]).toString());
 }
 
+void LogAnalyzerDialog::handleHelpButtonClicked() {
+    QMessageBox::information(this, "Help", "The Payload-searchbar supports all standard Regex or Keywords.\n"
+                                        "For detailed Information checkout: \n"
+                                        "https://doc.qt.io/archives/qt-4.8/qregexp.html");
+
+
+}

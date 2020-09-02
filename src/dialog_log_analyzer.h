@@ -57,6 +57,7 @@ public slots:
     void setFilter();
     void updateMetadata();
     void resetFilter();
+    void handleHelpButtonClicked();
 };
 
 

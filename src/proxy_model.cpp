@@ -47,14 +47,8 @@ bool ProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_pare
     context = ((contextFilter.contains(sourceModel()->data(index3).toString(), Qt::CaseInsensitive)) or
                contextFilter.isEmpty());
 
-    //payloads from "ACK" Log Levels shall not be checked, because of no guarantee of it being a string
-    if (payloadFilter.isEmpty())
-        payload = true;
-    else if (!(sourceModel()->data(index1).toString().contains("ACK", Qt::CaseInsensitive)))
-        payload = sourceModel()->data(index4).toString().contains(payloadFilter);
-
-    else
-        payload = false;
+    //checking whether payloadEntry shall be accepted by pattern or no Filter selected
+    payload = sourceModel()->data(index4).toString().contains(payloadFilter) or payloadFilter.isEmpty();
 
 
     if (time and logLevel and source and context and payload)

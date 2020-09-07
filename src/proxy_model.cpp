@@ -55,6 +55,11 @@ void ProxyModel::setFilter(QStringList logLevelList, QStringList sourceList, QSt
 
 }
 
+void ProxyModel::setFilter(QStringList logLevelList) {
+    logLevelFilter = logLevelList;
+    invalidateFilter();
+}
+
 
 
 

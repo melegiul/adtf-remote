@@ -14,6 +14,8 @@ public:
 
     void setFilter(QStringList logLevelList, QStringList sourceList, QStringList contextList, QString payloadString);
 
+    void setFilter(QStringList logLevelList);
+
 private:
     QStringList logLevelFilter;
     QStringList sourceFilter;

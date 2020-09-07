@@ -10,6 +10,7 @@
 #include "Map/ContentManager.hpp"
 //#include "log_serialization.h"
 #include "log_model.h"
+#include "proxy_model.h"
 
 class NetworkClient;
 
@@ -164,7 +165,7 @@ private slots:
     void handleStopACK();
     void handleAbortClick();
     void handleAbortACK();
-
+    void handleLogLevelFilterSelection();
 
 private:
     QGraphicsScene *scene = nullptr;
@@ -220,6 +221,7 @@ private:
     NavigationMarkerItem *navMarkerItem = nullptr;
     QNavigationMarkerListWidgetItem *navMarkerListWidgetItem = nullptr;
     LogModel *logModel;
+    ProxyModel *logProxyModel;
     int offset = 0;
 };
 

@@ -6,9 +6,7 @@
 #include <QStringListModel>
 #include <QList>
 #include <stdexcept>
-
 #include <QSortFilterProxyModel>
-
 
 #include "ui_dialog_log_analyzer.h"
 //#include "log_serialization.h"
@@ -36,6 +34,7 @@ private:
     QStringList *modelList = new QStringList();
     void removeEntries();
     QStringList getFilterList(QListWidget* filterList);
+    void resetFilterList(QListWidget* filterList);
 
 
     void getStepSize(int &stepSize, int &unit_ind);
@@ -43,7 +42,6 @@ private:
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
-
 
 public slots:
     void handleLoadButtonClicked();
@@ -53,9 +51,11 @@ public slots:
     void saveSettings();
     void checkIndex();
     void updateGraph();
-    void handleApplyButtonClicked();
+    void setFilter();
     void updateMetadata();
+    void handleExportGraphClicked();
+    void resetFilter();
+    void handleHelpButtonClicked();
 };
-
 
 #endif //DIALOG_LOG_ANALYZER_H

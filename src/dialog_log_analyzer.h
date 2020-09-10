@@ -34,6 +34,7 @@ private:
     QStringList *modelList = new QStringList();
     void removeEntries();
     QStringList getFilterList(QListWidget* filterList);
+    void resetFilterList(QListWidget* filterList);
 
 
     void getStepSize(int &stepSize, int &unit_ind);
@@ -50,9 +51,11 @@ public slots:
     void saveSettings();
     void checkIndex();
     void updateGraph();
-    void handleApplyButtonClicked();
+    void setFilter();
     void updateMetadata();
     void handleExportGraphClicked();
+    void resetFilter();
+    void handleHelpButtonClicked();
 };
 
 #endif //DIALOG_LOG_ANALYZER_H

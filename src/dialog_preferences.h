@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QMessageBox>
-
+#include <QSettings>
 #include "ui_dialog_preferences.h"
 
 class PreferencesDialog : public QDialog, public Ui_dialog_preferences {

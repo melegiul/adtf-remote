@@ -4,6 +4,7 @@
 #include <QtCharts/QChart>
 #include "log_chart_view.h"
 #include <QtDebug>
+#include <QtSvg/QSvgGenerator>
 
 LogChartView::LogChartView(QWidget *parent = nullptr) {
     series = new QStackedBarSeries();
@@ -65,7 +66,6 @@ void LogChartView::clearGraph(){
     set4 = new QBarSet("INFO");
     set5 = new QBarSet("DEBUG");
 
-
     set0->setColor(QColor::fromRgb(35,103,151));
     set1->setColor(QColor::fromRgb(210,109,35));
     set2->setColor(QColor::fromRgb(151,35,35));
@@ -101,5 +101,26 @@ void LogChartView::fillGraph(int unit, int yMax) {
     }
     axisX->setTitleText(QString("t in %1").arg(unitTxt));
     axisY->setRange(0,yMax);
+}
 
+void LogChartView::exportGraphAsSvg(QString fileName) {
+    QString appDir = QDir::currentPath();
+    if (fileName != NULL)
+        appDir += "/../../export/" + fileName + ".svg";
+    else
+        appDir += "/../../export/log_graph.svg";
+
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Save SVG"),
+                                                appDir, tr("SVG files (*.svg)"));
+
+    QSvgGenerator generator;
+    generator.setFileName(path);
+    generator.setSize(chart->size().toSize());
+    generator.setViewBox(chart->rect());
+
+    QPainter painter;
+    painter.begin(&generator);
+    chart->scene()->render(&painter, chart->rect(), chart->rect());
+    painter.end();
 }

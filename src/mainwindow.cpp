@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->start_rc_button, SIGNAL(clicked()), this, SLOT(handleStartRCClick()));
     connect(ui->running_stop_button, SIGNAL(clicked()), this, SLOT(handleStopClick()));
     connect(ui->abort_button, SIGNAL(clicked()), this, SLOT(handleAbortClick()));
+    connect(ui->loglevel_filter_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelFilterSelection()));
 
     // view tab related code
     ui->tabWidget->setCurrentIndex(0);
@@ -86,8 +87,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->drivingTasksListWidget->setVerticalScrollBarPolicy((Qt::ScrollBarAsNeeded));
 
     logModel = new LogModel(this);
+    logProxyModel = new ProxyModel(this);
+    logProxyModel->setSourceModel(logModel);
 
-    ui->logTableView->setModel(logModel);
+    ui->logTableView->setModel(logProxyModel);
     ui->logTableView->setColumnWidth(0, 200);
     ui->logTableView->horizontalHeader()->setStretchLastSection(true);
     ui->logTableView->viewport()->installEventFilter(new QToolTipper(ui->logTableView));
@@ -1088,6 +1091,40 @@ void MainWindow::handleLogLevelSelection(){
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
+}
+
+void MainWindow::handleLogLevelFilterSelection() {
+
+    QString text = ui->loglevel_filter_combo->currentText();
+    QStringList list;
+    if(text == "DEBUG") {
+        list.append("DEBUG");
+        list.append("INFO");
+        list.append("WARNING");
+        list.append("ERROR");
+        list.append("CRITICAL");
+        list.append("ACK");
+        logProxyModel->setFilter(list);
+    }else if (text == "INFO") {
+        list.append("INFO");
+        list.append("WARNING");
+        list.append("ERROR");
+        list.append("CRITICAL");
+        list.append("ACK");
+        logProxyModel->setFilter(list);
+    } else if (text == "WARNING") {
+        list.append("WARNING");
+        list.append("ERROR");
+        list.append("CRITICAL");
+        list.append("ACK");
+        logProxyModel->setFilter(list);
+    } else if (text == "ERROR") {
+        list.append("ERROR");
+        list.append("CRITICAL");
+        list.append("ACK");
+        logProxyModel->setFilter(list);
+    }
+    list.clear();
 }
 
 void MainWindow::handleLogLevelACK() {

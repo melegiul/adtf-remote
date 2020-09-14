@@ -190,14 +190,13 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString d
     } else {
         // save buttons in log analyzer dialog retrieve a user defined file name containing the absolute path
         filePath = fileName.toStdString();
-
     }
     QFile saveFile(filePath.data());
     if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
         qWarning("log_model.cpp-saveLog(): Could not open save file.");
         return;
     }
-    LogSerialization::writeJson(logVector, saveFile, maxFileNumber);
+//    LogSerialization::writeJson(logVector, saveFile, maxFileNumber);
     saveFile.close();
 }
 
@@ -206,12 +205,12 @@ void LogModel::saveLog(QList<QStringList> &logList, int maxFileNumber, QString d
  * @param fileName absolute file name
  * @return entries of log file
  */
-QList<QStringList> LogModel::loadLog(QString fileName) {
-    QFile jsonFile(fileName);
-    if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
-        qWarning("log_model.cpp-loadLog(): Could not open file");
-    }
-    QByteArray data = jsonFile.readAll();
-    jsonFile.close();
-    return LogSerialization::readJson(data);
-}
+//QList<QStringList> LogModel::loadLog(QString fileName) {
+//    QFile jsonFile(fileName);
+//    if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
+//        throw std::runtime_error("log_model.cpp-loadLog(): Could not open file");
+//    }
+//    QByteArray data = jsonFile.readAll();
+//    jsonFile.close();
+//    return LogSerialization::readJson(data);
+//}

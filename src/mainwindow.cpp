@@ -1567,8 +1567,7 @@ void MainWindow::automaticSave(string buttonLabel){
         // retrieve cmake-build-debug directory path
         QString appDir = QDir::currentPath();
         appDir += "/../../json";
-        logModel->saveLog(logModel->getCurrentLog(), \
-                          maxFileNumber, \
+        logProxyModel->saveLog(maxFileNumber, \
                           settings.value("logPreferences/logPath", appDir).toString(), \
                           QString(), \
                           offset);

@@ -31,11 +31,11 @@ private:
     LogModel *sourceModel;
     LogModel *parentModel;
     ProxyModel *proxyModel;
-    QStringList *modelList = new QStringList();
-    void removeEntries();
     QStringList getFilterList(QListWidget* filterList);
     void resetFilterList(QListWidget* filterList);
-
+    void setGuiFilter();
+    void setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter);
+    void resetGuiFilter();
 
     void getStepSize(int &stepSize, int &unit_ind);
     void getTimeAndText(int row, int numTotal, QDateTime &time, QString &text);

@@ -141,7 +141,9 @@ void LogAnalyzerDialog::resetFilter() {
     setFilter();
 }
 
-
+/**
+ * displays the log filter of the current loaded log file on screen
+ */
 void LogAnalyzerDialog::setGuiFilter(){
     minDateTimeEdit->setDateTime(proxyModel->getMinTime());
     maxDateTimeEdit->setDateTime(proxyModel->getMaxTime());
@@ -151,15 +153,26 @@ void LogAnalyzerDialog::setGuiFilter(){
     payloadLineEdit->setText(proxyModel->getPayloadFilter().pattern());
 }
 
+/**
+ * iterates over all item of filterList and set checkboxes according to filter data of the loaded log file
+ * @param filterList list widget with checkboxes to set
+ * @param currentProxyFilter list of filters, read from the log file
+ */
 void LogAnalyzerDialog::setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter){
     for (QString proxyFilter: currentProxyFilter){
+        // for all filters of the log file
         for (int i=0; i<filterList->count(); i++){
+            // iterate over all items of the according gui widget
             if (filterList->item(i)->text() == proxyFilter)
                 filterList->item(i)->setCheckState(Qt::Checked);
         }
     }
 }
 
+/**
+ * clears just the gui filter setting (not the filter of proxy model attributes)
+ * to prepare for setting the filter according to loaded file
+ */
 void LogAnalyzerDialog::resetGuiFilter(){
     minDateTimeEdit->setDateTime(minDateTimeEdit->minimumDateTime());
     maxDateTimeEdit->setDateTime(maxDateTimeEdit->maximumDateTime());

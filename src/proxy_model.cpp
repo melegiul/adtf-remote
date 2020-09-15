@@ -74,7 +74,7 @@ void ProxyModel::setFilter(QStringList logLevelList) {
 /**
  * first retrieves settings for predefined memory location
  * then writes to json file and ensures the max file number limitation
- * @param logList list of current log entries in the mainwindow model
+ * @param logList list of current log entries in the model
  */
 void ProxyModel::saveLog(int maxFileNumber, QString defaultPath, QString fileName, int offset) {
     QVector<QStringList> logVector = ((LogModel*)this->sourceModel())->getCurrentLog().toVector();
@@ -86,7 +86,7 @@ void ProxyModel::saveLog(int maxFileNumber, QString defaultPath, QString fileNam
         // main window: automatic save calls function without file name
         QDir dir = QDir(defaultPath);
         if (!dir.exists()) {
-            // creates default directory if no path is set
+            // creates default directory if folder does not exist
             dir.cdUp();
             dir.mkdir("json");
         }
@@ -97,15 +97,13 @@ void ProxyModel::saveLog(int maxFileNumber, QString defaultPath, QString fileNam
         // sets auto generated file name to current date
         strftime(fileNameGen, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
         filePath = logPath + fileNameGen;
-//        logName = fileNameGen;
-//        logName = logName.remove(".json");
     } else {
         // save buttons in log analyzer dialog retrieve a user defined file name containing the absolute path
         filePath = fileName.toStdString();
     }
     QFile saveFile(filePath.data());
     if(!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qWarning("log_model.cpp-saveLog(): Could not open save file.");
+        qWarning("proxy_model.cpp-saveLog(): Could not open save file.");
         return;
     }
     LogSerialization objectToJson(this->minTime,
@@ -119,7 +117,7 @@ void ProxyModel::saveLog(int maxFileNumber, QString defaultPath, QString fileNam
 }
 
 /**
- * opens specified file and reads content
+ * opens specified file, reads content and sets the corresponding proxy model attributes
  * @param fileName absolute file name
  * @return entries of log file
  */
@@ -127,7 +125,7 @@ QList<QStringList> ProxyModel::loadLog(QString fileName) {
     QList<QStringList> logData;
     QFile jsonFile(fileName);
     if (!jsonFile.open(QFile::ReadOnly | QFile::Text)) {
-        throw std::runtime_error("log_model.cpp-loadLog(): Could not open file");
+        throw std::runtime_error("proxy_model.cpp-loadLog(): Could not open file");
     }
     QByteArray data = jsonFile.readAll();
     jsonFile.close();

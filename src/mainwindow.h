@@ -115,6 +115,7 @@ private:
     void sendtSignalValueSteer();
     void sendtSignalValueSpeed();
     void automaticSave(string buttonLabel);
+    void closeEvent(QCloseEvent* event) override;
 
 signals:
     void nearfieldGridMapUpdated();

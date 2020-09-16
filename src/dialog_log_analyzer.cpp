@@ -414,8 +414,17 @@ void LogAnalyzerDialog::handleExportGraphClicked() {
 }
 
 void LogAnalyzerDialog::handleHelpButtonClicked() {
-    QMessageBox::information(this, "Help", "The Payload-searchbar supports all standard Regex or Keywords.\n"
-                                        "For detailed Information checkout: \n"
-                                        "https://doc.qt.io/archives/qt-4.8/qregexp.html");
+
+
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Help");
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText("The Payload-searchbar supports all standard Regex or Keywords.<br>"
+                   "For detailed Information checkout:<br>"
+                   "<a href='https://doc.qt.io/archives/qt-4.8/qregexp.html'>https://doc.qt.io/archives/qt-4.8/qregexp.html</a>");
+    msgBox.exec();
+
 
 }

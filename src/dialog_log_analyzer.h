@@ -44,7 +44,7 @@ private:
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
-    void getMedian(int &median, int &min, int &max, std::vector <int> numbers);
+    void getMedianAndMean(double &median, double &mean, int &min, int &max, std::vector <int> numbers);
 
 
 

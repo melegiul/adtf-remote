@@ -81,10 +81,6 @@ void LogChartView::clearGraph(){
     series->detachAxis(axisX);
     series->detachAxis(axisY);
 
-
-
-
-
     chart->zoomReset();
 }
 
@@ -100,12 +96,11 @@ void LogChartView::fillGraph(int unit, int yMax) {
     series->attachAxis(axisX);
     series->attachAxis(axisY);
 
-    axisX->setTitleText(QString("t in %1").arg(unit ==0?"mm:ss:zzz":unit==1?"mm:ss":"mm"));
+    axisX->setTitleText(QString("t in %1").arg(unit ==0?"min:s:ms":unit==1?"min:s":"min"));
     axisY->setRange(0,yMax);
 
     QFont font;
     font.setPixelSize(11);
     axisX->setLabelsFont(font);
-
 
 }

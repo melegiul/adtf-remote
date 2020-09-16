@@ -9,6 +9,8 @@
 #include <QFile>
 #include <iostream>
 
+#include <cmath>
+
 
 #include <array>
 #include <QtCore/QDateTime>
@@ -18,6 +20,8 @@
 #include "qtooltipper.h"
 #include "mainwindow.h"
 #include "log_chart_view.h"
+
+
 
 LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
     this->setupUi(this);
@@ -269,18 +273,21 @@ void LogAnalyzerDialog::loadSettings(){
     maxFileNumber = settings.value("logPreferences/fileNumber",INT_MAX).toInt();
 }
 
+
+/**
+ * Generates the graph from the current tableView entries according to the tick size settings.
+ */
 void LogAnalyzerDialog::updateGraph(){
     int numTotal = tableView->model()->rowCount();
 
     std::array<int, 6> loglevelCount = {0, 0, 0, 0, 0, 0};
-
     QStringList loglevel ={ "Ack" , "Critical" , "Error" , "Warning" , "Info" , "Debug"};
 
     graphicsView->clearGraph();
 
     int yMax = 0;
     int stepSize;
-    int unit;
+    int unit;  // 0 -> ms, 1 -> s, 2 -> min
     getStepSize(stepSize,unit);
     int step = 0;
 
@@ -289,21 +296,26 @@ void LogAnalyzerDialog::updateGraph(){
         QDateTime time;
         getTimeAndText(0, numTotal, time, text);
         time = unit==0? time.addMSecs(stepSize): time.addSecs(stepSize);
+        time = time.addMSecs(-1);
 
-        for (int row = 0; row < numTotal; row++) {
+        for (int row = 0; row < numTotal; ++row) {
             QDateTime newTime;
             getTimeAndText(row,numTotal, newTime, text);
 
-            if (newTime >= time) {
+
+            if (newTime > time) {
+                // new tick
                 graphicsView->setTick( loglevelCount, yMax, unit, step);
                 loglevelCount = {0, 0, 0, 0, 0, 0};
 
+                // get new tick time according to step size
                 auto diffInMs = time.msecsTo(newTime);
                 auto diffInSteps = unit==0? diffInMs: ceil(diffInMs/1000.0);
                 diffInSteps = ceil(diffInSteps/(1.0*stepSize))*stepSize;
                 time = unit==0? time.addMSecs(diffInSteps): time.addSecs(diffInSteps);
                 step += diffInSteps;
             }
+
             int loglevelInd = loglevel.indexOf(text);
             if (loglevelInd >= 0 && loglevelInd < loglevelCount.size()) {
                 loglevelCount[loglevelInd]++;
@@ -336,7 +348,7 @@ void LogAnalyzerDialog::getStepSize(int &stepSize, int &unitInd){
 }
 
 void LogAnalyzerDialog::getTimeAndText(int row, int numTotal, QDateTime &time, QString &text){
-    int r = this->liveLogButton->isChecked()? numTotal-1-row: numTotal-1-row;
+    int r = numTotal-1-row;
     QModelIndex indTime = tableView->model()->index(r, 0, QModelIndex());
     QString textTime = tableView->model()->data(indTime, Qt::DisplayRole).toString();
     QModelIndex ind = tableView->model()->index(r, 1, QModelIndex());
@@ -355,6 +367,10 @@ QStringList LogAnalyzerDialog::getFilterList(QListWidget *filterList) {
     return entries;
 }
 
+/**
+ *  Gets the number of messages for different loglevels and minimum, maximum, mean and median of the time between two messages
+ */
+
 void LogAnalyzerDialog::updateMetadata(){
     int numTotal = tableView->model()->rowCount();
     std::array <int, 6> loglevelCount = {0,0,0,0,0,0};
@@ -369,26 +385,27 @@ void LogAnalyzerDialog::updateMetadata(){
         QDateTime time;
         getTimeAndText(row, numTotal, time, text);
 
-
+        // gets time between every two consecutive log messages
         if(row == 0){
             old_time = QDateTime(time);
         }else{
             int diff = old_time.msecsTo(time);
             diffs.push_back(diff);
             old_time = QDateTime(time);
-
         }
-           int  loglevelInd = loglevel.indexOf(text);
 
-           if(loglevelInd >=0 && loglevelInd<loglevelCount.size()){
-               loglevelCount[loglevelInd] ++;
-           }
+        int  loglevelInd = loglevel.indexOf(text);
+        if(loglevelInd >=0 && loglevelInd<loglevelCount.size()){
+            loglevelCount[loglevelInd] ++;
+        }
     }
 
-    int median;
+    double median;
+    double mean;
     int max;
     int min;
-    getMedian(median, min, max, diffs);
+
+    getMedianAndMean(median, mean,min, max, diffs);
     this->label_total->setText(QVariant(numTotal).toString());
     this->label_ack->setText(QVariant(loglevelCount[0]).toString());
     this->label_critical->setText(QVariant(loglevelCount[1]).toString());
@@ -398,16 +415,18 @@ void LogAnalyzerDialog::updateMetadata(){
     this->label_debug->setText(QVariant(loglevelCount[5]).toString());
     this->label_min->setText(QVariant(min).toString());
     this->label_max->setText(QVariant(max).toString());
+    this->label_mean->setText(QVariant(mean).toString());
     this->label_median->setText(QVariant(median).toString());
 }
 
 
-void LogAnalyzerDialog::getMedian(int &median, int &min, int &max, vector<int> numbers){
+void LogAnalyzerDialog::getMedianAndMean(double &median, double &mean, int &min, int &max, vector<int> numbers){
     size_t size = numbers.size();
     if(size ==0){
         median =-1;
         min = -1;
         max = -1;
+        mean = -1;
         return;
     } else {
         std::sort(numbers.begin(), numbers.end());
@@ -418,5 +437,7 @@ void LogAnalyzerDialog::getMedian(int &median, int &min, int &max, vector<int> n
         }
         min = numbers.front();
         max = numbers.back();
+        mean = accumulate(numbers.begin(), numbers.end(), 0.0)/size;
+        mean = std::round(mean*10)/10.0;
     }
 }

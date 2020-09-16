@@ -57,7 +57,7 @@ bool ProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_pare
     return false;
 }
 /**
-* updates all filter by which the entries willbe filtered
+* updates all filter by which the entries will be filtered
 */
 void
 ProxyModel::setFilter(QDateTime minTimeEntry, QDateTime maxTimeEntry, QStringList logLevelList, QStringList sourceList,

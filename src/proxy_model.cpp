@@ -7,7 +7,11 @@ ProxyModel::ProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
     payloadFilter.setCaseSensitivity(Qt::CaseInsensitive);
     payloadFilter.setPatternSyntax(QRegExp::RegExp);
 }
-
+/**
+* function to check whether a row of the data shall be shown
+ * returns true if row is accepted and false if not
+ *
+*/
 bool ProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
 
     QModelIndex index0;
@@ -52,7 +56,9 @@ bool ProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_pare
         return true;
     return false;
 }
-
+/**
+* updates all filter by which the entries willbe filtered
+*/
 void
 ProxyModel::setFilter(QDateTime minTimeEntry, QDateTime maxTimeEntry, QStringList logLevelList, QStringList sourceList,
                       QStringList contextList,

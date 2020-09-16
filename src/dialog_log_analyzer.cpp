@@ -32,7 +32,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->historyBox, SIGNAL(activated(int)), this, SLOT(checkIndex()));
     connect(this, SIGNAL(rejected()), this, SLOT(saveSettings()));
 
-    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
     connect(this->exportGraphButton, SIGNAL(clicked()), this, SLOT(handleExportGraphClicked()));
 
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
@@ -78,6 +77,9 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
 
     updateGraph();
     updateMetadata();
+    initTimeStamp();
+    setFilter();
+
 }
 
 /**
@@ -121,16 +123,20 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
         }
     }
 }
-
+/**
+* sets all filter by which the entries will be filtered
+*/
 void LogAnalyzerDialog::setFilter() {
     proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(), getFilterList(logLevelListWidget),
                           getFilterList(sourceListWidget),
                           getFilterList(contextListWidget), payloadLineEdit->text());
 
 }
-
+/**
+* resets all filter by which the entries will be filtered
+*/
 void LogAnalyzerDialog::resetFilter() {
-    minDateTimeEdit->setDateTime(minDateTimeEdit->minimumDateTime());
+    minDateTimeEdit->setDateTime(getminDateTime());
     maxDateTimeEdit->setDateTime(maxDateTimeEdit->maximumDateTime());
     resetFilterList(logLevelListWidget);
     resetFilterList(sourceListWidget);
@@ -246,6 +252,10 @@ void LogAnalyzerDialog::switchSource() {
         historyBox->setDisabled(false);
         checkIndex();
     }
+    if((this->dateTimeinit == false)){
+        initTimeStamp();
+    }
+
 }
 
 /**
@@ -385,6 +395,29 @@ void LogAnalyzerDialog::resetFilterList(QListWidget *filterList) {
     }
 
 }
+/**
+* initializes the timestamp of the datetimeedit to the minimum datetime of the sourcemodel data
+*/
+void LogAnalyzerDialog::initTimeStamp(){
+    QDateTime minDate = getminDateTime();
+    if(!minDate.isNull()) {
+        minDateTimeEdit->setDateTime(minDate);
+        this->dateTimeinit = true;
+    }
+
+
+}
+/**
+* returns the minimum datetime of the sourcemodel data
+*/
+QDateTime LogAnalyzerDialog::getminDateTime()
+{
+    int lastrow = (proxyModel->sourceModel()->rowCount())-1;
+    QModelIndex index = proxyModel->sourceModel()->index(lastrow, 0, QModelIndex());
+    QDateTime minDate;
+    minDate = QDateTime::fromString(proxyModel->sourceModel()->data(index).toString(), "dd.MM.yyyy HH:mm:ss:zzz");
+    return minDate;
+}
 
 void LogAnalyzerDialog::updateMetadata() {
     int numTotal = tableView->model()->rowCount();
@@ -413,6 +446,9 @@ void LogAnalyzerDialog::handleExportGraphClicked() {
     graphicsView->exportGraphAsSvg(parentModel->logName);
 }
 
+/**
+* opens a help messagebox with a link to further documentation
+*/
 void LogAnalyzerDialog::handleHelpButtonClicked() {
 
 

@@ -27,21 +27,25 @@ private:
     void addEntries(QList<QStringList> logList);
     void clearModel();
     void updateFileHistory(QString fileName);
-
+    
     LogModel *sourceModel;
     LogModel *parentModel;
     ProxyModel *proxyModel;
-    QStringList *modelList = new QStringList();
-    void removeEntries();
     QStringList getFilterList(QListWidget* filterList);
     void resetFilterList(QListWidget* filterList);
 
+    void setGuiFilter();
+    void setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter);
+    void resetGuiFilter();
+
+    QDateTime getminDateTime();
 
     void getStepSize(int &stepSize, int &unit_ind);
     void getTimeAndText(int row, int numTotal, QDateTime &time, QString &text);
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
+    void getMedianAndMean(double &median, double &mean, int &min, int &max, std::vector <int> numbers);
 
 public slots:
     void handleLoadButtonClicked();
@@ -56,6 +60,7 @@ public slots:
     void handleExportGraphClicked();
     void resetFilter();
     void handleHelpButtonClicked();
+    void initTimeStamp();
 };
 
 #endif //DIALOG_LOG_ANALYZER_H

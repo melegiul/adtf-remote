@@ -339,11 +339,21 @@
                <property name="keyboardTracking">
                 <bool>false</bool>
                </property>
+               <property name="dateTime">
+                <datetime>
+                 <hour>0</hour>
+                 <minute>0</minute>
+                 <second>0</second>
+                 <year>2000</year>
+                 <month>1</month>
+                 <day>1</day>
+                </datetime>
+               </property>
                <property name="date">
                 <date>
                  <year>2000</year>
-                 <month>9</month>
-                 <day>14</day>
+                 <month>1</month>
+                 <day>1</day>
                 </date>
                </property>
                <property name="maximumDateTime">
@@ -351,7 +361,7 @@
                  <hour>23</hour>
                  <minute>59</minute>
                  <second>59</second>
-                 <year>9999</year>
+                 <year>2100</year>
                  <month>12</month>
                  <day>31</day>
                 </datetime>
@@ -390,7 +400,7 @@
                  <hour>23</hour>
                  <minute>59</minute>
                  <second>59</second>
-                 <year>9999</year>
+                 <year>2100</year>
                  <month>12</month>
                  <day>31</day>
                 </datetime>
@@ -401,6 +411,40 @@
                  <minute>59</minute>
                  <second>59</second>
                 </time>
+               </property>
+               <property name="maximumDateTime">
+                <datetime>
+                 <hour>23</hour>
+                 <minute>59</minute>
+                 <second>59</second>
+                 <year>2100</year>
+                 <month>12</month>
+                 <day>31</day>
+                </datetime>
+               </property>
+               <property name="minimumDateTime">
+                <datetime>
+                 <hour>0</hour>
+                 <minute>0</minute>
+                 <second>0</second>
+                 <year>2000</year>
+                 <month>1</month>
+                 <day>1</day>
+                </datetime>
+               </property>
+               <property name="maximumDate">
+                <date>
+                 <year>2100</year>
+                 <month>12</month>
+                 <day>31</day>
+                </date>
+               </property>
+               <property name="minimumDate">
+                <date>
+                 <year>2000</year>
+                 <month>1</month>
+                 <day>1</day>
+                </date>
                </property>
                <property name="currentSection">
                 <enum>QDateTimeEdit::DaySection</enum>

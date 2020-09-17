@@ -33,9 +33,13 @@ private:
     ProxyModel *proxyModel;
     QStringList getFilterList(QListWidget* filterList);
     void resetFilterList(QListWidget* filterList);
+
     void setGuiFilter();
     void setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter);
     void resetGuiFilter();
+
+    bool dateTimeinit = false;
+    QDateTime getminDateTime();
 
     void getStepSize(int &stepSize, int &unit_ind);
     void getTimeAndText(int row, int numTotal, QDateTime &time, QString &text);
@@ -56,6 +60,7 @@ public slots:
     void handleExportGraphClicked();
     void resetFilter();
     void handleHelpButtonClicked();
+    void initTimeStamp();
 };
 
 #endif //DIALOG_LOG_ANALYZER_H

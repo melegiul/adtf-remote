@@ -27,7 +27,7 @@ private:
     void addEntries(QList<QStringList> logList);
     void clearModel();
     void updateFileHistory(QString fileName);
-
+    
     LogModel *sourceModel;
     LogModel *parentModel;
     ProxyModel *proxyModel;
@@ -38,7 +38,6 @@ private:
     void setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter);
     void resetGuiFilter();
 
-    bool dateTimeinit = false;
     QDateTime getminDateTime();
 
     void getStepSize(int &stepSize, int &unit_ind);
@@ -46,6 +45,7 @@ private:
     void setTick(  std::array<int, 6> &loglevelCount, int &yMax, int unit, int step);
     void clearGraph();
     void fillGraph(int unit, int yMax);
+    void getMedianAndMean(double &median, double &mean, int &min, int &max, std::vector <int> numbers);
 
 public slots:
     void handleLoadButtonClicked();

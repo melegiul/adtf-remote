@@ -54,7 +54,9 @@ void LogChartView::setTick(  std::array<int, 6> &loglevelCount, int &yMax, int u
 
     int msgCount = std::accumulate(loglevelCount.begin(), loglevelCount.end(),0);
     yMax = yMax>msgCount?yMax:msgCount;
-    categories.append(QVariant(unit !=2? step: ceil(step/60.0)).toString());
+    QDateTime time;
+    time = unit == 0?QDateTime::fromMSecsSinceEpoch(step):QDateTime::fromSecsSinceEpoch(step);
+    categories.append(time.toString(unit ==0?"mm:ss:zzz":unit==1?"mm:ss":"mm"));
 }
 
 void LogChartView::clearGraph(){
@@ -78,6 +80,7 @@ void LogChartView::clearGraph(){
     series->clear();
     series->detachAxis(axisX);
     series->detachAxis(axisY);
+
     chart->zoomReset();
 }
 
@@ -93,15 +96,14 @@ void LogChartView::fillGraph(int unit, int yMax) {
     series->attachAxis(axisX);
     series->attachAxis(axisY);
 
-    QString unitTxt = "ms";
-    if(unit== 1){
-        unitTxt = "s";
-    }else if(unit ==2){
-        unitTxt ="min";
-    }
-    axisX->setTitleText(QString("t in %1").arg(unitTxt));
+    axisX->setTitleText(QString("t in %1").arg(unit ==0?"min:s:ms":unit==1?"min:s":"min"));
     axisY->setRange(0,yMax);
+
+    QFont font;
+    font.setPixelSize(11);
+    axisX->setLabelsFont(font);
 }
+
 
 void LogChartView::exportGraphAsSvg(QString fileName) {
     QString appDir = QDir::currentPath();

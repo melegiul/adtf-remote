@@ -22,7 +22,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent)
     connect(this->fileDelimiter,SIGNAL(stateChanged(int)),this,SLOT(checkDelimiter()));
     connect(this->fileNumber,SIGNAL(editingFinished()),this,SLOT(checkEditor()));
 
-//    savePreferences();
     showPreferences();
     loadLogPreferences();
 }
@@ -61,6 +60,25 @@ void PreferencesDialog::showPreferences() {
     this->sb_left_far_y->setValue(carSettings.value("carview/leftfary", 600.0f).toFloat());
     this->sb_right_far_x->setValue(carSettings.value("carview/rightfarx", 300.0f).toFloat());
     this->sb_right_far_y->setValue(carSettings.value("carview/rightfary", 600.0f).toFloat());
+}
+
+/**
+ * loads settings into gui
+ */
+void PreferencesDialog::loadLogPreferences() {
+    QString stdPath = QDir::currentPath();
+    // retrieve cmake-build-debug directory path
+    QDir appDir = QDir::current();
+    // modify path to default location for saving logs
+    appDir.cdUp();
+    appDir.cdUp();
+    QString appDirPath = appDir.path() + "/json";
+    this->logPathLineEdit->setText(settings.value("logPreferences/logPath", appDirPath).toString());
+    settings.value("logPreferences/automaticSave") == QString("stop") ? \
+                    this->stopButton->setChecked(true): this->abortButton->setChecked(true);
+    this->fileDelimiter->setChecked(settings.value("logPreferences/fileDelimiter", false).toBool() ? true: false);
+    this->fileNumber->setText(fileDelimiter->isChecked() ? \
+                    settings.value("logPreferences/fileNumber").toString(): "");
 }
 
 void PreferencesDialog::savePreferences() {
@@ -123,10 +141,13 @@ void PreferencesDialog::handleChoosePathButton(){
  * enabling/disabling line editor for max file number
  */
 void PreferencesDialog::checkDelimiter(){
-    if (fileDelimiter->isChecked())
+    if (fileDelimiter->isChecked()) {
         fileNumber->setEnabled(true);
-    else
+        fileNumber->setText(settings.value("logPreferences/fileNumber", INT_MAX).toString());
+    }else {
         fileNumber->setEnabled(false);
+        fileNumber->clear();
+    }
 }
 
 /**
@@ -136,32 +157,21 @@ void PreferencesDialog::checkDelimiter(){
 void PreferencesDialog::checkEditor() {
     if (fileNumber->text().isEmpty()){
         QMessageBox::warning(this,"Line edit empty", "Reset max file number to default");
-        fileNumber->setText("100");
+        fileNumber->setText(std::to_string(INT_MAX).data());
     }
 }
 
 /**
- * loads settings in gui
- */
-void PreferencesDialog::loadLogPreferences() {
-    QString stdPath = QDir::currentPath();
-    this->logPathLineEdit->setText(settings.value("logPreferences/logPath").toString());
-    settings.value("logPreferences/automaticSave") == QString("stop") ? \
-                    this->stopButton->setChecked(true): this->abortButton->setChecked(true);
-    this->fileDelimiter->setChecked(settings.value("logPreferences/fileDelimiter", true).toBool() ? true: false);
-    this->fileNumber->setText(fileDelimiter->isChecked() ? \
-                    settings.value("logPreferences/fileNumber").toString(): "");
-}
-
-/**
- * saves settings
+ * saves settings and handle invalid user input
  */
 void PreferencesDialog::saveLogPreferences() {
     QString logPath = this->logPathLineEdit->text();
     QDir directory(logPath);
     if (!directory.exists() || logPath.isEmpty()) {
+        // enter if folder is not valid, does not apply changes
         QMessageBox::warning(this, "Warning", "Entered log path is not a valid directory!\nChanges were not applied");
     }else {
+        // enters if folder is valid and saves setting
         settings.setValue("logPreferences/logPath", this->logPathLineEdit->text());
     }
     settings.setValue("logPreferences/automaticSave", this->stopButton->isChecked() ? \

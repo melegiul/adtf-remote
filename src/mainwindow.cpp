@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->running_stop_button, SIGNAL(clicked()), this, SLOT(handleStopClick()));
     connect(ui->abort_button, SIGNAL(clicked()), this, SLOT(handleAbortClick()));
     connect(ui->loglevel_filter_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelFilterSelection()));
+//    connect(this, SIGNAL(rejected()), this, SLOT(automaticSave("abort")));
 
     // view tab related code
     ui->tabWidget->setCurrentIndex(0);
@@ -1558,6 +1559,17 @@ void MainWindow::sendtSignalValueSpeed() {
     this->networkClient->send(sample);
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    automaticSave("abort");
+    event->accept();
+}
+
+/**
+ * checks the values in the settings for the location to save the logs
+ * offset works like a pointer to remember all log entries of the live log,
+ * that has been saved to file earlier, so that they are not included in the current save file
+ * @param buttonLabel the current event, that triggered invocation
+ */
 void MainWindow::automaticSave(string buttonLabel){
     QSettings settings;
     QString saveGranularity = settings.value("logPreferences/automaticSave", "stop").toString();
@@ -1566,9 +1578,9 @@ void MainWindow::automaticSave(string buttonLabel){
         int currentLogSize = logModel->getCurrentLog().size();
         // retrieve cmake-build-debug directory path
         QString appDir = QDir::currentPath();
+        // append path to default location for saving logs
         appDir += "/../../json";
-        logModel->saveLog(logModel->getCurrentLog(), \
-                          maxFileNumber, \
+        logProxyModel->saveLog(maxFileNumber, \
                           settings.value("logPreferences/logPath", appDir).toString(), \
                           QString(), \
                           offset);

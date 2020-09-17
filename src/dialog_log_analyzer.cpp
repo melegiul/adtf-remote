@@ -32,7 +32,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->historyBox, SIGNAL(activated(int)), this, SLOT(checkIndex()));
     connect(this, SIGNAL(rejected()), this, SLOT(saveSettings()));
 
-    connect(this->applyButton, SIGNAL(clicked()), this, SLOT(handleApplyButtonClicked()));
     connect(this->exportGraphButton, SIGNAL(clicked()), this, SLOT(handleExportGraphClicked()));
 
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
@@ -42,7 +41,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
-    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->resetButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->spinBox, SIGNAL(valueChanged(int)), this, SLOT(updateGraph()));
@@ -50,7 +48,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
 
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
     connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
-    connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
     connect(this->resetButton, SIGNAL(clicked()), this, SLOT(updateMetadata()));
@@ -114,8 +111,11 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
         QString string = fileNames.first();
         clearModel();
         try {
-            addEntries(((LogModel *) sourceModel)->loadLog(string));
+//            addEntries(((LogModel *) sourceModel)->loadLog(string));
+            addEntries(proxyModel->loadLog(string));
             updateFileHistory(string);
+            resetGuiFilter();
+            setGuiFilter();
         } catch (runtime_error &e) {
             QMessageBox::critical(this, "Json format error", e.what());
         }
@@ -123,10 +123,12 @@ void LogAnalyzerDialog::handleLoadButtonClicked() {
 }
 
 void LogAnalyzerDialog::setFilter() {
-    proxyModel->setFilter(minDateTimeEdit->dateTime(), maxDateTimeEdit->dateTime(), getFilterList(logLevelListWidget),
-                          getFilterList(sourceListWidget),
-                          getFilterList(contextListWidget), payloadLineEdit->text());
-
+    proxyModel->setFilter(minDateTimeEdit->dateTime(), \
+                        maxDateTimeEdit->dateTime(), \
+                          getFilterList(logLevelListWidget), \
+                          getFilterList(sourceListWidget), \
+                          getFilterList(contextListWidget), \
+                          payloadLineEdit->text());
 }
 
 void LogAnalyzerDialog::resetFilter() {
@@ -137,6 +139,47 @@ void LogAnalyzerDialog::resetFilter() {
     resetFilterList(contextListWidget);
     payloadLineEdit->clear();
     setFilter();
+}
+
+/**
+ * displays the log filter of the current loaded log file on screen
+ */
+void LogAnalyzerDialog::setGuiFilter(){
+    minDateTimeEdit->setDateTime(proxyModel->getMinTime());
+    maxDateTimeEdit->setDateTime(proxyModel->getMaxTime());
+    setGuiFilterList(logLevelListWidget,proxyModel->getLogLevelFilter());
+    setGuiFilterList(sourceListWidget,proxyModel->getSourceFilter());
+    setGuiFilterList(contextListWidget,proxyModel->getContextFilter());
+    payloadLineEdit->setText(proxyModel->getPayloadFilter().pattern());
+}
+
+/**
+ * iterates over all item of filterList and set checkboxes according to filter data of the loaded log file
+ * @param filterList list widget with checkboxes to set
+ * @param currentProxyFilter list of filters, read from the log file
+ */
+void LogAnalyzerDialog::setGuiFilterList(QListWidget *filterList, QStringList currentProxyFilter){
+    for (QString proxyFilter: currentProxyFilter){
+        // for all filters of the log file
+        for (int i=0; i<filterList->count(); i++){
+            // iterate over all items of the according gui widget
+            if (filterList->item(i)->text() == proxyFilter)
+                filterList->item(i)->setCheckState(Qt::Checked);
+        }
+    }
+}
+
+/**
+ * clears just the gui filter setting (not the filter of proxy model attributes)
+ * to prepare for setting the filter according to loaded file
+ */
+void LogAnalyzerDialog::resetGuiFilter(){
+    minDateTimeEdit->setDateTime(minDateTimeEdit->minimumDateTime());
+    maxDateTimeEdit->setDateTime(maxDateTimeEdit->maximumDateTime());
+    resetFilterList(logLevelListWidget);
+    resetFilterList(sourceListWidget);
+    resetFilterList(contextListWidget);
+    payloadLineEdit->clear();
 }
 
 
@@ -172,9 +215,9 @@ void LogAnalyzerDialog::updateFileHistory(QString fileName) {
  */
 void LogAnalyzerDialog::handleSaveButtonClicked() {
     LogModel *currentModel = ((LogModel *) proxyModel->sourceModel());
+
     // retrieve cmake-build-debug directory path
-    currentModel->saveLog(currentModel->getCurrentLog(), \
-                          maxFileNumber, \
+    proxyModel->saveLog(maxFileNumber, \
                           "", \
                           historyBox->currentText());
 }
@@ -185,6 +228,7 @@ void LogAnalyzerDialog::handleSaveButtonClicked() {
 void LogAnalyzerDialog::handleSaveAsButtonClicked() {
     LogModel *currentModel = ((LogModel *) proxyModel->sourceModel());
     // retrieve cmake-build-debug directory path
+    // appDir is the default start location for the file dialog
     QString appDir = QDir::currentPath();
     appDir += "/../../json";
     QString fileName = QFileDialog::getSaveFileName(this, \
@@ -193,8 +237,7 @@ void LogAnalyzerDialog::handleSaveAsButtonClicked() {
                                     tr("Log File (*.json);;All files (*)"));
 
     if (!fileName.isEmpty()) {
-        currentModel->saveLog(currentModel->getCurrentLog(), \
-                              maxFileNumber, \
+        proxyModel->saveLog(maxFileNumber, \
                               "", \
                               fileName);
         updateFileHistory(fileName);
@@ -222,18 +265,15 @@ void LogAnalyzerDialog::clearModel() {
     sourceModel->removeRows(0, sourceModel->rowCount(), QModelIndex());
 }
 
-void LogAnalyzerDialog::removeEntries() {
-    sourceModel->removeRows(0, sourceModel->rowCount(), QModelIndex());
-
-}
-
 /**
  * executes, when the state of radio buttons changed
  * switches parentModel (live log model) and model (logs loaded from files)
  */
 void LogAnalyzerDialog::switchSource() {
     if (this->liveLogButton->isChecked()) {
+        // enters when live log radio button is checked
         proxyModel->setSourceModel(parentModel);
+        // disable history box, load and save button
         historyBox->setDisabled(true);
         loadButton->setDisabled(true);
         saveButton->setDisabled(true);
@@ -242,6 +282,7 @@ void LogAnalyzerDialog::switchSource() {
         else
             saveAsButton->setDisabled(false);
     } else {
+        // enters when directory radio button is checked
         proxyModel->setSourceModel(sourceModel);
         historyBox->setDisabled(false);
         checkIndex();
@@ -270,7 +311,7 @@ void LogAnalyzerDialog::checkIndex() {
 
 /**
  * executes, when dialog quits
- * save the entries in combo box
+ * save the entries of the combo box (log files)
  */
 void LogAnalyzerDialog::saveSettings() {
     settings.setValue("logAnalyzer/liveButton", liveLogButton->isChecked());

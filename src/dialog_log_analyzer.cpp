@@ -23,7 +23,7 @@
 #include "log_chart_view.h"
 
 
-LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : QDialog(parent), parentModel(parentModel) {
+LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel, ProxyModel* proxyModel) : QDialog(parent), parentModel(parentModel), proxyModel(proxyModel) {
 
     this->setupUi(this);
 
@@ -61,9 +61,16 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel) : Q
     loadSettings();
 
     sourceModel = new LogModel(this);
-    proxyModel = new ProxyModel(this);
+    //proxyModel = new ProxyModel(this);
     proxyModel->setSourceModel(parentModel);
     proxyModel->setDynamicSortFilter(true);
+    QStringList list = proxyModel->getLogLevelFilter();
+    for (int i = 0; i < logLevelListWidget->count(); i++) {
+        if (list.contains(logLevelListWidget->item(i)->text())) {
+            logLevelListWidget->item(i)->setCheckState(Qt::Checked);
+        }
+    }
+
     switchSource();
 
     this->tableView->setModel(proxyModel);

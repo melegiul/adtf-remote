@@ -145,7 +145,7 @@ void MainWindow::openPreferences() {
 }
 
 void MainWindow::openLogAnalyzer() {
-    LogAnalyzerDialog logDialog(this, logModel);
+    LogAnalyzerDialog logDialog(this, logModel, logProxyModel);
     logDialog.exec();
 }
 

@@ -621,7 +621,7 @@
               <bool>true</bool>
              </property>
              <property name="currentText">
-              <string>ERROR</string>
+              <string>DEBUG</string>
              </property>
              <item>
               <property name="text">

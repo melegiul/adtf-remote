@@ -17,7 +17,7 @@ class LogAnalyzerDialog : public QDialog, public Ui_dialog_log_analyzer{
     Q_OBJECT
 
 public:
-    LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr);
+    LogAnalyzerDialog(QWidget *parent = nullptr, LogModel* parentModel = nullptr, ProxyModel* proxyModel = nullptr);
     void loadSettings();
 
 private:

@@ -74,7 +74,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->running_stop_button, SIGNAL(clicked()), this, SLOT(handleStopClick()));
     connect(ui->abort_button, SIGNAL(clicked()), this, SLOT(handleAbortClick()));
     connect(ui->loglevel_filter_combo, SIGNAL(currentTextChanged(QString)), this, SLOT(handleLogLevelFilterSelection()));
-//    connect(this, SIGNAL(rejected()), this, SLOT(automaticSave("abort")));
 
     // view tab related code
     ui->tabWidget->setCurrentIndex(0);
@@ -107,7 +106,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(setSignRotations(double)));
     connect(zoom_rotate_manager, SIGNAL(rotated(double)), this, SLOT(focusOnCar()));
     connect(zoom_rotate_manager, SIGNAL(mousePositionUpdated(QPointF)), this, SLOT(updateMousePosition(QPointF)));
-
 
     connect(this, SIGNAL(carUpdated()), this, SLOT(updateCar()));
     connect(this, SIGNAL(nearfieldGridMapUpdated()),this,SLOT(setupNearfieldGridMap()));
@@ -171,7 +169,6 @@ void MainWindow::disconnectNetwork()
     sample.streamTime = 0;
     memcpy(sample.data.get(), &command, sample.length);
     this->networkClient->send(sample);
-
     this->networkClient->disconnectNetwork();
 }
 

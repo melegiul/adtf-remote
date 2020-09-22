@@ -9,6 +9,9 @@
 class ProxyModel : public QSortFilterProxyModel {
 Q_OBJECT
 public:
+
+    QString logName = NULL;
+
     ProxyModel(QObject *parent);
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;

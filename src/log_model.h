@@ -24,7 +24,6 @@ private:
 
 public:
     LogModel(QObject *parent);
-    QString logName = NULL;
     QList<QStringList> &getCurrentLog();
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;

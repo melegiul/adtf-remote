@@ -103,6 +103,9 @@ void ProxyModel::saveLog(int maxFileNumber, QString defaultPath, QString fileNam
         // sets auto generated file name to current date
         strftime(fileNameGen, 26, "/%Y-%m-%d-%H:%M:%S.json", tm_info);
         filePath = logPath + fileNameGen;
+        logName = fileNameGen;
+        logName = logName.remove(".json");
+
     } else {
         // save buttons in log analyzer dialog retrieve a user defined file name containing the absolute path
         filePath = fileName.toStdString();

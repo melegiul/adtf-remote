@@ -40,7 +40,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel, Pro
     connect(this->applyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
     connect(this->resetButton, SIGNAL(clicked()), this, SLOT(resetFilter()));
 
-
     connect(this->loadButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->directoryButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
     connect(this->liveLogButton, SIGNAL(clicked()), this, SLOT(updateGraph()));
@@ -61,7 +60,6 @@ LogAnalyzerDialog::LogAnalyzerDialog(QWidget *parent, LogModel *parentModel, Pro
     loadSettings();
 
     sourceModel = new LogModel(this);
-    //proxyModel = new ProxyModel(this);
     proxyModel->setSourceModel(parentModel);
     proxyModel->setDynamicSortFilter(true);
     QStringList list = proxyModel->getLogLevelFilter();
@@ -527,7 +525,7 @@ void LogAnalyzerDialog::updateMetadata() {
 }
 
 void LogAnalyzerDialog::handleExportGraphClicked() {
-    graphicsView->exportGraphAsSvg(parentModel->logName);
+    graphicsView->exportGraphAsSvg(proxyModel->logName);
 }
 
 /**
